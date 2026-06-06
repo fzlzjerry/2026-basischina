@@ -15,9 +15,10 @@
     "lint:check": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,md,json}\" \"scripts/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,md,json}\" \"scripts/**/*.ts\"",
-    "check-all": "bun run validate:pages && bun run type-check && bun run lint:check && bun run format:check",
+    "check-all": "bun run validate:pages && bun run type-check && bun run audit:theme && bun run lint:check && bun run format:check",
     "validate:pages": "bun scripts/validate-pages.ts",
     "generate:sitemap": "bun scripts/generate-sitemap.ts",
+    "audit:theme": "bun scripts/audit-theme.ts",
     "test:smoke": "bun run check-all && bun run build"
   },
   "dependencies": {
