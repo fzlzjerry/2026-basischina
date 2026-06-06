@@ -24,10 +24,10 @@ export function AppShell() {
   useRouteFocus();
 
   return (
-    <div className="flex min-h-screen flex-col bg-white text-slate-800">
+    <div className="flex min-h-screen flex-col">
       <a
         href="#main-content"
-        className="sr-only z-50 rounded-md bg-emerald-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+        className="sr-only z-50 rounded-pill bg-footer px-4 py-2 text-page focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
       >
         Skip to content
       </a>
