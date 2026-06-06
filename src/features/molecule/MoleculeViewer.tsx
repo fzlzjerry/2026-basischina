@@ -21,25 +21,25 @@ export function MoleculeViewer({
   const { loading, error, ready } = use3DMolViewer({ ...options, elementId });
 
   return (
-    <figure className={className}>
+    <figure className={className} data-print-hide>
       <div
         id={elementId}
         role="img"
         aria-label={label}
-        className="relative mx-auto aspect-square w-full max-w-md rounded-xl border border-slate-200 bg-slate-50"
+        className="relative mx-auto aspect-square w-full max-w-md rounded-card border-2 border-border bg-page"
       >
         {!ready && !error ? (
-          <span className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
+          <span className="absolute inset-0 flex items-center justify-center text-sm text-ink-muted">
             {loading ? "Loading 3D viewer…" : "Scroll to load 3D viewer"}
           </span>
         ) : null}
         {error ? (
-          <span className="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-slate-500">
+          <span className="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-ink-muted">
             {error}
           </span>
         ) : null}
       </div>
-      <figcaption className="mt-3 text-center text-sm text-slate-500">
+      <figcaption className="mt-3 text-center text-sm text-ink-soft">
         {label}
       </figcaption>
     </figure>

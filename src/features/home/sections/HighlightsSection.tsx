@@ -44,14 +44,19 @@ export function HighlightsSection() {
       </Title>
       <div className="mt-12 grid gap-6 sm:grid-cols-2">
         {highlights.map((item) => {
-          const { Icon: CategoryIcon, accent } = pageCategoryMeta[item.category];
+          const { Icon: CategoryIcon, accent } =
+            pageCategoryMeta[item.category];
           return (
             <Link
               key={item.to}
               to={item.to}
               className="group block rounded-card outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2"
             >
-              <Card variant="interactive" accent={accent} className="ac-polka h-full">
+              <Card
+                variant="interactive"
+                accent={accent}
+                className="ac-polka h-full"
+              >
                 <span className="inline-flex h-12 w-12 items-center justify-center rounded-min bg-primary-soft text-primary-deep">
                   <Icon as={CategoryIcon} size="md" />
                 </span>

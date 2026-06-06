@@ -23,10 +23,17 @@ export function HeroSection() {
             project, research, and the team behind it.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4 lg:justify-start">
-            <Link to="/description" className={buttonClasses("primary", "lg", "group")}>
+            <Link
+              to="/description"
+              className={buttonClasses("primary", "lg", "group")}
+            >
               <Icon as={PawPrint} weight="fill" />
               <span>Explore the project</span>
-              <Icon as={PawPrint} weight="fill" className="transition group-hover:translate-x-1" />
+              <Icon
+                as={PawPrint}
+                weight="fill"
+                className="transition group-hover:translate-x-1"
+              />
             </Link>
             <Link to="/team" className={buttonClasses("secondary", "lg")}>
               <Icon as={UsersThree} />
@@ -38,11 +45,31 @@ export function HeroSection() {
           aria-hidden="true"
           className="relative hidden items-center justify-center lg:flex"
         >
-          <Icon as={Cat} weight="duotone" className="h-44 w-44 text-app-peach -rotate-6" />
-          <Icon as={Dog} weight="duotone" className="h-48 w-48 text-app-teal rotate-6" />
-          <Icon as={PawPrint} weight="fill" className="absolute left-4 top-6 h-8 w-8 text-app-pink/70" />
-          <Icon as={PawPrint} weight="fill" className="absolute bottom-8 right-6 h-10 w-10 text-app-blue/70" />
-          <Icon as={PawPrint} weight="fill" className="absolute right-1/3 top-2 h-6 w-6 text-app-purple/60" />
+          <Icon
+            as={Cat}
+            weight="duotone"
+            className="h-44 w-44 text-app-peach -rotate-6"
+          />
+          <Icon
+            as={Dog}
+            weight="duotone"
+            className="h-48 w-48 text-app-teal rotate-6"
+          />
+          <Icon
+            as={PawPrint}
+            weight="fill"
+            className="absolute left-4 top-6 h-8 w-8 text-app-pink/70"
+          />
+          <Icon
+            as={PawPrint}
+            weight="fill"
+            className="absolute bottom-8 right-6 h-10 w-10 text-app-blue/70"
+          />
+          <Icon
+            as={PawPrint}
+            weight="fill"
+            className="absolute right-1/3 top-2 h-6 w-6 text-app-purple/60"
+          />
         </div>
       </div>
     </section>
