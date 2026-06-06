@@ -1,10 +1,17 @@
 import { Link } from "react-router-dom";
+import { PawPrint } from "@phosphor-icons/react";
+import type { PageCategory } from "@/config/pageData";
+import { pageCategoryMeta } from "@/config/pageCategoryMeta";
+import { Icon } from "@/shared/components/Icon";
+import { Card } from "@/shared/components/Card";
+import { Title } from "@/shared/components/Title";
 
 interface Highlight {
   title: string;
   description: string;
   to: string;
   cta: string;
+  category: PageCategory;
 }
 
 const highlights: Highlight[] = [
@@ -14,6 +21,7 @@ const highlights: Highlight[] = [
       "Why we chose our challenge, the science behind our solution, and where we are headed.",
     to: "/description",
     cta: "Read the description",
+    category: "project",
   },
   {
     title: "The team",
@@ -21,6 +29,7 @@ const highlights: Highlight[] = [
       "The students, instructors, and advisors who made this season possible.",
     to: "/team",
     cta: "Meet the team",
+    category: "team",
   },
 ];
 
@@ -30,25 +39,37 @@ const highlights: Highlight[] = [
 export function HighlightsSection() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
-      <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900">
+      <Title level="h2" align="center">
         Start exploring
-      </h2>
+      </Title>
       <div className="mt-12 grid gap-6 sm:grid-cols-2">
-        {highlights.map((item) => (
-          <Link
-            key={item.to}
-            to={item.to}
-            className="group rounded-2xl border border-slate-200 p-8 transition hover:border-emerald-400 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
-          >
-            <h3 className="text-xl font-semibold text-slate-900">
-              {item.title}
-            </h3>
-            <p className="mt-3 text-slate-600">{item.description}</p>
-            <span className="mt-4 inline-block font-medium text-emerald-700 group-hover:underline">
-              {item.cta} →
-            </span>
-          </Link>
-        ))}
+        {highlights.map((item) => {
+          const { Icon: CategoryIcon, accent } = pageCategoryMeta[item.category];
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="group block rounded-card outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              <Card variant="interactive" accent={accent} className="ac-polka h-full">
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-min bg-primary-soft text-primary-deep">
+                  <Icon as={CategoryIcon} size="md" />
+                </span>
+                <h3 className="mt-4 text-xl font-semibold text-ink">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-ink-soft">{item.description}</p>
+                <span className="mt-4 inline-flex items-center gap-2 font-semibold text-primary-deep">
+                  {item.cta}
+                  <Icon
+                    as={PawPrint}
+                    className="transition group-hover:translate-x-1"
+                  />
+                </span>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
