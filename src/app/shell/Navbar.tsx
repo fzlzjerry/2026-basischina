@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { CaretDown, List, X } from "@phosphor-icons/react";
 import { Icon } from "@/shared/components/Icon";
 import { wikiEnv } from "@/config/env";
 import { getNavGroups, navLabelFor } from "@/config/navigation";
 import type { PageDataItem } from "@/config/pageData";
+import {
+  gsap,
+  ScrollTrigger,
+  registerGsap,
+  useGSAP,
+} from "@/shared/motion/gsap";
 
 const groups = getNavGroups();
 
@@ -44,6 +50,52 @@ export function Navbar() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
+  const { pathname } = useLocation();
+
+  // Scroll-progress bar + a one-time, subtle entrance for the header. The
+  // progress bar is a scroll-linked indicator (not autonomous motion), so it
+  // stays on for everyone; the entrance is gated behind reduced-motion.
+  useGSAP(
+    () => {
+      registerGsap();
+      gsap.set(".js-scroll-progress", { transformOrigin: "left center" });
+      gsap.to(".js-scroll-progress", {
+        scaleX: 1,
+        ease: "none",
+        scrollTrigger: { start: 0, end: "max", scrub: 0.3 },
+      });
+
+      // Late layout shifts (font swap, lazy media) move the page height, which
+      // the progress bar's `end: "max"` depends on.
+      const onLoad = () => ScrollTrigger.refresh();
+      window.addEventListener("load", onLoad);
+
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.from(".js-nav-animate", {
+          y: -12,
+          duration: 0.6,
+          ease: "power3.out",
+          stagger: 0.08,
+          clearProps: "transform",
+        });
+      });
+
+      return () => {
+        window.removeEventListener("load", onLoad);
+        mm.revert();
+      };
+    },
+    { scope: navRef },
+  );
+
+  // The persistent shell never remounts, so recalc trigger positions whenever
+  // the route (and therefore page height) changes.
+  useEffect(() => {
+    registerGsap();
+    const id = window.requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => window.cancelAnimationFrame(id);
+  }, [pathname]);
 
   useEffect(() => {
     function onPointerDown(event: MouseEvent) {
@@ -77,7 +129,7 @@ export function Navbar() {
         <NavLink
           to="/"
           end
-          className="text-lg font-bold tracking-tight text-ink"
+          className="js-nav-animate text-lg font-bold tracking-tight text-ink"
         >
           {wikiEnv.teamName}
           <span className="ml-1 font-normal text-primary-deep">
@@ -86,7 +138,7 @@ export function Navbar() {
         </NavLink>
 
         {/* Desktop navigation */}
-        <ul className="hidden items-center gap-1 lg:flex">
+        <ul className="js-nav-animate hidden items-center gap-1 lg:flex">
           {groups.map((group) => {
             if (group.pages.length === 1) {
               return (
@@ -140,12 +192,19 @@ export function Navbar() {
           aria-expanded={mobileOpen}
           aria-controls="mobile-nav"
           onClick={() => setMobileOpen((value) => !value)}
-          className="rounded-pill p-2.5 text-primary-deep transition hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring lg:hidden"
+          className="js-nav-animate rounded-pill p-2.5 text-primary-deep transition hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring lg:hidden"
         >
           <span className="sr-only">Toggle navigation</span>
           <Icon as={mobileOpen ? X : List} size="md" aria-hidden="true" />
         </button>
       </nav>
+
+      {/* Reading-progress indicator, scrubbed to page scroll. */}
+      <span
+        aria-hidden="true"
+        style={{ transform: "scaleX(0)", transformOrigin: "left center" }}
+        className="js-scroll-progress pointer-events-none absolute inset-x-0 bottom-0 h-0.5 bg-primary"
+      />
 
       {/* Mobile panel */}
       {mobileOpen ? (

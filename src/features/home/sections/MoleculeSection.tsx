@@ -1,5 +1,7 @@
+import { useRef } from "react";
 import { MoleculeViewer } from "@/features/molecule/MoleculeViewer";
 import { Title } from "@/shared/components/Title";
+import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
 
 // A small, valid inline SDF (water) so the demo works with no network or asset
 // dependency. Replace `sdfData` with `sdfUrl="assets/molecules/your.sdf"` (place
@@ -22,10 +24,36 @@ $$$$
  * viewer only loads 3Dmol when scrolled into view.
  */
 export function MoleculeSection() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      registerGsap();
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.from(".js-reveal-up", {
+          y: 28,
+          opacity: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.15,
+          clearProps: "all",
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top 75%",
+            once: true,
+          },
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope: root },
+  );
+
   return (
-    <section className="bg-page">
+    <section ref={root} className="bg-page">
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
-        <div>
+        <div className="js-reveal-up">
           <Title level="h2">Molecules in motion</Title>
           <p className="mt-4 text-ink-soft">
             Synthetic biology is the engineering of molecular machines. Drag to
@@ -38,6 +66,7 @@ export function MoleculeSection() {
           </p>
         </div>
         <MoleculeViewer
+          className="js-reveal-up"
           label="Interactive 3D model of a water molecule"
           sdfData={SAMPLE_MOLECULE}
           format="sdf"

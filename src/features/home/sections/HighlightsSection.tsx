@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { PawPrint } from "@phosphor-icons/react";
 import type { PageCategory } from "@/config/pageData";
@@ -5,6 +6,7 @@ import { pageCategoryMeta } from "@/config/pageCategoryMeta";
 import { Icon } from "@/shared/components/Icon";
 import { Card } from "@/shared/components/Card";
 import { Title } from "@/shared/components/Title";
+import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
 
 interface Highlight {
   title: string;
@@ -37,12 +39,54 @@ const highlights: Highlight[] = [
  * Homepage highlights (§20). Section content is local to this file.
  */
 export function HighlightsSection() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      registerGsap();
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.from(".js-reveal-title", {
+          y: 24,
+          opacity: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          clearProps: "all",
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top 80%",
+            once: true,
+          },
+        });
+        gsap.from(".js-reveal-card", {
+          y: 32,
+          opacity: 0,
+          scale: 0.97,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.15,
+          clearProps: "all",
+          scrollTrigger: {
+            trigger: ".js-reveal-cards",
+            start: "top 85%",
+            once: true,
+          },
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope: root },
+  );
+
   return (
-    <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
-      <Title level="h2" align="center">
+    <section
+      ref={root}
+      className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8"
+    >
+      <Title level="h2" align="center" className="js-reveal-title">
         Start exploring
       </Title>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2">
+      <div className="js-reveal-cards mt-12 grid gap-6 sm:grid-cols-2">
         {highlights.map((item) => {
           const { Icon: CategoryIcon, accent } =
             pageCategoryMeta[item.category];
@@ -50,7 +94,7 @@ export function HighlightsSection() {
             <Link
               key={item.to}
               to={item.to}
-              className="group block rounded-card outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2"
+              className="js-reveal-card group block rounded-card outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               <Card
                 variant="interactive"
