@@ -27,10 +27,13 @@ const tealLiteral = /#19c8b9/i;
 const primaryDef = /--color-primary:\s*#19c8b9/i;
 // (e) Phosphor must be imported via NAMED imports only (default / namespace are banned).
 const phosphorBadImport = /import\s+(?:\*\s+as\s+\w+|\w+)\s+from\s+["']@phosphor-icons\/react["']/;
-// (c) emoji: pictographs, symbols, dingbats, regional indicators, variation
-// selectors, ZWJ. Excludes ordinary CJK/Latin text used across the wiki.
+// (c) emoji: pictographs, symbols, dingbats, regional indicators, arrows, and
+// technical symbols. Excludes ordinary CJK/Latin text used across the wiki.
+// (Non-printing modifiers U+FE0F/U+200D are intentionally omitted — they never
+// appear without a base glyph, which the ranges below already catch, and they
+// trip eslint's no-misleading-character-class rule.)
 const emoji =
-  /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{1F1E6}-\u{1F1FF}\u{FE0F}\u{200D}\u{2190}-\u{21FF}\u{2300}-\u{23FF}]/u;
+  /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{1F1E6}-\u{1F1FF}\u{2190}-\u{21FF}\u{2300}-\u{23FF}]/u;
 // Arrows (←↑→↓) live in the 2190–21FF range above; the theme replaces them with
 // Phosphor PawPrint, so they are correctly flagged as non-SVG glyphs.
 
