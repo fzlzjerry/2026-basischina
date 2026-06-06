@@ -26,7 +26,8 @@ const tealLiteral = /#19c8b9/i;
 // the one line allowed to contain the teal literal.
 const primaryDef = /--color-primary:\s*#19c8b9/i;
 // (e) Phosphor must be imported via NAMED imports only (default / namespace are banned).
-const phosphorBadImport = /import\s+(?:\*\s+as\s+\w+|\w+)\s+from\s+["']@phosphor-icons\/react["']/;
+const phosphorBadImport =
+  /import\s+(?:\*\s+as\s+\w+|\w+)\s+from\s+["']@phosphor-icons\/react["']/;
 // (c) emoji: pictographs, symbols, dingbats, regional indicators, arrows, and
 // technical symbols. Excludes ordinary CJK/Latin text used across the wiki.
 // (Non-printing modifiers U+FE0F/U+200D are intentionally omitted — they never
@@ -57,16 +58,36 @@ for (const file of files) {
   lines.forEach((text, i) => {
     const lineNo = i + 1;
     if (bareTextPrimary.test(text)) {
-      findings.push({ file: rel, line: lineNo, rule: "bare text-primary", text: text.trim() });
+      findings.push({
+        file: rel,
+        line: lineNo,
+        rule: "bare text-primary",
+        text: text.trim(),
+      });
     }
     if (tealLiteral.test(text) && !primaryDef.test(text)) {
-      findings.push({ file: rel, line: lineNo, rule: "#19c8b9 outside --color-primary def", text: text.trim() });
+      findings.push({
+        file: rel,
+        line: lineNo,
+        rule: "#19c8b9 outside --color-primary def",
+        text: text.trim(),
+      });
     }
     if (emoji.test(text)) {
-      findings.push({ file: rel, line: lineNo, rule: "emoji / non-SVG glyph", text: text.trim() });
+      findings.push({
+        file: rel,
+        line: lineNo,
+        rule: "emoji / non-SVG glyph",
+        text: text.trim(),
+      });
     }
     if (phosphorBadImport.test(text)) {
-      findings.push({ file: rel, line: lineNo, rule: "non-named @phosphor-icons/react import (use named imports)", text: text.trim() });
+      findings.push({
+        file: rel,
+        line: lineNo,
+        rule: "non-named @phosphor-icons/react import (use named imports)",
+        text: text.trim(),
+      });
     }
   });
 }
@@ -117,14 +138,18 @@ if (!fs.existsSync(mainCssPath)) {
 let failed = false;
 if (findings.length > 0) {
   failed = true;
-  console.error(`\n✖ Theme audit found ${findings.length} forbidden glyph/class issue(s):\n`);
+  console.error(
+    `\n✖ Theme audit found ${findings.length} forbidden glyph/class issue(s):\n`,
+  );
   for (const f of findings) {
     console.error(`  - ${f.file}:${f.line} [${f.rule}]  ${f.text}`);
   }
 }
 if (missingTokens.length > 0) {
   failed = true;
-  console.error(`\n✖ Theme audit: ${missingTokens.length} required token(s) missing from ${mainCssRel}:\n`);
+  console.error(
+    `\n✖ Theme audit: ${missingTokens.length} required token(s) missing from ${mainCssRel}:\n`,
+  );
   for (const t of missingTokens) console.error(`  - ${t}`);
 }
 
@@ -133,4 +158,6 @@ if (failed) {
   process.exit(1);
 }
 
-console.log(`✓ Theme audit passed (${files.length} src files scanned, ${requiredTokens.length} tokens present).`);
+console.log(
+  `✓ Theme audit passed (${files.length} src files scanned, ${requiredTokens.length} tokens present).`,
+);

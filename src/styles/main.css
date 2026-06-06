@@ -71,7 +71,7 @@
 
   /* ---- Shadows ---- */
   --shadow-soft: 0 2px 4px rgb(61 52 40 / 0.06);
-  --shadow-soft-hover: 0 4px 12px rgb(61 52 40 / 0.10);
+  --shadow-soft-hover: 0 4px 12px rgb(61 52 40 / 0.1);
   --shadow-card-lift: 0 4px 12px rgb(61 52 40 / 0.08);
   --shadow-btn-3d: 0 5px 0 0 var(--color-primary-rail);
   --shadow-btn-3d-hover: 0 6px 0 0 var(--color-primary-rail);
@@ -81,8 +81,10 @@
   --shadow-btn-danger-active: 0 1px 0 0 var(--color-error-rail);
 
   /* ---- Fonts (families only; @font-face outside @theme, see Task 2) ---- */
-  --font-body: "Nunito", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
-  --font-display: "Nunito", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  --font-body:
+    "Nunito", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  --font-display:
+    "Nunito", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
 
   /* ---- Easing + global transition default ---- */
   --ease-cozy: cubic-bezier(0.4, 0, 0.2, 1);
