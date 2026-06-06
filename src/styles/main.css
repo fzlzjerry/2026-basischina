@@ -1,5 +1,153 @@
 @import "tailwindcss";
 
+/* ===========================================================================
+   Design tokens (§3). Tailwind v4 auto-generates utilities from these:
+   --color-page → bg-page/text-page; --radius-pill → rounded-pill;
+   --shadow-btn-3d → shadow-btn-3d; --color-focus-ring → outline-focus-ring; etc.
+   All color values are WCAG-AA-verified. @font-face lives OUTSIDE @theme (Task 2).
+   =========================================================================== */
+@theme {
+  /* ---- Surfaces & ink ---- */
+  --color-page: #f8f8f0;
+  --color-surface: #f7f3df;
+  --color-surface-2: #f9f7f0;
+  --color-hover: #f0ede5;
+  --color-ink: #794f27;
+  --color-ink-soft: #725d42;
+  --color-ink-secondary: #9f927d;
+  --color-ink-muted: #8a7b66;
+  --color-placeholder: #6b5e50;
+  --color-disabled: #c4b89e;
+
+  /* ---- Brand primary (teal). NOTE: #19c8b9 is decorative-only; never text. ---- */
+  --color-primary: #19c8b9;
+  --color-primary-deep: #0d6f63;
+  --color-primary-soft: #e6f9f6;
+  --color-primary-rail: #0a5249;
+
+  /* ---- Status ---- */
+  --color-success: #2f7a36;
+  --color-success-soft: #eaf4e7;
+  --color-warning: #946011;
+  --color-warning-soft: #fbf1d6;
+  --color-error: #c0392b;
+  --color-error-soft: #fdecea;
+  --color-error-rail: #8a2a20;
+
+  /* ---- Focus ---- */
+  --color-focus-ring: #794f27;
+  --color-focus-on-dark: #ffcc00;
+
+  /* ---- Borders ---- */
+  --color-border: #8a7b66;
+  --color-border-soft: #c4b89e;
+
+  /* ---- Footer ---- */
+  --color-footer: #794f27;
+  --color-footer-divider: #6b5b47;
+  --color-footer-text: #f0ede5;
+  --color-footer-text-muted: #d9cec4;
+
+  /* ---- NookPhone accent palette: LIGHT = backgrounds/rails, INK = text/icon ---- */
+  --color-app-teal: #82d5bb;
+  --color-app-teal-ink: #1f7a5e;
+  --color-app-blue: #889df0;
+  --color-app-blue-ink: #2f4fa8;
+  --color-app-purple: #b77dee;
+  --color-app-purple-ink: #6a3fa0;
+  --color-app-green: #8ac68a;
+  --color-app-green-ink: #2f7a36;
+  --color-app-peach: #e18c6f;
+  --color-app-peach-ink: #b04a28;
+  --color-app-pink: #f8a6b2;
+  --color-app-pink-ink: #b03a52;
+
+  /* ---- Radii (min 12px on interactive; never 0) ---- */
+  --radius-min: 12px;
+  --radius-badge: 10px;
+  --radius-tooltip: 16px;
+  --radius-card: 20px;
+  --radius-pill: 50px;
+
+  /* ---- Shadows ---- */
+  --shadow-soft: 0 2px 4px rgb(61 52 40 / 0.06);
+  --shadow-soft-hover: 0 4px 12px rgb(61 52 40 / 0.10);
+  --shadow-card-lift: 0 4px 12px rgb(61 52 40 / 0.08);
+  --shadow-btn-3d: 0 5px 0 0 var(--color-primary-rail);
+  --shadow-btn-3d-hover: 0 6px 0 0 var(--color-primary-rail);
+  --shadow-btn-3d-active: 0 1px 0 0 var(--color-primary-rail);
+  --shadow-btn-danger: 0 5px 0 0 var(--color-error-rail);
+  --shadow-btn-danger-hover: 0 6px 0 0 var(--color-error-rail);
+  --shadow-btn-danger-active: 0 1px 0 0 var(--color-error-rail);
+
+  /* ---- Fonts (families only; @font-face outside @theme, see Task 2) ---- */
+  --font-body: "Nunito", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  --font-display: "Nunito", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+
+  /* ---- Easing + global transition default ---- */
+  --ease-cozy: cubic-bezier(0.4, 0, 0.2, 1);
+  --default-transition-duration: 0.25s;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-page);
+    color: var(--color-ink-soft);
+    font-family: var(--font-body);
+    font-weight: 500; /* AC body weight */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  :root {
+    color-scheme: light; /* light-only; stop UA dark-mode inversion */
+  }
+}
+
+/* ===========================================================================
+   AC helper classes (consumed by Card.tsx / Title.tsx in Phase 2).
+   =========================================================================== */
+@layer components {
+  /* Decorative polka-dot texture (aria-hidden surfaces only). */
+  .ac-polka {
+    background-image: radial-gradient(
+      rgb(138 123 102 / 0.14) 1.5px,
+      transparent 1.5px
+    );
+    background-size: 26px 26px;
+  }
+
+  /* Ribbon banner: cozy primary-soft pill with triangular swallowtail ends. */
+  .ac-ribbon {
+    position: relative;
+    display: inline-block;
+    background-color: var(--color-primary-soft);
+    border: 2px solid var(--color-border);
+    color: var(--color-ink);
+    font-weight: 900;
+    padding: 0.35em 1.4em;
+    border-radius: var(--radius-min);
+  }
+  .ac-ribbon::before,
+  .ac-ribbon::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 0;
+    height: 0;
+    transform: translateY(-50%);
+    border-block: 0.55em solid transparent;
+  }
+  .ac-ribbon::before {
+    left: -0.5em;
+    border-right: 0.55em solid var(--color-border);
+  }
+  .ac-ribbon::after {
+    right: -0.5em;
+    border-left: 0.55em solid var(--color-border);
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -22,5 +170,67 @@ html {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ===========================================================================
+   Print stylesheet (§14): hide chrome, flatten depth, black-on-white body+code,
+   expand collapsibles/TOC, show link URLs, avoid breaking inside cards/figures.
+   =========================================================================== */
+@media print {
+  nav,
+  header,
+  footer,
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  pre,
+  code {
+    background: #fff !important;
+    color: #000 !important;
+    border: 1px solid #000 !important;
+  }
+
+  /* Expand collapsibles and TOC so nothing is hidden on paper. */
+  details {
+    display: block !important;
+  }
+  details > summary {
+    display: none !important;
+  }
+  details[data-print-expand],
+  [data-collapsible] {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Surface link targets next to their anchor text. */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+
+  /* Keep figures and cards intact across page breaks. */
+  figure,
+  pre,
+  table,
+  [data-card] {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
