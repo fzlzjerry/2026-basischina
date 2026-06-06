@@ -138,9 +138,24 @@ export function HeroSection() {
                 <g className="js-hero-cell" style={{ opacity: 0.35 }}>
                   <circle cx="70" cy="80" r="7" fill="var(--color-app-green)" />
                   <circle cx="112" cy="70" r="6" fill="var(--color-app-blue)" />
-                  <circle cx="132" cy="112" r="8" fill="var(--color-app-teal)" />
-                  <circle cx="84" cy="122" r="6" fill="var(--color-app-purple)" />
-                  <circle cx="104" cy="100" r="5" fill="var(--color-app-green)" />
+                  <circle
+                    cx="132"
+                    cy="112"
+                    r="8"
+                    fill="var(--color-app-teal)"
+                  />
+                  <circle
+                    cx="84"
+                    cy="122"
+                    r="6"
+                    fill="var(--color-app-purple)"
+                  />
+                  <circle
+                    cx="104"
+                    cy="100"
+                    r="5"
+                    fill="var(--color-app-green)"
+                  />
                 </g>
                 <path
                   className="js-hero-construct"
