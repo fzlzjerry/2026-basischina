@@ -22,13 +22,6 @@ export function HeroSection() {
       ref={root}
       className="js-hero relative flex min-h-[88vh] items-center overflow-hidden bg-gradient-to-b from-page to-surface"
     >
-      {/* Left-edge pin-progress hairline (idle hidden; scaled by scroll). */}
-      <span
-        aria-hidden="true"
-        className="js-hero-progress pointer-events-none absolute left-0 top-0 hidden h-full w-1 origin-top bg-primary/60 lg:block"
-        style={{ transform: "scaleY(0)" }}
-      />
-
       {/* Dimming veil over the scene (opacity cross-fade, never a filter). */}
       <div
         aria-hidden="true"

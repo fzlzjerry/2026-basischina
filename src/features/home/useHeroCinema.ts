@@ -51,7 +51,6 @@ export function useHeroCinema(root: RefObject<HTMLElement>): void {
             );
 
           // --- Pinned, scrubbed master timeline (Beats 1-3) ---
-          const progress = el.querySelector<HTMLElement>(".js-hero-progress");
           // Start the construct stroke empty so it never flashes fully-drawn
           // before Beat 3 redraws it (the fromTo below uses immediateRender:false).
           gsap.set(".js-hero-construct", { drawSVG: "0%" });
@@ -65,9 +64,6 @@ export function useHeroCinema(root: RefObject<HTMLElement>): void {
               pin: true,
               scrub: 0.5,
               anticipatePin: 1,
-              onUpdate: (self) => {
-                if (progress) gsap.set(progress, { scaleY: self.progress });
-              },
             },
           });
 
