@@ -1,5 +1,8 @@
+import { Warning } from "@phosphor-icons/react";
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Link, isRouteErrorResponse, useRouteError } from "react-router-dom";
+import { buttonClasses } from "@/shared/components/Button";
+import { Icon } from "@/shared/components/Icon";
 
 /**
  * Route-level error UI (§11). Rendered by React Router as a route `errorElement`
@@ -20,12 +23,15 @@ export function RouteErrorBoundary() {
 
   return (
     <section className="mx-auto max-w-2xl px-4 py-24 text-center">
-      <h1 className="text-3xl font-bold text-slate-900">{title}</h1>
-      <p className="mt-4 text-slate-600">{detail}</p>
-      <Link
-        to="/"
-        className="mt-8 inline-block rounded-md bg-emerald-600 px-5 py-2.5 font-medium text-white transition hover:bg-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
-      >
+      <Icon
+        as={Warning}
+        size="lg"
+        weight="duotone"
+        className="mx-auto mb-4 block text-primary-deep"
+      />
+      <h1 className="text-3xl font-bold text-ink">{title}</h1>
+      <p className="mt-4 text-ink-soft">{detail}</p>
+      <Link to="/" className={buttonClasses("primary", "md", "mt-8")}>
         Back to Home
       </Link>
     </section>
@@ -63,7 +69,7 @@ export class AppErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <p className="px-4 py-8 text-center text-slate-600">
+          <p className="px-4 py-8 text-center text-ink-soft">
             This section failed to load.
           </p>
         )
