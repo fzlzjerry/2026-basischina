@@ -2,9 +2,11 @@ import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
+import { PageTransition } from "./PageTransition";
 import { PageLoading } from "@/shared/components/PageLoading";
 import { useScrollToTop } from "@/shared/hooks/useScrollToTop";
 import { useRouteFocus } from "@/shared/hooks/useRouteFocus";
+import { useWarmLazyRoutes } from "@/shared/hooks/useWarmLazyRoutes";
 
 // Global stylesheets are imported from the shell because the shell is declared
 // as the SSG route `entry` — this ensures their CSS is linked into every
@@ -22,6 +24,7 @@ import "prismjs/themes/prism-tomorrow.css";
 export function AppShell() {
   useScrollToTop();
   useRouteFocus();
+  useWarmLazyRoutes();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -37,6 +40,7 @@ export function AppShell() {
           <Outlet />
         </Suspense>
       </main>
+      <PageTransition />
       <Footer />
     </div>
   );
