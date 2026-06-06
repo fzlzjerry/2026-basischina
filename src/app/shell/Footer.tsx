@@ -18,19 +18,19 @@ const teamSlug = wikiEnv.basePath.replace(/^\/+|\/+$/g, "");
  */
 export function Footer() {
   return (
-    <footer className="mt-16 border-t border-slate-200 bg-slate-900 text-slate-300">
+    <footer className="mt-16 border-t-2 border-footer-divider bg-footer text-footer-text">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <p className="text-lg font-bold text-white">{wikiEnv.teamName}</p>
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="text-lg font-bold text-page">{wikiEnv.teamName}</p>
+            <p className="mt-2 text-sm text-footer-text-muted">
               iGEM {wikiEnv.teamYear} — engineering biology for a more
               sustainable world.
             </p>
           </div>
           {footerGroups.map((group) => (
             <nav key={group.key} aria-label={group.label}>
-              <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              <p className="text-sm font-semibold uppercase tracking-wide text-footer-text-muted">
                 {group.label}
               </p>
               <ul className="mt-3 space-y-2">
@@ -38,7 +38,7 @@ export function Footer() {
                   <li key={page.path}>
                     <Link
                       to={page.path}
-                      className="text-sm text-slate-300 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+                      className="text-sm text-footer-text transition hover:text-page hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
                     >
                       {navLabelFor(page)}
                     </Link>
@@ -49,15 +49,15 @@ export function Footer() {
           ))}
         </div>
 
-        <hr className="my-8 border-slate-700" />
+        <hr className="my-8 border-footer-divider" />
 
         {/* Required on every iGEM wiki page: license + repository link. */}
-        <div className="space-y-2 text-xs text-slate-400">
+        <div className="space-y-2 text-xs text-footer-text-muted">
           <p>
             © {wikiEnv.teamYear} {wikiEnv.teamName}. Content on this site is
             licensed under a{" "}
             <a
-              className="font-medium text-slate-200 underline hover:text-white"
+              className="font-medium text-page underline transition hover:text-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
               href="https://creativecommons.org/licenses/by/4.0/"
               rel="license noopener noreferrer"
               target="_blank"
@@ -69,7 +69,7 @@ export function Footer() {
           <p>
             The repository used to create this website is available at{" "}
             <a
-              className="font-medium text-slate-200 underline hover:text-white"
+              className="font-medium text-page underline transition hover:text-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
               href={`https://gitlab.igem.org/${wikiEnv.teamYear}/${teamSlug}`}
               rel="noopener noreferrer"
               target="_blank"
