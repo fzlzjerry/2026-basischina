@@ -90,6 +90,25 @@
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ===========================================================================
+   Self-hosted fonts (§4, iGEM rule: fonts MUST live on static.igem.wiki).
+   Probed at implementation time — every candidate URL returned HTTP 403, so
+   these rules are COMMENTED OUT and the site uses the system fallback stack
+   already declared in --font-body / --font-display (degrades safely: no broken
+   text, just non-brand fonts). Uncomment any rule whose URL returns 200 per the
+   Task 2 Step 1 curl probe; adjust filenames to the real uploaded names.
+   =========================================================================== */
+/*
+@font-face { font-family: "Nunito"; src: url("https://static.igem.wiki/teams/6123/fonts/nunito-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Nunito"; src: url("https://static.igem.wiki/teams/6123/fonts/nunito-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Nunito"; src: url("https://static.igem.wiki/teams/6123/fonts/nunito-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Nunito"; src: url("https://static.igem.wiki/teams/6123/fonts/nunito-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Nunito"; src: url("https://static.igem.wiki/teams/6123/fonts/nunito-900.woff2") format("woff2"); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Noto Sans SC"; src: url("https://static.igem.wiki/teams/6123/fonts/noto-sans-sc-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Noto Sans SC"; src: url("https://static.igem.wiki/teams/6123/fonts/noto-sans-sc-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Noto Sans SC"; src: url("https://static.igem.wiki/teams/6123/fonts/noto-sans-sc-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+*/
+
 @layer base {
   body {
     background-color: var(--color-page);
