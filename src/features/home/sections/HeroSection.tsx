@@ -4,119 +4,80 @@ import { Cat, Dog, PawPrint, UsersThree } from "@phosphor-icons/react";
 import { wikiEnv } from "@/config/env";
 import { Icon } from "@/shared/components/Icon";
 import { buttonClasses } from "@/shared/components/Button";
-import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
+import { useHeroCinema } from "../useHeroCinema";
 
 /**
- * Homepage hero (§20). Section-specific content/markup stays inside this file.
- *
- * Motion: this block is above the fold, so the entrance is transform-only
- * (opacity stays 1). The prerendered HTML paints at the natural end state, so a
- * slow cold load never flashes hidden content. The continuous pet float and the
- * entrance are gated behind `prefers-reduced-motion: no-preference`.
+ * Homepage hero (§20) — cinematic scrollytelling "From Companion to Cure".
+ * This component is markup only: Beat 0 (the legible resting scene + headline +
+ * subhead + CTA) is what prerenders and what no-JS / reduced-motion visitors
+ * see. The cinematic layers (veil, inner-world panel, captions, progress rail)
+ * ship inline-hidden and are activated client-side by `useHeroCinema`.
  */
 export function HeroSection() {
   const root = useRef<HTMLElement>(null);
-
-  useGSAP(
-    () => {
-      registerGsap();
-      // Resting tilt for the pets — instant, so it also applies for reduced
-      // motion (GSAP fully owns their transform; no Tailwind rotate utilities).
-      gsap.set(".js-hero-cat", { rotation: -6 });
-      gsap.set(".js-hero-dog", { rotation: 6 });
-
-      const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-        tl.from(".js-hero-text > *", {
-          y: 22,
-          duration: 0.7,
-          stagger: 0.1,
-          clearProps: "transform",
-        })
-          .from(
-            ".js-hero-art",
-            {
-              y: 18,
-              scale: 0.92,
-              duration: 0.8,
-              ease: "power4.out",
-              clearProps: "transform",
-            },
-            "-=0.35",
-          )
-          // No clearProps: the continuous float (below) owns the paw transform,
-          // and the paws have no hover state to restore.
-          .from(
-            ".js-hero-paw",
-            { scale: 0, duration: 0.5, stagger: 0.08 },
-            "-=0.4",
-          );
-
-        // Gentle, low-amplitude continuous life. Starts after the entrance.
-        gsap.to(".js-hero-cat", {
-          y: -9,
-          rotation: -10,
-          duration: 3,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1,
-          delay: 0.9,
-        });
-        gsap.to(".js-hero-dog", {
-          y: 9,
-          rotation: 10,
-          duration: 3.4,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1,
-          delay: 1,
-        });
-        gsap.to(".js-hero-paw", {
-          y: -7,
-          duration: 2.6,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1,
-          stagger: 0.25,
-          delay: 1,
-        });
-      });
-
-      return () => mm.revert();
-    },
-    { scope: root },
-  );
+  useHeroCinema(root);
 
   return (
     <section
       ref={root}
-      className="relative overflow-hidden bg-gradient-to-b from-page to-surface"
+      className="js-hero relative flex min-h-[88vh] items-center overflow-hidden bg-gradient-to-b from-page to-surface"
     >
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:px-8">
-        <div className="js-hero-text text-center lg:text-left">
+      {/* Left-edge pin-progress hairline (idle hidden; scaled by scroll). */}
+      <span
+        aria-hidden="true"
+        className="js-hero-progress pointer-events-none absolute left-0 top-0 hidden h-full w-1 origin-top bg-primary/60 lg:block"
+        style={{ transform: "scaleY(0)" }}
+      />
+
+      {/* Dimming veil over the scene (opacity cross-fade, never a filter). */}
+      <div
+        aria-hidden="true"
+        className="js-hero-veil pointer-events-none absolute inset-0 bg-ink/40"
+        style={{ opacity: 0, visibility: "hidden" }}
+      />
+
+      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
+        {/* Text column (z-10 so it stays legible above the veil). */}
+        <div className="relative z-10 text-center lg:text-left">
           <p className="text-sm font-semibold uppercase tracking-widest text-primary-deep">
             iGEM {wikiEnv.teamYear}
           </p>
-          <h1 className="mt-4 text-4xl font-black tracking-tight text-ink sm:text-6xl">
+          <h1 className="js-hero-h1 mt-4 text-4xl font-black leading-tight tracking-tight text-ink sm:text-6xl">
             {wikiEnv.teamName}
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-ink-soft lg:mx-0">
-            Engineering biology for a more sustainable world. Explore our
-            project, research, and the team behind it.
+          <p className="js-hero-sub mx-auto mt-6 max-w-xl text-lg text-ink-soft lg:mx-0">
+            Engineering biology for healthier companions.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4 lg:justify-start">
+
+          {/* Scrolly captions: stacked, inline-hidden, cross-faded by beat. */}
+          <div className="relative mt-6 h-7" aria-hidden="true">
+            <p
+              className="js-hero-caption js-hero-caption-1 absolute inset-x-0 text-base font-semibold text-primary-deep"
+              style={{ opacity: 0, visibility: "hidden" }}
+            >
+              Health begins where you can&rsquo;t see.
+            </p>
+            <p
+              className="js-hero-caption js-hero-caption-2 absolute inset-x-0 text-base font-semibold text-primary-deep"
+              style={{ opacity: 0, visibility: "hidden" }}
+            >
+              Sometimes the smallest things fall out of balance.
+            </p>
+            <p
+              className="js-hero-caption js-hero-caption-3 absolute inset-x-0 text-base font-semibold text-primary-deep"
+              style={{ opacity: 0, visibility: "hidden" }}
+            >
+              We engineer biology to help them thrive.
+            </p>
+          </div>
+
+          <div className="js-hero-cta mt-10 flex flex-wrap justify-center gap-4 lg:justify-start">
             <Link
               to="/description"
               className={buttonClasses("primary", "lg", "group")}
             >
               <Icon as={PawPrint} weight="fill" />
               <span>Explore the project</span>
-              <Icon
-                as={PawPrint}
-                weight="fill"
-                className="transition group-hover:translate-x-1"
-              />
             </Link>
             <Link to="/team" className={buttonClasses("secondary", "lg")}>
               <Icon as={UsersThree} />
@@ -124,35 +85,74 @@ export function HeroSection() {
             </Link>
           </div>
         </div>
+
+        {/* Scene column: cat + dog + island + heartbeat, with the inner-world panel. */}
         <div
+          className="relative flex items-center justify-center"
           aria-hidden="true"
-          className="js-hero-art relative hidden items-center justify-center lg:flex"
         >
-          <Icon
-            as={Cat}
-            weight="duotone"
-            className="js-hero-cat h-44 w-44 text-app-peach"
-          />
-          <Icon
-            as={Dog}
-            weight="duotone"
-            className="js-hero-dog h-48 w-48 text-app-teal"
-          />
-          <Icon
-            as={PawPrint}
-            weight="fill"
-            className="js-hero-paw absolute left-4 top-6 h-8 w-8 text-app-pink/70"
-          />
-          <Icon
-            as={PawPrint}
-            weight="fill"
-            className="js-hero-paw absolute bottom-8 right-6 h-10 w-10 text-app-blue/70"
-          />
-          <Icon
-            as={PawPrint}
-            weight="fill"
-            className="js-hero-paw absolute right-1/3 top-2 h-6 w-6 text-app-purple/60"
-          />
+          <div className="js-hero-scene relative flex items-end justify-center gap-2">
+            <Icon
+              as={Cat}
+              weight="duotone"
+              className="h-40 w-40 text-app-peach"
+            />
+            <Icon
+              as={Dog}
+              weight="duotone"
+              className="h-44 w-44 text-app-teal"
+            />
+
+            {/* island shelf */}
+            <div className="absolute -bottom-4 h-6 w-72 rounded-pill bg-surface-2 shadow-soft" />
+
+            {/* resting heartbeat line (drawn on in Beat 0) */}
+            <svg
+              className="absolute -bottom-12 h-10 w-72"
+              viewBox="0 0 240 40"
+              fill="none"
+            >
+              <path
+                className="js-hero-ekg"
+                d="M0 20 H60 l8 -14 l10 28 l8 -14 H140 l8 -10 l8 20 l8 -10 H240"
+                stroke="var(--color-primary)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+
+            {/* inner-world panel (irises open during the pin) */}
+            <div
+              className="js-hero-panel absolute inset-0 flex items-center justify-center rounded-card border-2 border-border bg-surface"
+              style={{
+                clipPath: "inset(0 50% 0 50% round 28px)",
+                visibility: "hidden",
+              }}
+            >
+              <svg
+                viewBox="0 0 200 200"
+                className="h-full w-full p-6"
+                fill="none"
+              >
+                <g className="js-hero-cell" style={{ opacity: 0.35 }}>
+                  <circle cx="70" cy="80" r="7" fill="var(--color-app-green)" />
+                  <circle cx="112" cy="70" r="6" fill="var(--color-app-blue)" />
+                  <circle cx="132" cy="112" r="8" fill="var(--color-app-teal)" />
+                  <circle cx="84" cy="122" r="6" fill="var(--color-app-purple)" />
+                  <circle cx="104" cy="100" r="5" fill="var(--color-app-green)" />
+                </g>
+                <path
+                  className="js-hero-construct"
+                  d="M30 150 C 60 90, 140 90, 170 150"
+                  stroke="var(--color-primary-deep)"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
     </section>
