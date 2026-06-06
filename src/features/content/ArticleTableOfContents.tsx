@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { CaretDown, CaretRight } from "@phosphor-icons/react";
+import { Card } from "@/shared/components/Card";
+import { Icon } from "@/shared/components/Icon";
 import type { TocItem } from "./markdownService";
 
 interface ArticleTableOfContentsProps {
@@ -12,12 +15,12 @@ function TocList({ items }: { items: TocItem[] }) {
         <li key={item.url}>
           <a
             href={item.url}
-            className="block rounded px-2 py-1 text-sm text-slate-600 transition hover:bg-slate-100 hover:text-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-600"
+            className="block rounded-min px-2 py-1 text-sm text-ink-soft transition hover:bg-primary-soft hover:text-primary-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
           >
             {item.title}
           </a>
           {item.children.length > 0 ? (
-            <div className="ml-3 border-l border-slate-200 pl-2">
+            <div className="ml-3 border-l-2 border-border-soft pl-2">
               <TocList items={item.children} />
             </div>
           ) : null}
@@ -35,25 +38,28 @@ export function ArticleTableOfContents({ items }: ArticleTableOfContentsProps) {
   if (items.length === 0) return null;
 
   return (
-    <nav
-      aria-label="Table of contents"
-      className="rounded-lg border border-slate-200 bg-white/60 p-4"
+    <Card
+      compact
+      className="border-2 border-border"
+      // Card is a <div>; the contained nav carries the landmark + label.
     >
-      <button
-        type="button"
-        onClick={() => setOpen((value) => !value)}
-        aria-expanded={open}
-        aria-controls="toc-list"
-        className="flex w-full items-center justify-between text-sm font-semibold text-slate-900"
-      >
-        On this page
-        <span aria-hidden="true">{open ? "−" : "+"}</span>
-      </button>
-      {open ? (
-        <div id="toc-list" className="mt-3">
-          <TocList items={items} />
-        </div>
-      ) : null}
-    </nav>
+      <nav aria-label="Table of contents">
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          aria-expanded={open}
+          aria-controls="toc-list"
+          className="flex w-full items-center justify-between rounded-min text-sm font-semibold text-ink transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+        >
+          On this page
+          <Icon as={open ? CaretDown : CaretRight} size="sm" aria-hidden />
+        </button>
+        {open ? (
+          <div id="toc-list" className="mt-3">
+            <TocList items={items} />
+          </div>
+        ) : null}
+      </nav>
+    </Card>
   );
 }
