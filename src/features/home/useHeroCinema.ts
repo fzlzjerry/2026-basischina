@@ -113,6 +113,40 @@ export function useHeroCinema(root: RefObject<HTMLElement>): void {
         },
       );
 
+      mm.add(
+        "(prefers-reduced-motion: no-preference) and (pointer: coarse)",
+        () => {
+          // Mobile: a clean entrance only — no pin (a pin fighting the mobile
+          // address-bar resize / touch momentum is janky).
+          const split = SplitText.create(".js-hero-h1", {
+            type: "lines",
+            mask: "lines",
+            aria: "auto",
+          });
+          gsap
+            .timeline({ defaults: { ease: "power3.out" } })
+            .from(split.lines, {
+              yPercent: 120,
+              stagger: 0.08,
+              duration: 0.7,
+              clearProps: "transform",
+            })
+            .from(
+              ".js-hero-ekg",
+              { drawSVG: "0% 0%", duration: 1.1, ease: "power2.inOut" },
+              "-=0.4",
+            )
+            .from(
+              ".js-hero-sub",
+              { y: 16, opacity: 0, duration: 0.6, clearProps: "all" },
+              "-=0.7",
+            );
+          return () => {
+            split.revert();
+          };
+        },
+      );
+
       return () => mm.revert();
     },
     { scope: root },
