@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { CaretDown, List, X } from "@phosphor-icons/react";
+import { Icon } from "@/shared/components/Icon";
 import { wikiEnv } from "@/config/env";
 import { getNavGroups, navLabelFor } from "@/config/navigation";
 import type { PageDataItem } from "@/config/pageData";
@@ -8,10 +10,10 @@ const groups = getNavGroups();
 
 function linkClasses(isActive: boolean): string {
   return [
-    "rounded-md px-3 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600",
+    "inline-flex rounded-pill px-3 py-2 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
     isActive
-      ? "bg-emerald-50 text-emerald-700"
-      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+      ? "bg-primary-soft text-primary-deep"
+      : "text-ink-soft hover:bg-hover hover:text-ink hover:-translate-y-px",
   ].join(" ");
 }
 
@@ -66,7 +68,7 @@ export function Navbar() {
   return (
     <header
       ref={navRef}
-      className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur"
+      className="sticky top-0 z-40 border-b-2 border-border bg-page/90 backdrop-blur"
     >
       <nav
         aria-label="Primary"
@@ -75,10 +77,10 @@ export function Navbar() {
         <NavLink
           to="/"
           end
-          className="text-lg font-bold tracking-tight text-slate-900"
+          className="text-lg font-bold tracking-tight text-ink"
         >
           {wikiEnv.teamName}
-          <span className="ml-1 font-normal text-emerald-600">
+          <span className="ml-1 font-normal text-primary-deep">
             iGEM {wikiEnv.teamYear}
           </span>
         </NavLink>
@@ -105,15 +107,18 @@ export function Navbar() {
                       current === group.key ? null : group.key,
                     )
                   }
-                  className="rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+                  className="inline-flex items-center gap-1 rounded-pill px-3 py-2 text-sm font-medium text-ink-soft shadow-soft transition hover:-translate-y-px hover:bg-hover hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
                 >
                   {group.label}
-                  <span aria-hidden="true" className="ml-1 text-xs">
-                    ▾
-                  </span>
+                  <Icon
+                    as={CaretDown}
+                    size="xs"
+                    className="text-primary-deep"
+                    aria-hidden="true"
+                  />
                 </button>
                 {isOpen ? (
-                  <ul className="absolute left-0 mt-1 min-w-48 rounded-lg border border-slate-200 bg-white p-1 shadow-lg">
+                  <ul className="absolute left-0 mt-1 min-w-48 rounded-card border-2 border-border bg-page p-1 shadow-card-lift">
                     {group.pages.map((page) => (
                       <li key={page.path}>
                         <NavbarLink
@@ -135,12 +140,10 @@ export function Navbar() {
           aria-expanded={mobileOpen}
           aria-controls="mobile-nav"
           onClick={() => setMobileOpen((value) => !value)}
-          className="rounded-md p-2 text-slate-700 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-600 lg:hidden"
+          className="rounded-pill p-2.5 text-primary-deep transition hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring lg:hidden"
         >
           <span className="sr-only">Toggle navigation</span>
-          <span aria-hidden="true" className="text-xl">
-            {mobileOpen ? "✕" : "☰"}
-          </span>
+          <Icon as={mobileOpen ? X : List} size="md" aria-hidden="true" />
         </button>
       </nav>
 
@@ -148,11 +151,11 @@ export function Navbar() {
       {mobileOpen ? (
         <div
           id="mobile-nav"
-          className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden"
+          className="border-t-2 border-border bg-page px-4 py-3 lg:hidden"
         >
           {groups.map((group) => (
             <div key={group.key} className="py-2">
-              <p className="px-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <p className="px-3 text-xs font-semibold uppercase tracking-wide text-ink-soft">
                 {group.label}
               </p>
               <ul className="mt-1 flex flex-col">
