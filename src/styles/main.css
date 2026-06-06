@@ -2,8 +2,8 @@
 
 /* ===========================================================================
    Design tokens (§3). Tailwind v4 auto-generates utilities from these:
-   --color-page → bg-page/text-page; --radius-pill → rounded-pill;
-   --shadow-btn-3d → shadow-btn-3d; --color-focus-ring → outline-focus-ring; etc.
+   --color-page -> bg-page/text-page; --radius-pill -> rounded-pill;
+   --shadow-btn-3d -> shadow-btn-3d; --color-focus-ring -> outline-focus-ring; etc.
    All color values are WCAG-AA-verified. @font-face lives OUTSIDE @theme (Task 2).
    =========================================================================== */
 @theme {
@@ -19,7 +19,7 @@
   --color-placeholder: #6b5e50;
   --color-disabled: #c4b89e;
 
-  /* ---- Brand primary (teal). NOTE: #19c8b9 is decorative-only; never text. ---- */
+  /* ---- Brand primary (teal): decorative-only; never use as text. ---- */
   --color-primary: #19c8b9;
   --color-primary-deep: #0d6f63;
   --color-primary-soft: #e6f9f6;
