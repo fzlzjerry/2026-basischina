@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Card } from "@/shared/components/Card";
 import { ArticleTableOfContents } from "./ArticleTableOfContents";
 import { useMarkdownEnhancements } from "./useMarkdownEnhancements";
 import type { ProcessedMarkdown } from "./markdownService";
@@ -29,15 +30,15 @@ export function MarkdownArticle({
 
   return (
     <article className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      <header className="mb-8 border-b border-slate-200 pb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+      <header className="mb-8 border-b-2 border-border pb-6">
+        <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
           {processed.meta.title ?? title}
         </h1>
         {description ? (
-          <p className="mt-3 max-w-3xl text-lg text-slate-600">{description}</p>
+          <p className="mt-3 max-w-3xl text-lg text-ink-soft">{description}</p>
         ) : null}
         {processed.meta.date ? (
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-ink-secondary">
             Updated{" "}
             <time dateTime={String(processed.meta.date)}>
               {String(processed.meta.date)}
@@ -47,13 +48,15 @@ export function MarkdownArticle({
       </header>
 
       <div className="gap-10 lg:grid lg:grid-cols-[1fr_16rem]">
-        <div
-          ref={setContainer}
-          className="markdown-body min-w-0"
-          // Markdown is rendered with raw HTML disabled and sanitized when
-          // enabled (§22), so the resulting HTML is safe to inject here.
-          dangerouslySetInnerHTML={{ __html: processed.html }}
-        />
+        <Card variant="plain" className="min-w-0">
+          <div
+            ref={setContainer}
+            className="markdown-body min-w-0"
+            // Markdown is rendered with raw HTML disabled and sanitized when
+            // enabled (§22), so the resulting HTML is safe to inject here.
+            dangerouslySetInnerHTML={{ __html: processed.html }}
+          />
+        </Card>
         <aside className="mt-10 lg:mt-0">
           <div className="lg:sticky lg:top-24">
             <ArticleTableOfContents items={processed.toc} />
