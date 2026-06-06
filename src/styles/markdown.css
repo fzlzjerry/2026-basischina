@@ -151,6 +151,99 @@
   color: #c0392b; /* --color-error */
 }
 
+/* ── Code blocks: warm pale surface overriding prism-tomorrow's dark theme ──
+   Imported AFTER markdown.css, so every rule is scoped under .markdown-body to
+   win specificity. Each token color re-verified ≥4.5:1 on #fffaf5. */
+.markdown-body pre[class*="language-"],
+.markdown-body code[class*="language-"] {
+  color: #725d42; /* base token, 5.46:1 on #fffaf5 */
+  background: none;
+  text-shadow: none;
+}
+
+.markdown-body pre[class*="language-"] {
+  background: #fffaf5; /* warm pale cream */
+  border: 1px solid #c4b89e; /* --color-border-soft (non-text) */
+}
+
+.markdown-body :not(pre) > code[class*="language-"] {
+  background: #f9f7f0; /* --color-surface-2 */
+  color: #794f27;
+}
+
+/* Token recolors — warm hues, all ≥4.5:1 on #fffaf5 */
+.markdown-body .token.comment,
+.markdown-body .token.block-comment,
+.markdown-body .token.prolog,
+.markdown-body .token.doctype,
+.markdown-body .token.cdata {
+  color: #6b5e50; /* 5.40:1 */
+  font-style: italic;
+}
+
+.markdown-body .token.punctuation {
+  color: #725d42; /* 5.46:1 */
+}
+
+.markdown-body .token.tag,
+.markdown-body .token.attr-name,
+.markdown-body .token.namespace,
+.markdown-body .token.deleted {
+  color: #b04a28; /* peach-ink, 4.85:1 */
+}
+
+.markdown-body .token.function-name,
+.markdown-body .token.function {
+  color: #2f4fa8; /* blue-ink, 5.93:1 */
+}
+
+.markdown-body .token.boolean,
+.markdown-body .token.number {
+  color: #946011; /* warning, 4.78:1 */
+}
+
+.markdown-body .token.property,
+.markdown-body .token.class-name,
+.markdown-body .token.constant,
+.markdown-body .token.symbol {
+  color: #6a3fa0; /* purple-ink, 6.85:1 */
+}
+
+.markdown-body .token.selector,
+.markdown-body .token.important,
+.markdown-body .token.atrule,
+.markdown-body .token.keyword,
+.markdown-body .token.builtin {
+  color: #b03a52; /* pink-ink, 5.27:1 */
+}
+
+.markdown-body .token.string,
+.markdown-body .token.char,
+.markdown-body .token.attr-value,
+.markdown-body .token.regex,
+.markdown-body .token.variable {
+  color: #2f7a36; /* success/green-ink, 4.76:1 */
+}
+
+.markdown-body .token.operator,
+.markdown-body .token.entity,
+.markdown-body .token.url {
+  color: #1f7a5e; /* teal-ink, 4.71:1 */
+}
+
+.markdown-body .token.inserted {
+  color: #2f7a36; /* success */
+}
+
+.markdown-body .token.important,
+.markdown-body .token.bold {
+  font-weight: 700;
+}
+
+.markdown-body .token.italic {
+  font-style: italic;
+}
+
 /* Code copy button injected by useMarkdownEnhancements. */
 .markdown-body pre.code-block {
   padding-top: 2.25rem;
@@ -163,19 +256,19 @@
   font-size: 0.75rem;
   line-height: 1;
   padding: 0.3rem 0.55rem;
-  border-radius: 0.375rem;
-  background: rgba(255, 255, 255, 0.12);
-  color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px; /* --radius-min */
+  background: #e6f9f6; /* --color-primary-soft */
+  color: #794f27; /* --color-ink, 6.50:1 on primary-soft */
+  border: 1px solid #8a7b66; /* --color-border */
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .markdown-body .code-copy-button:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: #d6f3ee; /* slightly deeper soft teal */
 }
 
 .markdown-body .code-copy-button:focus-visible {
-  outline: 2px solid #10b981;
+  outline: 2px solid #794f27; /* brown focus ring on light (§11) */
   outline-offset: 2px;
 }
