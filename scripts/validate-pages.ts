@@ -86,6 +86,64 @@ for (const page of pageData) {
   }
 }
 
+// --- No level-1 headings in Markdown bodies (single-h1-per-route) --------------
+// Each route's layout renders the page <h1>; article bodies must start at "##".
+// We scan every src/content/**/*.md for "# " at line start, ignoring frontmatter
+// and fenced code blocks (e.g. a "# comment" inside a ```python block is fine).
+const collectMarkdownFiles = (dir: string): string[] => {
+  const out: string[] = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...collectMarkdownFiles(full));
+    else if (entry.isFile() && entry.name.endsWith(".md")) out.push(full);
+  }
+  return out;
+};
+
+const findLevel1Heading = (source: string): number | null => {
+  const lines = source.split(/\r?\n/);
+  let index = 0;
+
+  // Strip leading YAML frontmatter ("---" on the first line ... closing "---").
+  if (lines[0]?.trim() === "---") {
+    index = 1;
+    while (index < lines.length && lines[index]?.trim() !== "---") index += 1;
+    index += 1; // step past the closing delimiter
+  }
+
+  let inFence = false;
+  let fenceMarker = "";
+  for (; index < lines.length; index += 1) {
+    const line = lines[index] ?? "";
+    const fence = line.match(/^\s*(```+|~~~+)/);
+    if (fence) {
+      const marker = fence[1].startsWith("`") ? "`" : "~";
+      if (!inFence) {
+        inFence = true;
+        fenceMarker = marker;
+      } else if (marker === fenceMarker) {
+        inFence = false;
+        fenceMarker = "";
+      }
+      continue;
+    }
+    if (!inFence && /^# \S/.test(line)) return index + 1; // 1-based line number
+  }
+  return null;
+};
+
+if (fs.existsSync(contentDir)) {
+  for (const file of collectMarkdownFiles(contentDir)) {
+    const rel = path.relative(contentDir, file);
+    const lineNo = findLevel1Heading(fs.readFileSync(file, "utf8"));
+    if (lineNo !== null) {
+      fail(
+        `src/content/${rel}: level-1 heading at line ${lineNo}. Article bodies must start at "##" — the route layout owns the page <h1>.`,
+      );
+    }
+  }
+}
+
 // --- Every component key must be used (unless reserved) ------------------------
 for (const key of componentKeys) {
   if (!referencedKeys.has(key) && !reservedComponentKeys.includes(key)) {
