@@ -21,6 +21,7 @@
     "test:smoke": "bun run check-all && bun run build"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.7",
     "dompurify": "^3.4.8",
     "js-yaml": "^4.1.0",
     "katex": "^0.16.22",
