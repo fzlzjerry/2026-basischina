@@ -1,0 +1,45 @@
+import { Suspense } from "react";
+import { Outlet } from "react-router-dom";
+import { Navbar } from "./Navbar";
+import { Footer } from "./Footer";
+import { PageLoading } from "@/shared/components/PageLoading";
+import { useScrollToTop } from "@/shared/hooks/useScrollToTop";
+import { useRouteFocus } from "@/shared/hooks/useRouteFocus";
+
+// Global stylesheets are imported from the shell because the shell is declared
+// as the SSG route `entry` — this ensures their CSS is linked into every
+// prerendered route's HTML (prevents prehydration style loss).
+import "@/styles/main.css";
+import "@/styles/markdown.css";
+import "katex/dist/katex.min.css";
+import "prismjs/themes/prism-tomorrow.css";
+
+/**
+ * App shell (§13): persistent layout only — skip link, navbar, route outlet,
+ * footer, global scroll restoration, and route focus management. No page-
+ * specific effects live here.
+ */
+export function AppShell() {
+  useScrollToTop();
+  useRouteFocus();
+
+  return (
+    <div className="flex min-h-screen flex-col bg-white text-slate-800">
+      <a
+        href="#main-content"
+        className="sr-only z-50 rounded-md bg-emerald-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+      >
+        Skip to content
+      </a>
+      <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
+        <Suspense fallback={<PageLoading />}>
+          <Outlet />
+        </Suspense>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+export default AppShell;

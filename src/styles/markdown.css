@@ -1,0 +1,175 @@
+/**
+ * Markdown article typography (§15).
+ *
+ * Plain CSS scoped to `.markdown-body` (Tailwind v4 ships no typography plugin
+ * by default). Kept independent of utility layers so import order is irrelevant.
+ */
+
+.markdown-body {
+  color: #334155;
+  line-height: 1.75;
+  font-size: 1rem;
+}
+
+.markdown-body > :first-child {
+  margin-top: 0;
+}
+
+.markdown-body h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0f172a;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.markdown-body h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.markdown-body h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.markdown-body p,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body blockquote,
+.markdown-body table,
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+}
+
+.markdown-body a {
+  color: #047857;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.markdown-body a:hover {
+  color: #065f46;
+}
+
+.markdown-body ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+.markdown-body ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+
+.markdown-body li {
+  margin-bottom: 0.4rem;
+}
+
+.markdown-body blockquote {
+  border-left: 4px solid #10b981;
+  background: #f0fdf4;
+  padding: 0.75rem 1rem;
+  color: #475569;
+  border-radius: 0 0.375rem 0.375rem 0;
+}
+
+.markdown-body blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body :not(pre) > code {
+  background: #f1f5f9;
+  border-radius: 0.25rem;
+  padding: 0.15em 0.35em;
+  font-size: 0.875em;
+  color: #be123c;
+}
+
+.markdown-body pre {
+  position: relative;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+}
+
+.markdown-body pre.mermaid {
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+}
+
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid #e2e8f0;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.markdown-body th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+.markdown-body hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.markdown-body .katex-error {
+  color: #dc2626;
+}
+
+/* Code copy button injected by useMarkdownEnhancements. */
+.markdown-body pre.code-block {
+  padding-top: 2.25rem;
+}
+
+.markdown-body .code-copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.375rem;
+  background: rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.markdown-body .code-copy-button:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.markdown-body .code-copy-button:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
