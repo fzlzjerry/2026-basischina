@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
+import { Cat } from "@phosphor-icons/react";
 import { PageHead } from "@/shared/components/PageHead";
+import { Icon } from "@/shared/components/Icon";
+import { buttonClasses } from "@/shared/components/Button";
 import { navbarPages, navLabelFor } from "@/config/navigation";
 
 /**
@@ -19,17 +22,21 @@ export function NotFoundPage() {
           robots: "noindex, follow",
         }}
       />
-      <section className="mx-auto max-w-2xl px-4 py-24 text-center">
-        <p className="text-6xl font-black text-emerald-600">404</p>
-        <h1 className="mt-4 text-3xl font-bold text-slate-900">
-          Page not found
-        </h1>
-        <p className="mt-3 text-slate-600">
+      <section className="mx-auto max-w-2xl bg-page px-4 py-24 text-center">
+        <Icon
+          as={Cat}
+          size="lg"
+          className="mx-auto mb-4 text-primary-deep"
+          title="Lost cat"
+        />
+        <p className="text-6xl font-black text-error">404</p>
+        <h1 className="mt-4 text-3xl font-bold text-ink">Page not found</h1>
+        <p className="mt-3 text-ink-soft">
           The page you are looking for doesn&apos;t exist or has moved.
         </p>
 
         <nav aria-label="Suggested pages" className="mt-10">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-secondary">
             Try one of these
           </h2>
           <ul className="mt-4 flex flex-wrap justify-center gap-3">
@@ -37,7 +44,7 @@ export function NotFoundPage() {
               <li key={page.path}>
                 <Link
                   to={page.path}
-                  className="rounded-full border border-slate-200 px-4 py-1.5 text-sm text-slate-700 transition hover:border-emerald-500 hover:text-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+                  className={buttonClasses("secondary", "sm")}
                 >
                   {navLabelFor(page)}
                 </Link>
