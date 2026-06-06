@@ -46,7 +46,7 @@ export function useHeroCinema(root: RefObject<HTMLElement>): void {
             )
             .from(
               ".js-hero-sub",
-              { y: 16, opacity: 0, duration: 0.6, clearProps: "all" },
+              { y: 16, duration: 0.6, clearProps: "transform" },
               "-=0.7",
             );
 
@@ -138,7 +138,7 @@ export function useHeroCinema(root: RefObject<HTMLElement>): void {
             )
             .from(
               ".js-hero-sub",
-              { y: 16, opacity: 0, duration: 0.6, clearProps: "all" },
+              { y: 16, duration: 0.6, clearProps: "transform" },
               "-=0.7",
             );
           return () => {
