@@ -79,15 +79,22 @@ export function useMarkdownEnhancements(
       if (hasMermaid) {
         const mermaid = (await import("mermaid")).default;
         if (disposed || !container) return;
-        const prefersReducedMotion = window.matchMedia(
-          "(prefers-reduced-motion: reduce)",
-        ).matches;
         mermaid.initialize({
           startOnLoad: false,
           securityLevel: "strict",
-          theme: "default",
+          theme: "base",
           flowchart: { useMaxWidth: true },
-          ...(prefersReducedMotion ? { fontFamily: "inherit" } : {}),
+          themeVariables: {
+            primaryColor: "#e6f9f6",
+            primaryBorderColor: "#0d6f63",
+            primaryTextColor: "#794f27",
+            lineColor: "#8a7b66",
+            secondaryColor: "#f7f3df",
+            tertiaryColor: "#fdf0ea",
+            textColor: "#725d42",
+            fontFamily: "Nunito, 'Noto Sans SC', sans-serif",
+            fontSize: "14px",
+          },
         });
         const nodes = Array.from(
           container.querySelectorAll<HTMLElement>(
