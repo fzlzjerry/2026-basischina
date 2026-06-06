@@ -27,15 +27,26 @@ export function HeroSection() {
 
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const tl = gsap.timeline({
-          defaults: { ease: "power3.out", clearProps: "transform" },
-        });
-        tl.from(".js-hero-text > *", { y: 22, duration: 0.7, stagger: 0.1 })
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        tl.from(".js-hero-text > *", {
+          y: 22,
+          duration: 0.7,
+          stagger: 0.1,
+          clearProps: "transform",
+        })
           .from(
             ".js-hero-art",
-            { y: 18, scale: 0.92, duration: 0.8, ease: "power4.out" },
+            {
+              y: 18,
+              scale: 0.92,
+              duration: 0.8,
+              ease: "power4.out",
+              clearProps: "transform",
+            },
             "-=0.35",
           )
+          // No clearProps: the continuous float (below) owns the paw transform,
+          // and the paws have no hover state to restore.
           .from(
             ".js-hero-paw",
             { scale: 0, duration: 0.5, stagger: 0.08 },
