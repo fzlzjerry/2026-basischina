@@ -6,7 +6,7 @@
  */
 
 .markdown-body {
-  color: #334155;
+  color: #725d42; /* --color-ink-soft, 5.61:1 on cream */
   line-height: 1.75;
   font-size: 1rem;
 }
@@ -20,9 +20,9 @@
   margin-bottom: 1rem;
   font-size: 1.6rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #794f27; /* --color-ink */
   padding-bottom: 0.3rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 2px solid #8a7b66; /* --color-border */
 }
 
 .markdown-body h3 {
@@ -30,7 +30,7 @@
   margin-bottom: 0.75rem;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #794f27; /* --color-ink */
 }
 
 .markdown-body h4 {
@@ -38,7 +38,7 @@
   margin-bottom: 0.5rem;
   font-size: 1.05rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #794f27; /* --color-ink */
 }
 
 .markdown-body p,
@@ -52,13 +52,13 @@
 }
 
 .markdown-body a {
-  color: #047857;
+  color: #0d6f63; /* --color-primary-deep, 5.43:1 on cream */
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .markdown-body a:hover {
-  color: #065f46;
+  color: #0a5249; /* --color-primary-rail */
 }
 
 .markdown-body ul {
@@ -76,11 +76,11 @@
 }
 
 .markdown-body blockquote {
-  border-left: 4px solid #10b981;
-  background: #f0fdf4;
+  border-left: 4px solid #0d6f63; /* --color-primary-deep rail */
+  background: #e6f9f6; /* --color-primary-soft */
   padding: 0.75rem 1rem;
-  color: #475569;
-  border-radius: 0 0.375rem 0.375rem 0;
+  color: #725d42; /* --color-ink-soft */
+  border-radius: 0 12px 12px 0; /* --radius-min */
 }
 
 .markdown-body blockquote > :last-child {
@@ -88,11 +88,11 @@
 }
 
 .markdown-body :not(pre) > code {
-  background: #f1f5f9;
-  border-radius: 0.25rem;
+  background: #f9f7f0; /* --color-surface-2 */
+  border-radius: 8px;
   padding: 0.15em 0.35em;
   font-size: 0.875em;
-  color: #be123c;
+  color: #794f27; /* --color-ink, 6.36:1 on surface-2 */
 }
 
 .markdown-body pre {
@@ -125,24 +125,30 @@
 
 .markdown-body th,
 .markdown-body td {
-  border: 1px solid #e2e8f0;
+  border: 1px solid #8a7b66; /* --color-border */
   padding: 0.5rem 0.75rem;
   text-align: left;
 }
 
 .markdown-body th {
-  background: #f8fafc;
+  background: #f7f3df; /* --color-surface */
   font-weight: 600;
+  color: #794f27; /* --color-ink */
 }
 
 .markdown-body hr {
   margin: 2rem 0;
   border: 0;
-  border-top: 1px solid #e2e8f0;
+  border-top: 2px solid #8a7b66; /* --color-border */
+}
+
+/* KaTeX inherits color (no hardcoded #000); pin to ink defensively (§9). */
+.markdown-body .katex {
+  color: #794f27; /* --color-ink */
 }
 
 .markdown-body .katex-error {
-  color: #dc2626;
+  color: #c0392b; /* --color-error */
 }
 
 /* Code copy button injected by useMarkdownEnhancements. */
