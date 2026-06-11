@@ -24,8 +24,8 @@ export function Footer() {
           <div>
             <p className="text-lg font-bold text-page">{wikiEnv.teamName}</p>
             <p className="mt-2 text-sm text-footer-text-muted">
-              iGEM {wikiEnv.teamYear} — engineering biology for a more
-              sustainable world.
+              iGEM {wikiEnv.teamYear}. Engineering biology for healthier,
+              happier companions.
             </p>
           </div>
           {footerGroups.map((group) => (

@@ -1,10 +1,19 @@
 import type { RefObject } from "react";
-import { gsap, SplitText, registerGsap, useGSAP } from "@/shared/motion/gsap";
+import {
+  gsap,
+  ScrollTrigger,
+  SplitText,
+  registerGsap,
+  useGSAP,
+} from "@/shared/motion/gsap";
 
 /**
- * Hero on-load entrance — restrained and FOUC-safe (transform-only, opacity
- * stays 1 above the fold). Headline reveals from a line mask, the pets settle
- * in, subhead + CTA rise. Gated behind prefers-reduced-motion; no scroll pin.
+ * Hero on-load entrance + idle life. The entrance is restrained and FOUC-safe
+ * (transform-only, opacity stays 1 above the fold): the headline reveals from a
+ * line mask, the pets settle in, subhead + CTA rise. After it lands, a looping
+ * idle timeline gives the pets quiet life (tail sway, head bob, blink); it is
+ * paused whenever the hero scrolls out of view. Everything is gated behind
+ * prefers-reduced-motion; no scroll pin.
  */
 export function useHeroCinema(root: RefObject<HTMLElement>): void {
   useGSAP(
@@ -41,13 +50,67 @@ export function useHeroCinema(root: RefObject<HTMLElement>): void {
             { y: 16, duration: 0.6, clearProps: "transform" },
             "-=0.6",
           )
+          // Animate the CTA container, not the buttons: the buttons carry a CSS
+          // `transition` (for hover/active), which would fight GSAP frame-by-frame
+          // and snap-catch-up when the tween ends. The wrapper has no transition.
           .from(
-            ".js-hero-cta > *",
-            { y: 16, duration: 0.5, stagger: 0.08, clearProps: "transform" },
+            ".js-hero-cta",
+            { y: 16, duration: 0.5, clearProps: "transform" },
             "-=0.4",
           );
 
+        // Idle life — looping, paused unless the hero is on screen. Heads bob
+        // (plain y translate) and eyes blink (scaleY, fill-box origin); both are
+        // safe inside the scene's scaled <g> wrapper, so no svgOrigin tail sway
+        // (svgOrigin coordinates don't survive the nested transform).
+        const idle = gsap.timeline({ paused: true });
+        idle
+          .to(
+            ".js-cat-head",
+            {
+              y: 3,
+              duration: 3.2,
+              ease: "sine.inOut",
+              repeat: -1,
+              yoyo: true,
+            },
+            0,
+          )
+          .to(
+            ".js-dog-head",
+            {
+              y: 4,
+              duration: 2.8,
+              ease: "sine.inOut",
+              repeat: -1,
+              yoyo: true,
+            },
+            0.4,
+          )
+          .to(
+            ".js-cat-eye, .js-dog-eye",
+            {
+              scaleY: 0.1,
+              transformOrigin: "50% 50%",
+              duration: 0.09,
+              ease: "power1.inOut",
+              repeat: -1,
+              repeatDelay: 3.8,
+              yoyo: true,
+            },
+            1.6,
+          );
+
+        const idleVisibility = ScrollTrigger.create({
+          trigger: root.current,
+          start: "top bottom",
+          end: "bottom top",
+          onToggle: (self) => (self.isActive ? idle.play() : idle.pause()),
+        });
+
         return () => {
+          idle.kill();
+          idleVisibility.kill();
           split.revert();
         };
       });

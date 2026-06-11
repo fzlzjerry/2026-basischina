@@ -78,7 +78,7 @@ export const pageData = [
     name: "home",
     title: "Home",
     summary:
-      "BASIS-China 2026 iGEM — engineering biology for a more sustainable world.",
+      "BASIS-China 2026 iGEM. Engineering biology for healthier, happier companions.",
     category: "home",
     kind: "react",
     componentKey: "home",
@@ -88,7 +88,7 @@ export const pageData = [
     seo: {
       title: "BASIS-China 2026 iGEM Wiki",
       description:
-        "Homepage for the 2026 BASIS-China iGEM team — project, team, and research.",
+        "Homepage for the 2026 BASIS-China iGEM team: project, team, and research.",
       keywords: ["iGEM", "BASIS-China", "synthetic biology", "2026"],
       ogType: "website",
     },
@@ -108,7 +108,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Team — BASIS-China 2026 iGEM",
+      title: "Team · BASIS-China 2026 iGEM",
       description:
         "Meet the members, instructors, and advisors of the 2026 BASIS-China iGEM team.",
       keywords: ["iGEM", "team", "members", "BASIS-China"],
@@ -129,7 +129,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Project Description — BASIS-China 2026 iGEM",
+      title: "Project Description · BASIS-China 2026 iGEM",
       description:
         "The problem, motivation, and goals behind the 2026 BASIS-China iGEM project.",
       keywords: ["project", "description", "iGEM", "BASIS-China"],
@@ -151,7 +151,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Engineering Success — BASIS-China 2026 iGEM",
+      title: "Engineering Success · BASIS-China 2026 iGEM",
       description:
         "How we applied the engineering design cycle to a technical aspect of our project.",
       keywords: ["engineering", "design cycle", "iGEM", "BASIS-China"],
@@ -172,7 +172,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Results — BASIS-China 2026 iGEM",
+      title: "Results · BASIS-China 2026 iGEM",
       description:
         "Experimental results, analysis, and discussion for the 2026 BASIS-China iGEM project.",
       keywords: ["results", "data", "analysis", "iGEM", "BASIS-China"],
@@ -193,7 +193,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Contribution — BASIS-China 2026 iGEM",
+      title: "Contribution · BASIS-China 2026 iGEM",
       description:
         "A useful, well-documented contribution for the benefit of future iGEM teams.",
       keywords: ["contribution", "iGEM", "BASIS-China"],
@@ -215,7 +215,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Experiments — BASIS-China 2026 iGEM",
+      title: "Experiments · BASIS-China 2026 iGEM",
       description:
         "The research, experiments, and protocols behind the 2026 BASIS-China iGEM project.",
       keywords: ["experiments", "protocols", "wet lab", "iGEM"],
@@ -237,7 +237,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Notebook — BASIS-China 2026 iGEM",
+      title: "Notebook · BASIS-China 2026 iGEM",
       description:
         "Chronological lab notebook documenting the 2026 BASIS-China iGEM season.",
       keywords: ["notebook", "lab journal", "wet lab", "iGEM"],
@@ -258,7 +258,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Measurement — BASIS-China 2026 iGEM",
+      title: "Measurement · BASIS-China 2026 iGEM",
       description:
         "Measurement and characterization approaches used by the 2026 BASIS-China iGEM team.",
       keywords: ["measurement", "characterization", "wet lab", "iGEM"],
@@ -279,7 +279,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Plant Synthetic Biology — BASIS-China 2026 iGEM",
+      title: "Plant Synthetic Biology · BASIS-China 2026 iGEM",
       description:
         "Exemplary work in plant synthetic biology by the 2026 BASIS-China iGEM team.",
       keywords: ["plant", "synthetic biology", "wet lab", "iGEM"],
@@ -301,7 +301,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Safety and Security — BASIS-China 2026 iGEM",
+      title: "Safety and Security · BASIS-China 2026 iGEM",
       description:
         "Risk assessment and safety measures for the 2026 BASIS-China iGEM project.",
       keywords: ["safety", "security", "biosafety", "iGEM"],
@@ -322,7 +322,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Modeling — BASIS-China 2026 iGEM",
+      title: "Modeling · BASIS-China 2026 iGEM",
       description:
         "Mathematical and computational modeling of the 2026 BASIS-China iGEM project.",
       keywords: ["model", "modeling", "dry lab", "iGEM"],
@@ -344,7 +344,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Software — BASIS-China 2026 iGEM",
+      title: "Software · BASIS-China 2026 iGEM",
       description:
         "Software tools developed by the 2026 BASIS-China iGEM team for synthetic biology.",
       keywords: ["software", "tools", "dry lab", "iGEM"],
@@ -366,7 +366,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Hardware — BASIS-China 2026 iGEM",
+      title: "Hardware · BASIS-China 2026 iGEM",
       description:
         "Hardware built by the 2026 BASIS-China iGEM team to support synthetic biology.",
       keywords: ["hardware", "devices", "dry lab", "iGEM"],
@@ -388,7 +388,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Human Practices — BASIS-China 2026 iGEM",
+      title: "Human Practices · BASIS-China 2026 iGEM",
       description:
         "How the 2026 BASIS-China iGEM team engaged with stakeholders and the wider world.",
       keywords: ["human practices", "responsibility", "engagement", "iGEM"],
@@ -409,7 +409,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Education — BASIS-China 2026 iGEM",
+      title: "Education · BASIS-China 2026 iGEM",
       description:
         "Educational tools and outreach by the 2026 BASIS-China iGEM team.",
       keywords: ["education", "outreach", "engagement", "iGEM"],
@@ -430,7 +430,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Diversity and Inclusion — BASIS-China 2026 iGEM",
+      title: "Diversity and Inclusion · BASIS-China 2026 iGEM",
       description:
         "How the 2026 BASIS-China iGEM team approached diversity, equity, and inclusion.",
       keywords: ["inclusivity", "diversity", "inclusion", "iGEM"],
@@ -451,7 +451,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Sustainability — BASIS-China 2026 iGEM",
+      title: "Sustainability · BASIS-China 2026 iGEM",
       description:
         "How the 2026 BASIS-China iGEM project addresses the UN Sustainable Development Goals.",
       keywords: ["sustainability", "SDGs", "engagement", "iGEM"],
@@ -472,7 +472,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Entrepreneurship — BASIS-China 2026 iGEM",
+      title: "Entrepreneurship · BASIS-China 2026 iGEM",
       description:
         "The business case and commercialization strategy for the 2026 BASIS-China iGEM project.",
       keywords: ["entrepreneurship", "business", "engagement", "iGEM"],
@@ -493,7 +493,7 @@ export const pageData = [
     showInNavbar: true,
     showInFooter: true,
     seo: {
-      title: "Attributions — BASIS-China 2026 iGEM",
+      title: "Attributions · BASIS-China 2026 iGEM",
       description:
         "Attribution of work and acknowledgment of support for the 2026 BASIS-China iGEM team.",
       keywords: ["attributions", "acknowledgments", "iGEM"],

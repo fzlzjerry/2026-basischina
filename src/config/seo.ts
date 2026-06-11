@@ -8,7 +8,7 @@
 import { wikiEnv } from "./env";
 import { buildAssetUrl, buildCanonicalUrl } from "./envShared";
 
-export const siteName = `${wikiEnv.teamName} — iGEM ${wikiEnv.teamYear}`;
+export const siteName = `${wikiEnv.teamName} · iGEM ${wikiEnv.teamYear}`;
 
 /** Default social share image. Override per page via PageSEO.ogImage. */
 export const defaultOgImage = buildAssetUrl(

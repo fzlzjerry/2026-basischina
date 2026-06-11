@@ -51,27 +51,24 @@ export function MoleculeSection() {
   );
 
   return (
-    <section ref={root} className="bg-page">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
+    <section ref={root} className="bg-surface-2">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div className="js-reveal-up">
           <Title level="h2">Molecules in motion</Title>
-          <p className="mt-4 text-ink-soft">
-            Synthetic biology is the engineering of molecular machines. Drag to
-            rotate the interactive model — a placeholder we will replace with
-            the key molecules from our project.
-          </p>
-          <p className="mt-4 text-sm text-ink-soft">
-            The 3D viewer is loaded only when this section scrolls into view,
-            and auto-rotation pauses for visitors who prefer reduced motion.
+          <p className="mt-6 text-lg text-ink-soft">
+            Synthetic biology is the engineering of molecular machines. Drag the
+            model to rotate it and explore the structure from any angle.
           </p>
         </div>
-        <MoleculeViewer
-          className="js-reveal-up"
-          label="Interactive 3D model of a water molecule"
-          sdfData={SAMPLE_MOLECULE}
-          format="sdf"
-          autoRotate
-        />
+        <div className="js-reveal-up ac-polka rounded-card border-2 border-border bg-surface p-3 shadow-card-lift">
+          <MoleculeViewer
+            className="overflow-hidden rounded-min"
+            label="Interactive 3D model of a water molecule"
+            sdfData={SAMPLE_MOLECULE}
+            format="sdf"
+            autoRotate
+          />
+        </div>
       </div>
     </section>
   );

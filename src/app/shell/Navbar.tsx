@@ -192,7 +192,7 @@ export function Navbar() {
           aria-expanded={mobileOpen}
           aria-controls="mobile-nav"
           onClick={() => setMobileOpen((value) => !value)}
-          className="js-nav-animate rounded-pill p-2.5 text-primary-deep transition hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring lg:hidden"
+          className="rounded-pill p-2.5 text-primary-deep transition hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring lg:hidden"
         >
           <span className="sr-only">Toggle navigation</span>
           <Icon as={mobileOpen ? X : List} size="md" aria-hidden="true" />
@@ -203,7 +203,7 @@ export function Navbar() {
       <span
         aria-hidden="true"
         style={{ transform: "scaleX(0)", transformOrigin: "left center" }}
-        className="js-scroll-progress pointer-events-none absolute inset-x-0 bottom-0 h-0.5 bg-primary"
+        className="js-scroll-progress pointer-events-none absolute inset-x-0 bottom-[-2px] h-1 rounded-r-full bg-primary"
       />
 
       {/* Mobile panel */}
