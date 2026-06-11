@@ -5,10 +5,11 @@
  * SVG. Each mascot is a self-contained `<g>` (with its own gradient `<defs>`,
  * id-prefixed so multiple instances on one page never collide) drawn in a shared
  * 720x600 scene coordinate space. Sub-groups carry `.js-*` sentinels so the GSAP
- * layer can turn heads, flop ears, sway tails, and blink without touching markup.
+ * layer can bob heads, sway tails, blink (`js-*-eye`, scaleY) and steer the
+ * pupils toward the cursor (`js-*-pupil`, x/y) without touching markup.
  *
- * Used by the hero (Act 0, via `HeroPetScene`) and by the scroll theatre (Act 1,
- * via `CatMascot` / `DogMascot` re-positioned inside the stage SVG).
+ * Used by the hero room scene (`HeroRoom`), which scales both mascots up inside
+ * its own stage coordinates.
  */
 
 const CAT_OUTLINE = "#7a5230";
@@ -145,43 +146,51 @@ export function CatMascot({ idPrefix }: MascotProps) {
           opacity="0.65"
         />
 
-        {/* eyes (big + sparkle) */}
-        <ellipse
-          className="js-cat-eye"
-          cx="224"
-          cy="250"
-          rx="12"
-          ry="16"
-          fill="#43321f"
-          stroke="none"
-        />
-        <ellipse
-          className="js-cat-eye"
-          cx="276"
-          cy="250"
-          rx="12"
-          ry="16"
-          fill="#43321f"
-          stroke="none"
-        />
-        <circle cx="228" cy="244" r="5" fill="#fff" stroke="none" />
-        <circle cx="280" cy="244" r="5" fill="#fff" stroke="none" />
-        <circle
-          cx="220"
-          cy="256"
-          r="2.4"
-          fill="#fff"
-          stroke="none"
-          opacity="0.8"
-        />
-        <circle
-          cx="272"
-          cy="256"
-          r="2.4"
-          fill="#fff"
-          stroke="none"
-          opacity="0.8"
-        />
+        {/* eyes (big + sparkle); pupil group = cursor-tracking x/y target,
+            inner eye group = blink scaleY target — separate nodes so the two
+            tweens never fight over one transform */}
+        <g className="js-cat-pupil">
+          <g className="js-cat-eye">
+            <ellipse
+              cx="224"
+              cy="250"
+              rx="12"
+              ry="16"
+              fill="#43321f"
+              stroke="none"
+            />
+            <circle cx="228" cy="244" r="5" fill="#fff" stroke="none" />
+            <circle
+              cx="220"
+              cy="256"
+              r="2.4"
+              fill="#fff"
+              stroke="none"
+              opacity="0.8"
+            />
+          </g>
+        </g>
+        <g className="js-cat-pupil">
+          <g className="js-cat-eye">
+            <ellipse
+              cx="276"
+              cy="250"
+              rx="12"
+              ry="16"
+              fill="#43321f"
+              stroke="none"
+            />
+            <circle cx="280" cy="244" r="5" fill="#fff" stroke="none" />
+            <circle
+              cx="272"
+              cy="256"
+              r="2.4"
+              fill="#fff"
+              stroke="none"
+              opacity="0.8"
+            />
+          </g>
+        </g>
 
         {/* heart nose + :3 mouth */}
         <path
@@ -317,43 +326,49 @@ export function DogMascot({ idPrefix }: MascotProps) {
           opacity="0.6"
         />
 
-        {/* eyes */}
-        <ellipse
-          className="js-dog-eye"
-          cx="446"
-          cy="256"
-          rx="11"
-          ry="15"
-          fill="#3a2e22"
-          stroke="none"
-        />
-        <ellipse
-          className="js-dog-eye"
-          cx="498"
-          cy="256"
-          rx="11"
-          ry="15"
-          fill="#3a2e22"
-          stroke="none"
-        />
-        <circle cx="450" cy="250" r="5" fill="#fff" stroke="none" />
-        <circle cx="502" cy="250" r="5" fill="#fff" stroke="none" />
-        <circle
-          cx="442"
-          cy="261"
-          r="2.2"
-          fill="#fff"
-          stroke="none"
-          opacity="0.8"
-        />
-        <circle
-          cx="494"
-          cy="261"
-          r="2.2"
-          fill="#fff"
-          stroke="none"
-          opacity="0.8"
-        />
+        {/* eyes; pupil group = cursor-tracking target, eye group = blink target */}
+        <g className="js-dog-pupil">
+          <g className="js-dog-eye">
+            <ellipse
+              cx="446"
+              cy="256"
+              rx="11"
+              ry="15"
+              fill="#3a2e22"
+              stroke="none"
+            />
+            <circle cx="450" cy="250" r="5" fill="#fff" stroke="none" />
+            <circle
+              cx="442"
+              cy="261"
+              r="2.2"
+              fill="#fff"
+              stroke="none"
+              opacity="0.8"
+            />
+          </g>
+        </g>
+        <g className="js-dog-pupil">
+          <g className="js-dog-eye">
+            <ellipse
+              cx="498"
+              cy="256"
+              rx="11"
+              ry="15"
+              fill="#3a2e22"
+              stroke="none"
+            />
+            <circle cx="502" cy="250" r="5" fill="#fff" stroke="none" />
+            <circle
+              cx="494"
+              cy="261"
+              r="2.2"
+              fill="#fff"
+              stroke="none"
+              opacity="0.8"
+            />
+          </g>
+        </g>
 
         {/* nose */}
         <ellipse
@@ -378,32 +393,3 @@ export function DogMascot({ idPrefix }: MascotProps) {
   );
 }
 
-/**
- * Full hero scene: warm spotlight + soft mat + both mascots, sized to its 720x600
- * viewBox. Decorative, so the whole SVG is aria-hidden (the headline carries the
- * meaning). Wrap it in an element tagged `.js-hero-pets` for the entrance tween.
- */
-export function HeroPetScene({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 720 600"
-      role="img"
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <defs>
-        <radialGradient id="hero-spot" cx="50%" cy="45%" r="55%">
-          <stop offset="0%" stopColor="#fff3e2" />
-          <stop offset="55%" stopColor="#fdeede" />
-          <stop offset="100%" stopColor="#f8f8f0" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <circle cx="360" cy="280" r="300" fill="url(#hero-spot)" />
-      <ellipse cx="360" cy="520" rx="270" ry="42" fill="#efe7d3" />
-      <ellipse cx="360" cy="516" rx="250" ry="34" fill="#f7f3df" />
-      <CatMascot idPrefix="hero" />
-      <DogMascot idPrefix="hero" />
-    </svg>
-  );
-}
