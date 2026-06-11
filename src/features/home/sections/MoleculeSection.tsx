@@ -1,7 +1,9 @@
 import { useRef } from "react";
 import { MoleculeViewer } from "@/features/molecule/MoleculeViewer";
-import { Title } from "@/shared/components/Title";
+import { SectionDivider } from "@/shared/components/SectionDivider";
 import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
+import { HomeSectionHeader } from "../components/HomeSectionHeader";
+import { PeekingDog } from "../scene/Peekers";
 
 // A small, valid inline SDF (water) so the demo works with no network or asset
 // dependency. Replace `sdfData` with `sdfUrl="assets/molecules/your.sdf"` (place
@@ -20,8 +22,10 @@ $$$$
 `;
 
 /**
- * Homepage molecule section (§20). Composes the isolated molecule feature; the
- * viewer only loads 3Dmol when scrolled into view.
+ * Homepage molecule section (§20). The 3D viewer sits inside a round porthole
+ * window that echoes the hero's arched window (same wood, same sky), with the
+ * dog peeking around the rim — "look closer" as a literal window into the
+ * molecular world. The viewer only loads 3Dmol when scrolled into view.
  */
 export function MoleculeSection() {
   const root = useRef<HTMLElement>(null);
@@ -51,25 +55,44 @@ export function MoleculeSection() {
   );
 
   return (
-    <section ref={root} className="bg-surface-2">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:px-8">
+    <section ref={root} className="bg-surface">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div className="js-reveal-up">
-          <Title level="h2">Molecules in motion</Title>
-          <p className="mt-6 text-lg text-ink-soft">
-            Synthetic biology is the engineering of molecular machines. Drag the
-            model to rotate it and explore the structure from any angle.
-          </p>
-        </div>
-        <div className="js-reveal-up ac-polka rounded-card border-2 border-border bg-surface p-3 shadow-card-lift">
-          <MoleculeViewer
-            className="overflow-hidden rounded-min"
-            label="Interactive 3D model of a water molecule"
-            sdfData={SAMPLE_MOLECULE}
-            format="sdf"
-            autoRotate
+          <HomeSectionHeader
+            title="Molecules in motion"
+            lede="Synthetic biology is the engineering of molecular machines. Drag the model to rotate it and explore the structure from any angle."
           />
         </div>
+
+        <div className="js-reveal-up relative mx-auto w-full max-w-sm lg:max-w-md">
+          <div className="relative aspect-square">
+            {/* porthole: wood ring + sunset-sky glass, echoing the hero window */}
+            <div
+              className="absolute inset-0 rounded-full border-[10px] shadow-card-lift"
+              style={{
+                borderColor: "var(--color-room-frame)",
+                background:
+                  "linear-gradient(180deg, #cfe0f2 0%, #ffeec9 72%, #ffe6ad 100%)",
+              }}
+            >
+              <div className="absolute inset-0 overflow-hidden rounded-full">
+                <MoleculeViewer
+                  frameless
+                  label="Interactive 3D model of a water molecule"
+                  sdfData={SAMPLE_MOLECULE}
+                  format="sdf"
+                  autoRotate
+                />
+              </div>
+            </div>
+            <PeekingDog className="pointer-events-none absolute -left-10 bottom-6 w-36 -rotate-6" />
+          </div>
+          <p className="mt-5 text-center text-sm text-ink-soft">
+            A water molecule, to start small. Drag it around.
+          </p>
+        </div>
       </div>
+      <SectionDivider fill="var(--color-sunset-sky)" flip />
     </section>
   );
 }

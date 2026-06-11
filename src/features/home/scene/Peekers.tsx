@@ -88,13 +88,13 @@ export function PawCorner({ className = "" }: { className?: string }) {
 }
 
 /**
- * Dog peeking around a round frame edge: head tilted in from the left with
- * one paw on the rim. Place at a porthole's lower-left.
+ * Dog peeking in from beside a round frame: just the happy face and a floppy
+ * ear. Place at a porthole's lower-left with a slight tilt.
  */
 export function PeekingDog({ className = "" }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 170 160"
+      viewBox="0 0 150 140"
       aria-hidden="true"
       className={className}
       xmlns="http://www.w3.org/2000/svg"
@@ -141,13 +141,6 @@ export function PeekingDog({ className = "" }: { className?: string }) {
           d="M82 99 L 82 108 M82 108 q -9 9 -17 1 M82 108 q 9 9 17 1"
           fill="none"
           strokeWidth="3"
-        />
-        {/* paw on the rim */}
-        <ellipse cx="128" cy="134" rx="20" ry="13" fill="#bfe7d6" />
-        <path
-          d="M120 128 v 10 M136 128 v 10"
-          stroke="#8fc9b2"
-          strokeWidth="2.5"
         />
       </g>
     </svg>
