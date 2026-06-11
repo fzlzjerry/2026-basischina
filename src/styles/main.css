@@ -62,6 +62,26 @@
   --color-app-pink: #f8a6b2;
   --color-app-pink-ink: #b03a52;
 
+  /* ---- Category SOFT pastels: committed tile/surface fills (ink text ≥7:1) ---- */
+  --color-app-teal-soft: #d8f1e7;
+  --color-app-blue-soft: #e2e7fb;
+  --color-app-purple-soft: #efe3fa;
+  --color-app-green-soft: #e2f1dd;
+  --color-app-peach-soft: #fbe4d8;
+  --color-app-pink-soft: #fde6ea;
+
+  /* ---- Hero room scene (wall/floor architecture + window wood) ---- */
+  --color-room-wall: #f6e7c8;
+  --color-room-floor: #eccfa0;
+  --color-room-floor-deep: #d9b67f;
+  --color-room-frame: #c9a47c;
+
+  /* ---- Sunset closing band. Text sits ONLY on -sky/-base (ink ≥4.5:1);
+          -deep is decoration-only (hills/sun) and FAILS AA under body text. ---- */
+  --color-sunset-sky: #ffe9c4;
+  --color-sunset: #fbd9a0;
+  --color-sunset-deep: #e89a4f;
+
   /* ---- Radii (min 12px on interactive; never 0) ---- */
   --radius-min: 12px;
   --radius-badge: 10px;
@@ -80,11 +100,16 @@
   --shadow-btn-danger-hover: 0 6px 0 0 var(--color-error-rail);
   --shadow-btn-danger-active: 0 1px 0 0 var(--color-error-rail);
 
-  /* ---- Fonts (families only; @font-face outside @theme, see Task 2) ---- */
+  /* ---- Fonts (families only; @font-face outside @theme, see Task 2) ----
+     Display stack: Nunito first so the static.igem.wiki upload activates it
+     automatically; until then ui-rounded / SF Pro Rounded (Apple), Yuanti SC /
+     Hiragino Maru Gothic (rounded CJK) keep the cozy register. Windows has no
+     rounded system face and degrades to its default sans — acceptable. */
   --font-body:
     "Nunito", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
   --font-display:
-    "Nunito", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+    "Nunito", ui-rounded, "SF Pro Rounded", "Hiragino Maru Gothic ProN",
+    "Yuanti SC", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
 
   /* ---- Easing + global transition default ---- */
   --ease-cozy: cubic-bezier(0.4, 0, 0.2, 1);
@@ -172,6 +197,11 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Note: SVG transform origins for the mascot/theatre animations are set by GSAP
+   itself (transformOrigin / svgOrigin in the tweens). We deliberately do NOT use
+   CSS `transform-box: fill-box` here: it conflicts with GSAP's SVG matrix math
+   and makes scaled/rotated parts fly off (eyes, heads) mid-animation. */
 
 /* Offset anchor jumps so headings clear the sticky navbar. */
 :where([id]) {
