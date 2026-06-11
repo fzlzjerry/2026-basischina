@@ -55,7 +55,7 @@ export function MoleculeSection() {
   );
 
   return (
-    <section ref={root} className="bg-surface">
+    <section ref={root} className="bg-room-wall">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div className="js-reveal-up">
           <HomeSectionHeader

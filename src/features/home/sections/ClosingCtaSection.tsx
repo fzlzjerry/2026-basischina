@@ -69,7 +69,10 @@ export function ClosingCtaSection() {
   return (
     <section
       ref={root}
-      className="relative overflow-hidden"
+      // The negative bottom margin pulls the footer's scalloped edge up OVER
+      // this band's hills, so the brown bites straight into the sunset with
+      // no page-cream stripe between them.
+      className="relative -mb-10 overflow-hidden sm:-mb-14"
       style={{
         background:
           "linear-gradient(180deg, var(--color-sunset-sky) 0%, var(--color-sunset) 62%, var(--color-sunset-deep) 100%)",
@@ -77,7 +80,7 @@ export function ClosingCtaSection() {
     >
       <div className="mx-auto max-w-3xl px-4 pt-20 text-center sm:px-6 sm:pt-24">
         <h2 className="js-closing font-display text-[clamp(2.2rem,1.5rem+2.6vw,3.6rem)] font-black tracking-tight text-ink">
-          Come hang out with us.
+          {"Come hang out with\u00A0us."}
         </h2>
         <p className="js-closing mx-auto mt-5 max-w-xl text-lg text-ink-soft">
           We are a team of students engineering biology for the animals we love.
@@ -98,7 +101,7 @@ export function ClosingCtaSection() {
         </div>
       </div>
 
-      <SunsetDuo className="js-closing mt-6 block h-48 w-full sm:h-60 lg:h-72" />
+      <SunsetDuo className="js-closing mt-6 block h-56 w-full sm:h-72 lg:h-80" />
     </section>
   );
 }

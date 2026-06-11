@@ -54,7 +54,7 @@ const TILES: Tile[] = [
     title: "Dry lab",
     description: "Modeling, software, and hardware.",
     to: "/model",
-    watermark: "tl",
+    watermark: "br",
   },
   {
     category: "human-practices",
@@ -168,7 +168,7 @@ export function HighlightsSection() {
                   />
                 ) : null}
                 {tile.cameo === "paw" ? (
-                  <PawCorner className="pointer-events-none absolute -right-3 -top-3 h-24 w-24 rotate-12" />
+                  <PawCorner className="pointer-events-none absolute right-5 top-4 h-20 w-20 rotate-12" />
                 ) : null}
 
                 <div
@@ -192,7 +192,11 @@ export function HighlightsSection() {
                     <p className="mt-2 max-w-prose text-ink-soft">
                       {tile.description}
                     </p>
-                    <span className="mt-4 inline-flex items-center gap-2 font-semibold text-primary-deep">
+                    <span
+                      className={`inline-flex items-center gap-2 font-semibold text-primary-deep ${
+                        tile.wide ? "mt-4" : "mt-auto pt-4"
+                      }`}
+                    >
                       Open
                       <Icon
                         as={PawPrint}
@@ -224,7 +228,7 @@ export function HighlightsSection() {
                     {linkContent}
                   </Link>
                   {tile.cameo === "cat" ? (
-                    <PeekingCat className="pointer-events-none absolute bottom-full right-10 hidden w-28 sm:block" />
+                    <PeekingCat className="pointer-events-none absolute bottom-full right-10 hidden w-32 translate-y-[7px] sm:block" />
                   ) : null}
                 </div>
               );
@@ -237,7 +241,7 @@ export function HighlightsSection() {
           })}
         </div>
       </div>
-      <SectionDivider fill="var(--color-surface)" />
+      <SectionDivider fill="var(--color-room-wall)" />
     </section>
   );
 }

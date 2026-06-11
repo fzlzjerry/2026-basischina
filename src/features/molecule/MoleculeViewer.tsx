@@ -30,9 +30,51 @@ export function MoleculeViewer({
   const overlays = (
     <>
       {!ready && !error ? (
-        <span className="absolute inset-0 flex items-center justify-center text-sm text-ink-muted">
-          {loading ? "Loading 3D viewer…" : "Scroll to load 3D viewer"}
-        </span>
+        frameless ? (
+          // Friendly placeholder so the porthole is never an empty circle
+          // with utility text: a static water molecule in the house art
+          // style, swapped out when the 3D canvas renders.
+          <span className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-sm font-semibold text-ink-soft">
+            <svg viewBox="0 0 120 90" aria-hidden="true" className="w-24">
+              <g strokeLinecap="round">
+                <path
+                  d="M60 52 L 30 30 M60 52 L 90 30"
+                  stroke="#7a5230"
+                  strokeWidth="5"
+                />
+                <circle
+                  cx="28"
+                  cy="27"
+                  r="14"
+                  style={{ fill: "var(--color-app-teal)" }}
+                  stroke="#27695a"
+                  strokeWidth="3.5"
+                />
+                <circle
+                  cx="92"
+                  cy="27"
+                  r="14"
+                  style={{ fill: "var(--color-app-teal)" }}
+                  stroke="#27695a"
+                  strokeWidth="3.5"
+                />
+                <circle
+                  cx="60"
+                  cy="54"
+                  r="22"
+                  fill="#fdf3e2"
+                  stroke="#7a5230"
+                  strokeWidth="3.5"
+                />
+              </g>
+            </svg>
+            {loading ? "Waking it up…" : "A tiny molecule lives here"}
+          </span>
+        ) : (
+          <span className="absolute inset-0 flex items-center justify-center text-sm text-ink-muted">
+            {loading ? "Loading 3D viewer…" : "Scroll to load 3D viewer"}
+          </span>
+        )
       ) : null}
       {error ? (
         <span className="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-ink-muted">

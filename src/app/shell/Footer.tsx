@@ -8,7 +8,12 @@ const footerGroups = getNavGroups()
     ...group,
     pages: group.pages.filter((page) => footerPages.includes(page)),
   }))
-  .filter((group) => group.pages.length > 0);
+  .filter((group) => group.pages.length > 0)
+  // A labeled column holding only the Home link is dead weight; the brand
+  // name in the first cell links home instead.
+  .filter(
+    (group) => !(group.pages.length === 1 && group.pages[0]?.path === "/"),
+  );
 
 const teamSlug = wikiEnv.basePath.replace(/^\/+|\/+$/g, "");
 
@@ -28,7 +33,14 @@ export function Footer() {
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <p className="text-lg font-bold text-page">{wikiEnv.teamName}</p>
+              <p className="text-lg font-bold text-page">
+                <Link
+                  to="/"
+                  className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
+                >
+                  {wikiEnv.teamName}
+                </Link>
+              </p>
               <p className="mt-2 text-sm text-footer-text-muted">
                 iGEM {wikiEnv.teamYear}. Engineering biology for healthier,
                 happier companions.
@@ -57,8 +69,10 @@ export function Footer() {
 
           <hr className="my-8 border-footer-divider" />
 
-          {/* Required on every iGEM wiki page: license + repository link. */}
-          <div className="space-y-2 text-xs text-footer-text-muted">
+          {/* Required on every iGEM wiki page: license + repository link.
+              Full-strength footer text: the muted tone sits below AA at this
+              size. */}
+          <div className="space-y-2 text-xs text-footer-text">
             <p>
               © {wikiEnv.teamYear} {wikiEnv.teamName}. Content on this site is
               licensed under a{" "}

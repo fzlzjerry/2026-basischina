@@ -87,8 +87,10 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* scene: in flow on mobile, glued to the section's bottom-right on lg */}
-      <div className="relative mx-auto mt-6 w-full max-w-xl px-4 sm:px-0 lg:absolute lg:inset-y-0 lg:right-0 lg:mt-0 lg:w-[50vw] lg:max-w-none lg:px-0">
+      {/* scene: in flow on mobile, glued to the section's bottom-right on lg.
+          Mobile bottom padding keeps the pets' feet clear of the wave divider
+          that overlays the section bottom. */}
+      <div className="relative mx-auto mt-6 w-full max-w-xl px-4 pb-12 sm:px-0 lg:absolute lg:inset-y-0 lg:right-0 lg:mt-0 lg:w-[50vw] lg:max-w-none lg:px-0 lg:pb-0">
         {/* scene-local floor band (mobile only; lg uses the section band above) */}
         <div
           aria-hidden="true"

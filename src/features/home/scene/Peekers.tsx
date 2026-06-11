@@ -112,13 +112,16 @@ export function PeekingDog({ className = "" }: { className?: string }) {
         />
         {/* head */}
         <circle cx="78" cy="78" r="48" fill="#92ddc6" />
-        {/* eye patch + eyes */}
+        {/* eye patch + eyes + cheeks (both sides, so the patch reads as a
+            patch and not a smudge) */}
         <ellipse cx="64" cy="70" rx="15" ry="17" fill="#6fc6ac" stroke="none" />
         <g stroke="none">
           <ellipse cx="64" cy="72" rx="7.5" ry="10" fill="#3a2e22" />
           <ellipse cx="96" cy="72" rx="7.5" ry="10" fill="#3a2e22" />
           <circle cx="67" cy="68" r="3" fill="#fff" />
           <circle cx="99" cy="68" r="3" fill="#fff" />
+          <circle cx="46" cy="92" r="9" fill="#6fc6ac" opacity="0.6" />
+          <circle cx="112" cy="92" r="9" fill="#6fc6ac" opacity="0.6" />
         </g>
         {/* muzzle + nose + happy mouth */}
         <ellipse

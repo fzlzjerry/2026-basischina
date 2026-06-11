@@ -45,13 +45,13 @@ const STEPS: Step[] = [
   },
 ];
 
-const TRAIL_D = "M 96 70 C 290 36 330 168 480 178 C 630 188 680 78 864 88";
+const TRAIL_D = "M 96 70 C 290 36 330 168 480 178 C 630 188 690 84 836 96";
 
 /** Little paw stamps scattered along the trail. */
 const STAMPS: { x: number; y: number; r: number }[] = [
   { x: 252, y: 92, r: 24 },
   { x: 558, y: 172, r: -12 },
-  { x: 760, y: 116, r: 18 },
+  { x: 742, y: 110, r: 18 },
 ];
 
 export function ApproachSection() {
@@ -164,11 +164,19 @@ export function ApproachSection() {
                 key={step.title}
                 className={`js-approach-reveal flex flex-col items-center text-center ${step.offset}`}
               >
+                {i > 0 ? (
+                  // Mobile-only dotted connector so the trail idea survives
+                  // the stacked layout (the SVG trail is desktop-only).
+                  <div
+                    aria-hidden="true"
+                    className="-mt-6 mb-6 h-12 border-l-4 border-dotted border-app-teal sm:hidden"
+                  />
+                ) : null}
                 <span className="h-28 w-28">
                   <step.Spot />
                 </span>
                 <h3 className="mt-4 flex items-baseline gap-2 font-display text-2xl font-black text-ink">
-                  <span className="text-base font-bold text-ink-secondary">
+                  <span className="text-base font-bold text-primary-deep">
                     {i + 1}
                   </span>
                   {step.title}

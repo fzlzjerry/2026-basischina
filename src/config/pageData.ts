@@ -142,7 +142,7 @@ export const pageData = [
     name: "engineering",
     title: "Engineering Success",
     summary:
-      "At least one full iteration of the design–build–test–learn engineering cycle.",
+      "At least one full iteration of the design-build-test-learn engineering cycle.",
     category: "project",
     kind: "markdown",
     contentPath: "articles/project/engineering",

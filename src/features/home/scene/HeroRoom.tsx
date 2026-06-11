@@ -42,12 +42,12 @@ export function HeroRoom({ className }: { className?: string }) {
           <stop offset="100%" stopColor="#ffe3b0" stopOpacity="0" />
         </radialGradient>
         <linearGradient id="hero-shaft" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#ffe9bd" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#ffe9bd" stopOpacity="0.06" />
+          <stop offset="0" stopColor="#ffeac0" stopOpacity="0.62" />
+          <stop offset="100%" stopColor="#ffeac0" stopOpacity="0.1" />
         </linearGradient>
         <radialGradient id="hero-pool" cx="50%" cy="50%" r="50%">
-          <stop offset="0" stopColor="#ffe9bd" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="#ffe9bd" stopOpacity="0" />
+          <stop offset="0" stopColor="#ffeac0" stopOpacity="0.75" />
+          <stop offset="100%" stopColor="#ffeac0" stopOpacity="0" />
         </radialGradient>
         <clipPath id="hero-winclip">
           <rect x="388" y="118" width="344" height="444" rx="172" />
@@ -204,7 +204,7 @@ export function HeroRoom({ className }: { className?: string }) {
         rx="122"
         ry="18"
         fill="#9c6a44"
-        opacity="0.18"
+        opacity="0.22"
       />
       <ellipse
         cx="678"
@@ -212,7 +212,7 @@ export function HeroRoom({ className }: { className?: string }) {
         rx="140"
         ry="20"
         fill="#9c6a44"
-        opacity="0.18"
+        opacity="0.22"
       />
 
       {/* the pets (large — faces are the point) */}
