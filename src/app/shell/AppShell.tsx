@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
+import { Head } from "vite-react-ssg";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { PageTransition } from "./PageTransition";
@@ -7,6 +8,8 @@ import { PageLoading } from "@/shared/components/PageLoading";
 import { useScrollToTop } from "@/shared/hooks/useScrollToTop";
 import { useRouteFocus } from "@/shared/hooks/useRouteFocus";
 import { useWarmLazyRoutes } from "@/shared/hooks/useWarmLazyRoutes";
+import { wikiEnv } from "@/config/env";
+import { buildAssetUrl } from "@/config/envShared";
 
 // Global stylesheets are imported from the shell because the shell is declared
 // as the SSG route `entry` — this ensures their CSS is linked into every
@@ -15,6 +18,11 @@ import "@/styles/main.css";
 import "@/styles/markdown.css";
 import "katex/dist/katex.min.css";
 import "prismjs/themes/prism-tomorrow.css";
+
+// Favicon ships from public/ (no external host). Font preloads are NOT added
+// here: vite-react-ssg already injects a preload for every font asset in the
+// route manifest (including all Nunito weights) into the prerendered HTML.
+const faviconUrl = buildAssetUrl(wikiEnv.basePath, "favicon-catdog.svg");
 
 /**
  * App shell (§13): persistent layout only — skip link, navbar, route outlet,
@@ -28,6 +36,9 @@ export function AppShell() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <Head>
+        <link rel="icon" href={faviconUrl} type="image/svg+xml" />
+      </Head>
       <a
         href="#main-content"
         className="sr-only z-50 rounded-pill bg-footer px-4 py-2 text-page focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"

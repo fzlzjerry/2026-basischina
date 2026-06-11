@@ -1,8 +1,8 @@
 /**
  * Inline-SVG cat & dog mascots (cozy Animal Crossing register, brand palette).
  *
- * iGEM forbids binary media in the repo, so the pets are authored entirely as
- * SVG. Each mascot is a self-contained `<g>` (with its own gradient `<defs>`,
+ * The pets are authored entirely as SVG: crisp at any scale, recolorable via
+ * tokens, and animatable. Each mascot is a self-contained `<g>` (with its own gradient `<defs>`,
  * id-prefixed so multiple instances on one page never collide) drawn in a shared
  * 720x600 scene coordinate space. Sub-groups carry `.js-*` sentinels so the GSAP
  * layer can bob heads, sway tails, blink (`js-*-eye`, scaleY) and steer the

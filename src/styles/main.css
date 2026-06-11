@@ -100,11 +100,10 @@
   --shadow-btn-danger-hover: 0 6px 0 0 var(--color-error-rail);
   --shadow-btn-danger-active: 0 1px 0 0 var(--color-error-rail);
 
-  /* ---- Fonts (families only; @font-face outside @theme, see Task 2) ----
-     Display stack: Nunito first so the static.igem.wiki upload activates it
-     automatically; until then ui-rounded / SF Pro Rounded (Apple), Yuanti SC /
-     Hiragino Maru Gothic (rounded CJK) keep the cozy register. Windows has no
-     rounded system face and degrades to its default sans — acceptable. */
+  /* ---- Fonts (families only; @font-face outside @theme) ----
+     Nunito is self-hosted from src/assets/fonts (bundled). The rounded system
+     faces behind it (ui-rounded / SF Pro Rounded, Yuanti SC / Hiragino Maru
+     Gothic for CJK) cover the swap window and any missing glyphs. */
   --font-body:
     "Nunito", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
   --font-display:
@@ -118,23 +117,48 @@
 }
 
 /* ===========================================================================
-   Self-hosted fonts (§4, iGEM rule: fonts MUST live on static.igem.wiki).
-   Probed at implementation time — every candidate URL returned HTTP 403, so
-   these rules are COMMENTED OUT and the site uses the system fallback stack
-   already declared in --font-body / --font-display (degrades safely: no broken
-   text, just non-brand fonts). Uncomment any rule whose URL returns 200 per the
-   Task 2 Step 1 curl probe; adjust filenames to the real uploaded names.
+   Self-hosted fonts (§4): Nunito woff2 (latin + latin-ext, ~26KB/weight) lives
+   IN THE REPO at src/assets/fonts/ and is bundled by Vite (relative url()
+   becomes a hashed, base-path-aware asset in dev and build; no external
+   requests). "Noto Sans SC" stays a name-only fallback in the stacks: full
+   CJK woff2 are multi-MB, and system CJK fonts (PingFang etc.) cover the few
+   Chinese glyphs gracefully.
    =========================================================================== */
-/*
-@font-face { font-family: "Nunito"; src: url("https://static.igem.wiki/teams/6123/fonts/nunito-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Nunito"; src: url("https://static.igem.wiki/teams/6123/fonts/nunito-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Nunito"; src: url("https://static.igem.wiki/teams/6123/fonts/nunito-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
-@font-face { font-family: "Nunito"; src: url("https://static.igem.wiki/teams/6123/fonts/nunito-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Nunito"; src: url("https://static.igem.wiki/teams/6123/fonts/nunito-900.woff2") format("woff2"); font-weight: 900; font-style: normal; font-display: swap; }
-@font-face { font-family: "Noto Sans SC"; src: url("https://static.igem.wiki/teams/6123/fonts/noto-sans-sc-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Noto Sans SC"; src: url("https://static.igem.wiki/teams/6123/fonts/noto-sans-sc-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Noto Sans SC"; src: url("https://static.igem.wiki/teams/6123/fonts/noto-sans-sc-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-*/
+@font-face {
+  font-family: "Nunito";
+  src: url("../assets/fonts/nunito-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nunito";
+  src: url("../assets/fonts/nunito-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nunito";
+  src: url("../assets/fonts/nunito-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nunito";
+  src: url("../assets/fonts/nunito-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nunito";
+  src: url("../assets/fonts/nunito-900.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 @layer base {
   body {

@@ -2,24 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link
-      rel="icon"
-      href="https://static.igem.wiki/teams/6123/favicon-catdog.svg"
-      type="image/svg+xml"
-    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light" />
-    <!-- Preload ONLY the small Latin Nunito critical weights (500/700) — never the
-         multi-MB CJK Noto Sans SC, which would tank LCP. Commented until the font
-         URLs return 200 (see the @font-face block in src/styles/main.css). Uncomment
-         the weight(s) that pass the Task 1.2 curl probe. -->
-    <!--
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://static.igem.wiki/teams/6123/fonts/nunito-500.woff2" />
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://static.igem.wiki/teams/6123/fonts/nunito-700.woff2" />
-    -->
-    <!-- Per-route page title, meta, canonical, and JSON-LD are injected at
-         build time by the head manager (src/shared/components/PageHead.tsx).
-         No static page title is set here, to avoid duplicating it. -->
+    <!-- Favicon + font preloads are injected by the head manager from
+         AppShell (base-path-aware, hashed Vite asset URLs). Per-route page
+         title, meta, canonical, and JSON-LD are injected at build time by
+         src/shared/components/PageHead.tsx. No static page title is set here,
+         to avoid duplicating it. -->
   </head>
   <body style="background:#f8f8f0">
     <div id="root"></div>

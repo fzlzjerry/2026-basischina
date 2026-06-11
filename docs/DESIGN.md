@@ -28,9 +28,11 @@ token, fixed h-10/h-14 so no CLS).
 
 ## Typography
 
-- `--font-display`: Nunito first (activates when woff2 uploaded to
-  static.igem.wiki), then ui-rounded / SF Pro Rounded / Hiragino Maru Gothic /
-  Yuanti SC. Windows degrades to default sans.
+- `--font-display`: Nunito first — self-hosted woff2 (latin + latin-ext,
+  weights 400/500/600/700/900, ~26KB each) live in `src/assets/fonts/` and are
+  bundled by Vite. Fallbacks: ui-rounded / SF Pro Rounded / Hiragino Maru
+  Gothic / Yuanti SC. "Noto Sans SC" stays name-only (system CJK covers stray
+  Chinese; full CJK woff2 are multi-MB, do not self-host them).
 - Homepage headers: big left-aligned display (`HomeSectionHeader`), weight 900,
   `clamp()` scales. NO eyebrow labels except the hero's single one; NO ribbon
   on the homepage (ribbon `Title` stays for content pages).
