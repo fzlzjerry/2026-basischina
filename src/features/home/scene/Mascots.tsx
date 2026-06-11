@@ -392,4 +392,3 @@ export function DogMascot({ idPrefix }: MascotProps) {
     </g>
   );
 }
-

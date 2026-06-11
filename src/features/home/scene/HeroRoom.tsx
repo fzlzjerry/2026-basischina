@@ -198,8 +198,22 @@ export function HeroRoom({ className }: { className?: string }) {
       </g>
 
       {/* soft cast shadows bind the pets to the rug */}
-      <ellipse cx="415" cy="714" rx="122" ry="18" fill="#9c6a44" opacity="0.18" />
-      <ellipse cx="678" cy="718" rx="140" ry="20" fill="#9c6a44" opacity="0.18" />
+      <ellipse
+        cx="415"
+        cy="714"
+        rx="122"
+        ry="18"
+        fill="#9c6a44"
+        opacity="0.18"
+      />
+      <ellipse
+        cx="678"
+        cy="718"
+        rx="140"
+        ry="20"
+        fill="#9c6a44"
+        opacity="0.18"
+      />
 
       {/* the pets (large — faces are the point) */}
       <g transform="translate(118 116) scale(1.18)">
@@ -231,7 +245,14 @@ export function HeroRoom({ className }: { className?: string }) {
 
       {/* potted plant in front of the dog: depth layer */}
       <g transform="translate(130 -40) scale(1.25)">
-        <ellipse cx="616" cy="648" rx="76" ry="13" fill="#e0bd92" opacity="0.5" />
+        <ellipse
+          cx="616"
+          cy="648"
+          rx="76"
+          ry="13"
+          fill="#e0bd92"
+          opacity="0.5"
+        />
         <g>
           <path
             d="M616 552 C 608 474 606 408 616 356"
