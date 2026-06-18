@@ -44,14 +44,20 @@ always pair it with a `bg-*` utility on the same element.
   bundled by Vite. Fallbacks: ui-rounded / SF Pro Rounded / Hiragino Maru
   Gothic / Yuanti SC. "Noto Sans SC" stays name-only (system CJK covers stray
   Chinese; full CJK woff2 are multi-MB, do not self-host them).
-- **HEAL hand-lettered faces (homepage display only).** `--font-script`: Caveat
-  (flowing script) — the wordmark + hero h1 + every `HomeSectionHeader` h2 +
-  closing h2. `--font-hand`: Gochi Hand (marker print) — nav sticker pills,
-  sticker CTAs, step titles, badges. Self-hosted woff2 (latin + latin-ext)
-  extracted from the HEAL reference bundle (OFL), `font-display: swap`. Both are
-  LATIN-ONLY: they fall back through the Nunito stack so CJK and body copy stay
-  on `--font-body`. NO eyebrow labels except the hero's single one; NO ribbon on
-  the homepage (ribbon `Title` + Nunito display stay for content pages).
+- **HEAL hand-lettered faces (display + page chrome only).** `--font-script`:
+  Caveat (flowing script) — the wordmark + hero h1 + every `HomeSectionHeader`
+  h2 + closing h2, AND every content-page title (MarkdownArticle h1, TeamPage
+  h1/h2, the 404 "404" + heading). `--font-hand`: Gochi Hand (marker print) —
+  nav sticker pills, sticker CTAs, step titles, badges, the article category
+  chip, TOC toggle, team member names, 404 suggestion pills. Self-hosted woff2
+  (latin + latin-ext) extracted from the HEAL reference bundle (OFL),
+  `font-display: swap`. Both are LATIN-ONLY: they fall back through the Nunito
+  stack so CJK and body copy stay on `--font-body`. All page titles in the
+  registry are English, so Caveat renders them; member names fall back per-glyph
+  for any CJK. NO eyebrow labels except the hero's single one; NO ribbon
+  (`Title` / `ac-ribbon` is retired from shipped pages but kept available). The
+  Markdown PROSE body never adopts the hand faces: it stays on the readable
+  `markdown.css` register (Nunito/system) so dense technical copy stays legible.
 - Hero h1 `font-script clamp(3rem → 5.75rem)`; section h2 `font-script
   clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
   descender clearance.
@@ -86,12 +92,18 @@ always pair it with a `bg-*` utility on the same element.
 
 - Buttons (content pages): pill, 3D press rail (`shadow-btn-3d*`), primary deep
   teal (`Button.tsx`).
-- **HEAL sticker family (homepage).** `.heal-sticker`: 2.5px `--color-sticker-ink`
-  outline + hard offset `--shadow-sticker` (no blur) + per-element wonky radius
-  and tilt via `--rot`. `.heal-frame`: solid outline + dashed inner matte.
-  `.heal-grid`: the notebook grid. Helpers (tilt/radius cycling, `ctaClasses`)
-  live in `src/shared/styles/heal.ts`; nav pills, CTAs, tiles, badges all use
-  them. Resting tilt + hover lift on GSAP-animated stickers require
-  `clearProps:"transform"` so the inline tween transform does not pin them.
+- **HEAL sticker family.** `.heal-sticker`: 2.5px `--color-sticker-ink` outline +
+  hard offset `--shadow-sticker` (no blur) + per-element wonky radius and tilt
+  via `--rot`, WITH hover-lift / press feedback (interactive: nav pills, CTAs,
+  tiles, 404 suggestion pills). `.heal-cutout`: the same outline + shadow + tilt
+  but NO hover/press, for static reading surfaces and labels (the article prose
+  page, the TOC aside, the category chip, team roster cards, empty states) so
+  they do not imply a false click affordance. `.heal-frame`: solid outline +
+  dashed inner matte. `.heal-grid`: the notebook grid; content pages wrap their
+  whole area in `min-h-screen bg-page heal-grid` so short pages show no grid
+  seam. Helpers (tilt/radius cycling, `ctaClasses`, `stickerStyle`,
+  `stickerStyleRaw`) live in `src/shared/styles/heal.ts`. Resting tilt + hover
+  lift on GSAP-animated stickers require `clearProps:"transform"` so the inline
+  tween transform does not pin them.
 - Icons: Phosphor, named imports only (audit-enforced), duotone default.
 - No emoji anywhere (audit-enforced). PawPrint replaces arrow glyphs.

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CaretDown, CaretRight } from "@phosphor-icons/react";
-import { Card } from "@/shared/components/Card";
 import { Icon } from "@/shared/components/Icon";
+import { stickerStyle } from "@/shared/styles/heal";
 import type { TocItem } from "./markdownService";
 
 interface ArticleTableOfContentsProps {
@@ -15,7 +15,7 @@ function TocList({ items }: { items: TocItem[] }) {
         <li key={item.url}>
           <a
             href={item.url}
-            className="block rounded-min px-2 py-1 text-sm text-ink-soft transition hover:bg-primary-soft hover:text-primary-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+            className="block rounded-[10px] px-2 py-1 text-sm text-ink-soft transition hover:bg-app-orange-soft hover:text-sticker-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
           >
             {item.title}
           </a>
@@ -38,18 +38,16 @@ export function ArticleTableOfContents({ items }: ArticleTableOfContentsProps) {
   if (items.length === 0) return null;
 
   return (
-    <Card
-      compact
-      className="border-2 border-border"
-      // Card is a <div>; the contained nav carries the landmark + label.
-    >
+    // A <div>; the contained nav carries the landmark + label. Sits as a sticker
+    // cutout pasted into the notebook margin (static tilt, no hover-lift).
+    <div className="heal-cutout bg-page p-4" style={stickerStyle(2)}>
       <nav aria-label="Table of contents">
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="toc-list"
-          className="flex w-full items-center justify-between rounded-min text-sm font-semibold text-ink transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+          className="flex w-full items-center justify-between rounded-[10px] font-hand text-base text-sticker-ink transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
         >
           On this page
           <Icon as={open ? CaretDown : CaretRight} size="sm" aria-hidden />
@@ -60,6 +58,6 @@ export function ArticleTableOfContents({ items }: ArticleTableOfContentsProps) {
           </div>
         ) : null}
       </nav>
-    </Card>
+    </div>
   );
 }

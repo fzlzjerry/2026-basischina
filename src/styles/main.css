@@ -326,6 +326,18 @@
     box-shadow: var(--shadow-sticker-active);
   }
 
+  /* Static cutout: the sticker look (bold outline + hard offset shadow + a small
+     per-element tilt) WITHOUT the hover-lift / press feedback. For calm reading
+     surfaces and labels that should sit still — the article page, the "On this
+     page" aside, the category chip, the team roster cards, the 404. Drive --rot
+     and an inline wonky border-radius per element, exactly like .heal-sticker. */
+  .heal-cutout {
+    --rot: 0deg;
+    transform: rotate(var(--rot));
+    border: 2.5px solid var(--color-sticker-ink);
+    box-shadow: var(--shadow-sticker);
+  }
+
   /* Hand-drawn frame: a solid sticker outline with a second, dashed inner rule
      a few px in — the matte border of a sketchbook panel. */
   .heal-frame {

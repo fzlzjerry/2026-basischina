@@ -22,8 +22,11 @@ abstract "DNA / code of life" science site.
   tiles, at the porthole, sunset duo).
 - **Visual register (homepage, since 2026-06-18): hand-drawn "HEAL" lab-notebook**
   — graph-paper canvas (synbio = lab notebook), Caveat/Gochi-Hand hand-lettering,
-  sticker-cutout shapes (bold outline, hard offset shadow, wonky radius). Content
-  pages still use the rounded Animal-Crossing register. See DESIGN.md.
+  sticker-cutout shapes (bold outline, hard offset shadow, wonky radius). Since
+  2026-06-18 the content pages adopt the same register in their CHROME (Caveat
+  page titles, sticker category chips / roster cards / TOC, grid backdrop) while
+  the prose body keeps its readable Animal-Crossing markdown styling. See
+  DESIGN.md.
 - Voice: warm, plain-language, gently playful. "Healthier, happier companions."
 - 温暖友好 (warm & friendly), genuinely 可爱 (cute) AND 有设计感 (designed):
   committed color, depth/overlap in scenes, big rounded display type.
