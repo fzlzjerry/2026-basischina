@@ -6,62 +6,204 @@ date: 2026-05-01
 tags: [modeling, dry-lab, ode, simulation, parameters]
 ---
 
-This page explains our model so that anyone, regardless of background, can follow its logic. We describe the assumptions, the data and parameters behind it, the results it produced, and how those results steered our wet-lab and design decisions.
+This page is a living demonstration of every Markdown feature the wiki renderer
+supports. Use it as an authoring reference: anything shown below renders the same
+way on any article page, because all pages share one rendering pipeline.
 
-> **Gold Medal — Modeling.** Convince the judges your model is useful, well-documented, and that it informed your project design. See the [Medals page](https://competition.igem.org/judging/medals) for details.
+The renderer enables "smart typography", so straight quotes become curly ones,
+`--` becomes an en dash (pages 3--9), `---` becomes an em dash --- like this ---
+and three dots fold into an ellipsis... Symbols such as (c), (tm) and (r) are
+converted automatically. Headings below are collected into the table of contents
+on the side, so this page also exercises the contents navigation.
 
-## Overview and purpose
+## Text and inline formatting
 
-State, in one or two sentences, the question your model answers (e.g., "How does inducer concentration set steady-state reporter output?"). Then explain why a computational model was the right tool: it lets you predict behavior, choose experimental conditions, and avoid costly trial-and-error at the bench.
+You can write **bold text**, _italic text_, **_bold italic text_**, and
+~~strikethrough~~. Technical terms read well as `inline code`, for example the
+`processMarkdown()` entry point or an environment variable like `VITE_BASE_PATH`.
 
-## Assumptions
+Links come in three forms. An **internal** link is rewritten under the
+deployment base path automatically — see the [Team page](/team). An **external**
+link is hardened with `target="_blank"` and `rel="noopener noreferrer"`, for
+example the [iGEM competition](https://igem.org). A bare URL is auto-linked too:
+https://2026.igem.wiki/basis-china.
 
-List every simplifying assumption so readers can judge the model's scope:
+## Lists
 
-- Describe the spatial assumption (e.g., a well-mixed culture, so concentrations are uniform).
-- State which species are modeled and which are held constant.
-- Note timescale separation (e.g., transcription/translation lumped into one production term).
-- Record boundary conditions and initial values, and why they are reasonable.
+Unordered lists nest cleanly:
 
-## Governing equations
+- Wet lab
+  - Strain construction
+  - Characterisation
+    - Plate reader assays
+    - Flow cytometry
+- Dry lab
+  - Modelling
+  - Software tooling
 
-We model regulated protein production with a Hill activation term balanced by first-order degradation and dilution:
+Ordered lists keep their numbering, and the two kinds can mix:
+
+1. Define the design goal.
+2. Build the genetic circuit.
+   - Choose a chassis.
+   - Assemble the parts.
+3. Measure, then iterate.
+
+## Callouts and blockquotes
+
+Blockquotes double as callouts. The wiki convention is a bold lead-in label:
+
+> **Note.** This is the standard callout style used across the wiki for medal
+> criteria, safety reminders, and key takeaways.
+
+Quotes can nest, and may contain other formatting:
+
+> "Engineering biology is about making the unpredictable _measurable_."
+>
+> > A nested quote, attributed to the team's first design review.
+
+## Tables
+
+Pipe tables support per-column alignment — left, centre, and right:
+
+| Part      |         Function          | Length (bp) |
+| :-------- | :-----------------------: | ----------: |
+| BBa_R0010 | LacI-repressible promoter |         200 |
+| BBa_B0034 |   Ribosome binding site   |          12 |
+| BBa_E0040 |       GFP reporter        |         720 |
+| BBa_B0015 |     Double terminator     |         129 |
+
+## Code blocks
+
+Fenced code blocks are syntax-highlighted on the client (Prism) and get an
+automatic "Copy" button. The renderer ships grammars for several languages.
+
+```python
+def hill_activation(ligand, k_d, n):
+    """Fractional occupancy under cooperative binding."""
+    return ligand**n / (k_d**n + ligand**n)
+
+
+print(hill_activation(ligand=2.0, k_d=1.0, n=2))
+```
+
+```typescript
+import { processMarkdown } from "@/features/content/markdownService";
+
+export function renderArticle(raw: string): string {
+  const { html, toc } = processMarkdown(raw);
+  return `${toc.length} sections · ${html.length} bytes`;
+}
+```
+
+```bash
+bun run validate:pages && bun run type-check
+bun run build
+```
+
+```sql
+SELECT part_id, name, length_bp
+FROM registry_parts
+WHERE chassis = 'E. coli'
+ORDER BY length_bp DESC
+LIMIT 5;
+```
+
+```json
+{
+  "part": "BBa_E0040",
+  "type": "reporter",
+  "excitation_nm": 488,
+  "emission_nm": 509
+}
+```
+
+```yaml
+strain: DH5-alpha
+plasmid: pSB1C3
+antibiotic: chloramphenicol
+induction:
+  inducer: IPTG
+  concentration_mM: 1.0
+```
+
+## Math
+
+Inline math sits in running text: the Michaelis constant $K_m$ is the substrate
+concentration $[S]$ at which the rate is half of $V_{max}$. Display equations are
+centred on their own line and rendered at build time, so they appear without any
+client JavaScript:
 
 $$
-\frac{dP}{dt} = \beta\,\frac{[S]^{n}}{K^{n} + [S]^{n}} - (\gamma + \mu)\,P
+v = \frac{V_{max}\,[S]}{K_m + [S]}
+\qquad\Longrightarrow\qquad
+\theta = \frac{[L]^{\,n}}{K_d^{\,n} + [L]^{\,n}}
 $$
 
-Here $P$ is the protein concentration and $[S]$ is the inducer concentration. The first term captures production; the second captures loss. At steady state $dP/dt = 0$, giving a closed-form prediction the team can compare directly against measured fluorescence.
+## Diagrams
 
-## Parameters and data
+Fenced `mermaid` blocks are rendered to SVG on the client. A flowchart:
 
-Document each parameter, its source, and its uncertainty. Replace the placeholder values with your fitted or literature values and cite them in [References](#references).
+```mermaid
+flowchart LR
+  A[Input signal] --> B[Engineered circuit]
+  B --> C{Threshold?}
+  C -- yes --> D[Reporter ON]
+  C -- no --> E[Reporter OFF]
+```
 
-| Symbol   | Meaning                          | Value | Units    |
-| -------- | -------------------------------- | ----- | -------- |
-| $\beta$  | Maximal production rate          | TBD   | nM/min   |
-| $K$      | Half-activation inducer level    | TBD   | nM       |
-| $n$      | Hill coefficient (cooperativity) | TBD   | unitless |
-| $\gamma$ | Protein degradation rate         | TBD   | 1/min    |
-| $\mu$    | Growth-dilution rate             | TBD   | 1/min    |
+And a sequence diagram:
 
-Briefly state how each value was obtained: literature, calibration experiments, or parameter fitting to your own data.
+```mermaid
+sequenceDiagram
+  participant L as Ligand
+  participant R as Receptor
+  participant G as Reporter gene
+  L->>R: bind
+  R->>G: activate transcription
+  G-->>L: fluorescent readout
+```
 
-## Results
+## Figures
 
-Summarize the model output and validate it against experiment:
+Images are referenced with root-relative paths and rewritten under the base path
+automatically:
 
-1. Present the predicted dose-response or time-course curve and describe its shape.
-2. Overlay measured data points and report goodness-of-fit (e.g., R-squared or RMSE).
-3. State the key quantitative finding (e.g., the inducer level for half-maximal output).
-4. Note where prediction and data diverge, and explain the likely cause.
+![A three-stage signal-to-readout diagram](/assets/markdown-demo-figure.svg)
 
-See the full experimental comparison on the [Results](/results) page.
+## Headings and rules
 
-## How the model informed the project
+Body headings render at three visible levels (the page title above owns the only
+`<h1>`); levels two and three feed the table of contents. In source they look
+like this:
 
-Explain concretely what changed because of the model: which construct or promoter you selected, which inducer concentrations you tested, or which design you ruled out. Link back to [Project Description](/project/description) and forward to wet-lab outcomes so the loop between modeling and experiment is clear.
+```markdown
+## Section (h2 — appears in the contents)
 
-## References
+### Subsection (h3 — nested in the contents)
 
-Cite all sources for equations, parameter values, and data using a consistent style. List literature parameters with DOIs, and note any values fitted from your own experiments along with the fitting method used.
+#### Detail (h4 — styled, not in the contents)
+```
+
+A horizontal rule separates major blocks:
+
+---
+
+That rule was written as three dashes on their own line.
+
+## Not supported here
+
+For safety and predictability, a few common Markdown extensions are **not**
+enabled in this renderer. The snippets below render as plain text rather than
+their intended widget — avoid them when authoring:
+
+```text
+Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
+Task lists:      - [ ] todo   - [x] done                (no checkboxes)
+Footnotes:       Here is a claim.[^1]                    (no footnote link)
+Definition list: Term\n: definition                      (no <dl>)
+Emoji shortcode: :rocket: :tada:                         (not converted)
+```
+
+If you need one of these, raise it with the dry-lab team rather than pasting raw
+HTML — the renderer disables HTML by design (security §22).

@@ -6,65 +6,204 @@ date: 2026-05-01
 tags: [entrepreneurship, business, commercialization, market, igem]
 ---
 
-This page lays out the business case for our project and the concrete steps we
-would take to move it from the lab toward a sustainable venture.
+This page is a living demonstration of every Markdown feature the wiki renderer
+supports. Use it as an authoring reference: anything shown below renders the same
+way on any article page, because all pages share one rendering pipeline.
 
-> **Best Entrepreneurship Special Prize.** Strong entrepreneurship work pairs a
-> credible value proposition with a realistic market, business model, and path to
-> funding. See the [Awards page](https://competition.igem.org/judging/awards) for
-> details.
+The renderer enables "smart typography", so straight quotes become curly ones,
+`--` becomes an en dash (pages 3--9), `---` becomes an em dash --- like this ---
+and three dots fold into an ellipsis... Symbols such as (c), (tm) and (r) are
+converted automatically. Headings below are collected into the table of contents
+on the side, so this page also exercises the contents navigation.
 
-## Value proposition
+## Text and inline formatting
 
-State, in one or two plain sentences, the problem we solve and for whom. Tie this
-back to our [Description](/description) and the evidence in our [Results](/results).
+You can write **bold text**, _italic text_, **_bold italic text_**, and
+~~strikethrough~~. Technical terms read well as `inline code`, for example the
+`processMarkdown()` entry point or an environment variable like `VITE_BASE_PATH`.
 
-- Describe the specific pain point and who feels it most acutely.
-- Explain how our solution is better, faster, or cheaper than current options.
-- Quantify the benefit where possible (cost saved, time saved, yield gained).
+Links come in three forms. An **internal** link is rewritten under the
+deployment base path automatically — see the [Team page](/team). An **external**
+link is hardened with `target="_blank"` and `rel="noopener noreferrer"`, for
+example the [iGEM competition](https://igem.org). A bare URL is auto-linked too:
+https://2026.igem.wiki/basis-china.
 
-## Market analysis
+## Lists
 
-Define the market clearly so the opportunity is credible, not hand-waved.
+Unordered lists nest cleanly:
 
-| Metric                              | What to report                           | Source                  |
-| ----------------------------------- | ---------------------------------------- | ----------------------- |
-| TAM (total addressable market)      | Estimate the full market size            | Cite an industry report |
-| SAM (serviceable available market)  | Narrow to who we can realistically reach | Cite or model it        |
-| SOM (serviceable obtainable market) | Share we could win in 3 years            | State your assumptions  |
-| Growth rate                         | Annual market growth                     | Cite a forecast         |
+- Wet lab
+  - Strain construction
+  - Characterisation
+    - Plate reader assays
+    - Flow cytometry
+- Dry lab
+  - Modelling
+  - Software tooling
 
-Also describe key competitors, substitutes, and what makes our position defensible.
+Ordered lists keep their numbering, and the two kinds can mix:
 
-## Business model
+1. Define the design goal.
+2. Build the genetic circuit.
+   - Choose a chassis.
+   - Assemble the parts.
+3. Measure, then iterate.
 
-Summarize how the venture creates and captures value.
+## Callouts and blockquotes
 
-- **Customer:** Identify the buyer and the end user (they may differ).
-- **Revenue:** Describe pricing (e.g., product sale, licensing, subscription, B2B).
-- **Cost structure:** List the main fixed and variable costs.
-- **Key partners:** Note suppliers, manufacturers, or regulatory partners.
+Blockquotes double as callouts. The wiki convention is a bold lead-in label:
 
-## SWOT analysis
+> **Note.** This is the standard callout style used across the wiki for medal
+> criteria, safety reminders, and key takeaways.
 
-| Strengths                                 | Weaknesses                               |
-| ----------------------------------------- | ---------------------------------------- |
-| List internal advantages (IP, team, data) | List gaps (scale-up, capital, expertise) |
-| **Opportunities**                         | **Threats**                              |
-| List market or policy tailwinds           | List competitors, regulation, or risks   |
+Quotes can nest, and may contain other formatting:
 
-## Go-to-market and funding
+> "Engineering biology is about making the unpredictable _measurable_."
+>
+> > A nested quote, attributed to the team's first design review.
 
-Outline the path from prototype to first customers and the capital required.
+## Tables
 
-1. Validate demand through pilot users or letters of intent.
-2. Define an MVP and the first beachhead customer segment.
-3. Plan regulatory and safety milestones; see [Safety and Security](/safety-and-security).
-4. Map funding stages (grants, accelerators, seed) and target raise per stage.
-5. Set 12-month traction goals (pilots signed, revenue, partnerships).
+Pipe tables support per-column alignment — left, centre, and right:
 
-## References
+| Part      |         Function          | Length (bp) |
+| :-------- | :-----------------------: | ----------: |
+| BBa_R0010 | LacI-repressible promoter |         200 |
+| BBa_B0034 |   Ribosome binding site   |          12 |
+| BBa_E0040 |       GFP reporter        |         720 |
+| BBa_B0015 |     Double terminator     |         129 |
 
-Cite all market reports, competitor data, pricing benchmarks, and frameworks
-used. Use a consistent citation style and keep every source listed in this
-section so figures can be verified.
+## Code blocks
+
+Fenced code blocks are syntax-highlighted on the client (Prism) and get an
+automatic "Copy" button. The renderer ships grammars for several languages.
+
+```python
+def hill_activation(ligand, k_d, n):
+    """Fractional occupancy under cooperative binding."""
+    return ligand**n / (k_d**n + ligand**n)
+
+
+print(hill_activation(ligand=2.0, k_d=1.0, n=2))
+```
+
+```typescript
+import { processMarkdown } from "@/features/content/markdownService";
+
+export function renderArticle(raw: string): string {
+  const { html, toc } = processMarkdown(raw);
+  return `${toc.length} sections · ${html.length} bytes`;
+}
+```
+
+```bash
+bun run validate:pages && bun run type-check
+bun run build
+```
+
+```sql
+SELECT part_id, name, length_bp
+FROM registry_parts
+WHERE chassis = 'E. coli'
+ORDER BY length_bp DESC
+LIMIT 5;
+```
+
+```json
+{
+  "part": "BBa_E0040",
+  "type": "reporter",
+  "excitation_nm": 488,
+  "emission_nm": 509
+}
+```
+
+```yaml
+strain: DH5-alpha
+plasmid: pSB1C3
+antibiotic: chloramphenicol
+induction:
+  inducer: IPTG
+  concentration_mM: 1.0
+```
+
+## Math
+
+Inline math sits in running text: the Michaelis constant $K_m$ is the substrate
+concentration $[S]$ at which the rate is half of $V_{max}$. Display equations are
+centred on their own line and rendered at build time, so they appear without any
+client JavaScript:
+
+$$
+v = \frac{V_{max}\,[S]}{K_m + [S]}
+\qquad\Longrightarrow\qquad
+\theta = \frac{[L]^{\,n}}{K_d^{\,n} + [L]^{\,n}}
+$$
+
+## Diagrams
+
+Fenced `mermaid` blocks are rendered to SVG on the client. A flowchart:
+
+```mermaid
+flowchart LR
+  A[Input signal] --> B[Engineered circuit]
+  B --> C{Threshold?}
+  C -- yes --> D[Reporter ON]
+  C -- no --> E[Reporter OFF]
+```
+
+And a sequence diagram:
+
+```mermaid
+sequenceDiagram
+  participant L as Ligand
+  participant R as Receptor
+  participant G as Reporter gene
+  L->>R: bind
+  R->>G: activate transcription
+  G-->>L: fluorescent readout
+```
+
+## Figures
+
+Images are referenced with root-relative paths and rewritten under the base path
+automatically:
+
+![A three-stage signal-to-readout diagram](/assets/markdown-demo-figure.svg)
+
+## Headings and rules
+
+Body headings render at three visible levels (the page title above owns the only
+`<h1>`); levels two and three feed the table of contents. In source they look
+like this:
+
+```markdown
+## Section (h2 — appears in the contents)
+
+### Subsection (h3 — nested in the contents)
+
+#### Detail (h4 — styled, not in the contents)
+```
+
+A horizontal rule separates major blocks:
+
+---
+
+That rule was written as three dashes on their own line.
+
+## Not supported here
+
+For safety and predictability, a few common Markdown extensions are **not**
+enabled in this renderer. The snippets below render as plain text rather than
+their intended widget — avoid them when authoring:
+
+```text
+Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
+Task lists:      - [ ] todo   - [x] done                (no checkboxes)
+Footnotes:       Here is a claim.[^1]                    (no footnote link)
+Definition list: Term\n: definition                      (no <dl>)
+Emoji shortcode: :rocket: :tada:                         (not converted)
+```
+
+If you need one of these, raise it with the dry-lab team rather than pasting raw
+HTML — the renderer disables HTML by design (security §22).

@@ -6,77 +6,204 @@ date: 2026-05-01
 tags: [hardware, dry-lab, open-source, igem, devices]
 ---
 
-This page documents the hardware our team designed to make synthetic biology
-faster, cheaper, and more accessible, covering the design, bill of materials,
-build instructions, validation, and open documentation.
+This page is a living demonstration of every Markdown feature the wiki renderer
+supports. Use it as an authoring reference: anything shown below renders the same
+way on any article page, because all pages share one rendering pipeline.
 
-> **Best Hardware prize.** This page supports our entry for the Best Hardware
-> special prize: a documented, reproducible device that advances synthetic
-> biology. See the
-> [Awards page](https://competition.igem.org/judging/awards) for criteria.
+The renderer enables "smart typography", so straight quotes become curly ones,
+`--` becomes an en dash (pages 3--9), `---` becomes an em dash --- like this ---
+and three dots fold into an ellipsis... Symbols such as (c), (tm) and (r) are
+converted automatically. Headings below are collected into the table of contents
+on the side, so this page also exercises the contents navigation.
 
-## Design
+## Text and inline formatting
 
-Summarize what the device does and why existing tools fall short, anchored in a
-concrete need from your wet lab or community.
+You can write **bold text**, _italic text_, **_bold italic text_**, and
+~~strikethrough~~. Technical terms read well as `inline code`, for example the
+`processMarkdown()` entry point or an environment variable like `VITE_BASE_PATH`.
 
-- **Problem.** Describe the bottleneck the hardware removes (cost, throughput,
-  precision, or accessibility).
-- **Function.** Explain the core operating principle in one or two sentences.
-- **Architecture.** Outline the subsystems (sensing, actuation, control, power,
-  enclosure) and how they connect.
+Links come in three forms. An **internal** link is rewritten under the
+deployment base path automatically — see the [Team page](/team). An **external**
+link is hardened with `target="_blank"` and `rel="noopener noreferrer"`, for
+example the [iGEM competition](https://igem.org). A bare URL is auto-linked too:
+https://2026.igem.wiki/basis-china.
 
-Include CAD renders, schematics, and a labeled photo. Link related work on the
-[Measurement](/measurement) and [Contribution](/contribution) pages.
+## Lists
 
-## Bill of materials
+Unordered lists nest cleanly:
 
-List every component needed to reproduce the build. Replace the rows below with
-your actual parts, quantities, and sourcing notes.
+- Wet lab
+  - Strain construction
+  - Characterisation
+    - Plate reader assays
+    - Flow cytometry
+- Dry lab
+  - Modelling
+  - Software tooling
 
-| Component                  | Qty | Notes                                    |
-| -------------------------- | --- | ---------------------------------------- |
-| Microcontroller board      | 1   | Describe model and firmware target       |
-| Sensor module              | 2   | Specify range, accuracy, and interface   |
-| Actuator / pump / heater   | 1   | Note voltage, current, and driver needed |
-| 3D-printed enclosure       | 1   | Material, infill, and print time         |
-| Power supply               | 1   | Voltage, current rating, and connector   |
-| Misc. wiring and fasteners | 1   | Consumables; estimate total cost         |
+Ordered lists keep their numbering, and the two kinds can mix:
 
-State the total approximate cost and any specialized tools required.
+1. Define the design goal.
+2. Build the genetic circuit.
+   - Choose a chassis.
+   - Assemble the parts.
+3. Measure, then iterate.
 
-## Build instructions
+## Callouts and blockquotes
 
-Provide a numbered, reproducible procedure another team can follow:
+Blockquotes double as callouts. The wiki convention is a bold lead-in label:
 
-1. Print and post-process the enclosure parts.
-2. Assemble the electronics on a breadboard and verify connections.
-3. Flash the firmware and confirm serial communication.
-4. Mount components into the enclosure and route wiring.
-5. Calibrate sensors against a known standard.
-6. Run the end-to-end self-test described below.
+> **Note.** This is the standard callout style used across the wiki for medal
+> criteria, safety reminders, and key takeaways.
 
-## Validation
+Quotes can nest, and may contain other formatting:
 
-Show that the hardware works and meets its design targets.
+> "Engineering biology is about making the unpredictable _measurable_."
+>
+> > A nested quote, attributed to the team's first design review.
 
-- **Functional tests.** Pass/fail checks for each subsystem.
-- **Accuracy.** Measured vs. expected values with error bars.
-- **Reliability.** Repeat runs, uptime, or failure modes observed.
-- **Comparison.** Benchmark against the manual or commercial alternative.
+## Tables
 
-Include plots, raw data tables, and a brief discussion of limitations.
+Pipe tables support per-column alignment — left, centre, and right:
 
-## Open documentation
+| Part      |         Function          | Length (bp) |
+| :-------- | :-----------------------: | ----------: |
+| BBa_R0010 | LacI-repressible promoter |         200 |
+| BBa_B0034 |   Ribosome binding site   |          12 |
+| BBa_E0040 |       GFP reporter        |         720 |
+| BBa_B0015 |     Double terminator     |         129 |
 
-We release everything needed to rebuild and improve the device:
+## Code blocks
 
-- CAD files, schematics, firmware, and this BOM under an open license (e.g.,
-  CERN-OHL or MIT).
-- A public repository link and step-by-step assembly guide.
-- A versioned changelog so other teams can track improvements.
+Fenced code blocks are syntax-highlighted on the client (Prism) and get an
+automatic "Copy" button. The renderer ships grammars for several languages.
 
-## References
+```python
+def hill_activation(ligand, k_d, n):
+    """Fractional occupancy under cooperative binding."""
+    return ligand**n / (k_d**n + ligand**n)
 
-Cite datasheets, prior open-hardware projects, and papers that informed the
-design. Use a consistent style and keep all sources in this section.
+
+print(hill_activation(ligand=2.0, k_d=1.0, n=2))
+```
+
+```typescript
+import { processMarkdown } from "@/features/content/markdownService";
+
+export function renderArticle(raw: string): string {
+  const { html, toc } = processMarkdown(raw);
+  return `${toc.length} sections · ${html.length} bytes`;
+}
+```
+
+```bash
+bun run validate:pages && bun run type-check
+bun run build
+```
+
+```sql
+SELECT part_id, name, length_bp
+FROM registry_parts
+WHERE chassis = 'E. coli'
+ORDER BY length_bp DESC
+LIMIT 5;
+```
+
+```json
+{
+  "part": "BBa_E0040",
+  "type": "reporter",
+  "excitation_nm": 488,
+  "emission_nm": 509
+}
+```
+
+```yaml
+strain: DH5-alpha
+plasmid: pSB1C3
+antibiotic: chloramphenicol
+induction:
+  inducer: IPTG
+  concentration_mM: 1.0
+```
+
+## Math
+
+Inline math sits in running text: the Michaelis constant $K_m$ is the substrate
+concentration $[S]$ at which the rate is half of $V_{max}$. Display equations are
+centred on their own line and rendered at build time, so they appear without any
+client JavaScript:
+
+$$
+v = \frac{V_{max}\,[S]}{K_m + [S]}
+\qquad\Longrightarrow\qquad
+\theta = \frac{[L]^{\,n}}{K_d^{\,n} + [L]^{\,n}}
+$$
+
+## Diagrams
+
+Fenced `mermaid` blocks are rendered to SVG on the client. A flowchart:
+
+```mermaid
+flowchart LR
+  A[Input signal] --> B[Engineered circuit]
+  B --> C{Threshold?}
+  C -- yes --> D[Reporter ON]
+  C -- no --> E[Reporter OFF]
+```
+
+And a sequence diagram:
+
+```mermaid
+sequenceDiagram
+  participant L as Ligand
+  participant R as Receptor
+  participant G as Reporter gene
+  L->>R: bind
+  R->>G: activate transcription
+  G-->>L: fluorescent readout
+```
+
+## Figures
+
+Images are referenced with root-relative paths and rewritten under the base path
+automatically:
+
+![A three-stage signal-to-readout diagram](/assets/markdown-demo-figure.svg)
+
+## Headings and rules
+
+Body headings render at three visible levels (the page title above owns the only
+`<h1>`); levels two and three feed the table of contents. In source they look
+like this:
+
+```markdown
+## Section (h2 — appears in the contents)
+
+### Subsection (h3 — nested in the contents)
+
+#### Detail (h4 — styled, not in the contents)
+```
+
+A horizontal rule separates major blocks:
+
+---
+
+That rule was written as three dashes on their own line.
+
+## Not supported here
+
+For safety and predictability, a few common Markdown extensions are **not**
+enabled in this renderer. The snippets below render as plain text rather than
+their intended widget — avoid them when authoring:
+
+```text
+Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
+Task lists:      - [ ] todo   - [x] done                (no checkboxes)
+Footnotes:       Here is a claim.[^1]                    (no footnote link)
+Definition list: Term\n: definition                      (no <dl>)
+Emoji shortcode: :rocket: :tada:                         (not converted)
+```
+
+If you need one of these, raise it with the dry-lab team rather than pasting raw
+HTML — the renderer disables HTML by design (security §22).

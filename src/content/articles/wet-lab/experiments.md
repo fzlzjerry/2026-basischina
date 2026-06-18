@@ -6,74 +6,204 @@ date: 2026-05-01
 tags: [experiments, protocols, wet-lab, reproducibility, methods]
 ---
 
-This page records the wet-lab research behind our project, the experiments we ran, and the protocols we followed. Our aim is to give other teams everything they need to reproduce the work and build on it.
+This page is a living demonstration of every Markdown feature the wiki renderer
+supports. Use it as an authoring reference: anything shown below renders the same
+way on any article page, because all pages share one rendering pipeline.
 
-> **Bronze Medal Criterion — Documentation.** Describe the experiments and
-> protocols you carried out in enough detail that another team could repeat them.
-> See the [Medals page](https://competition.igem.org/judging/medals) for details.
+The renderer enables "smart typography", so straight quotes become curly ones,
+`--` becomes an en dash (pages 3--9), `---` becomes an em dash --- like this ---
+and three dots fold into an ellipsis... Symbols such as (c), (tm) and (r) are
+converted automatically. Headings below are collected into the table of contents
+on the side, so this page also exercises the contents navigation.
 
-## Experimental overview
+## Text and inline formatting
 
-Summarize the experimental campaign before diving into individual protocols.
+You can write **bold text**, _italic text_, **_bold italic text_**, and
+~~strikethrough~~. Technical terms read well as `inline code`, for example the
+`processMarkdown()` entry point or an environment variable like `VITE_BASE_PATH`.
 
-- State the central hypothesis each experiment tested.
-- Describe the engineered constructs, chassis, and controls used.
-- Note how each experiment connects to your design-build-test-learn cycle.
-- Link day-to-day records to the [Notebook](/notebook) and quantitative
-  characterization to the [Measurement](/measurement) page.
+Links come in three forms. An **internal** link is rewritten under the
+deployment base path automatically — see the [Team page](/team). An **external**
+link is hardened with `target="_blank"` and `rel="noopener noreferrer"`, for
+example the [iGEM competition](https://igem.org). A bare URL is auto-linked too:
+https://2026.igem.wiki/basis-china.
 
-## Protocols overview
+## Lists
 
-List every protocol used so readers can find the exact method behind a result. Keep each protocol versioned and date-stamped in your [Notebook](/notebook).
+Unordered lists nest cleanly:
 
-| Protocol                              | Purpose                    | Key inputs               | Typical duration |
-| ------------------------------------- | -------------------------- | ------------------------ | ---------------- |
-| Plasmid assembly (Gibson/Golden Gate) | Build constructs           | Fragments, master mix    | ~2 h             |
-| Chemical transformation               | Introduce DNA into chassis | Competent cells, plasmid | Overnight        |
-| Colony PCR                            | Verify inserts             | Primers, polymerase      | ~3 h             |
-| Overnight culture + induction         | Express construct          | Inducer, media           | 12-18 h          |
-| Fluorescence/OD assay                 | Quantify output            | Plate reader             | ~6 h             |
+- Wet lab
+  - Strain construction
+  - Characterisation
+    - Plate reader assays
+    - Flow cytometry
+- Dry lab
+  - Modelling
+  - Software tooling
 
-For each protocol, document: reagents and catalog numbers, equipment, exact volumes and temperatures, incubation times, and expected outcomes plus troubleshooting notes.
+Ordered lists keep their numbering, and the two kinds can mix:
 
-## Detailed methods
+1. Define the design goal.
+2. Build the genetic circuit.
+   - Choose a chassis.
+   - Assemble the parts.
+3. Measure, then iterate.
 
-Write one subsection per major experiment using the same template.
+## Callouts and blockquotes
 
-### Template for each experiment
+Blockquotes double as callouts. The wiki convention is a bold lead-in label:
 
-1. **Objective.** State what the experiment was designed to show.
-2. **Materials.** List strains, plasmids, reagents, and instruments.
-3. **Procedure.** Give numbered steps with precise parameters.
-4. **Controls.** Describe positive, negative, and blank controls.
-5. **Readout.** Define the measured variable and acquisition settings.
-6. **Result link.** Point to the analyzed data on the [Results](/results) page.
+> **Note.** This is the standard callout style used across the wiki for medal
+> criteria, safety reminders, and key takeaways.
 
-## Analysis snippet
+Quotes can nest, and may contain other formatting:
 
-Document how raw measurements are turned into reported values. Below is an example that normalizes fluorescence by optical density:
+> "Engineering biology is about making the unpredictable _measurable_."
+>
+> > A nested quote, attributed to the team's first design review.
+
+## Tables
+
+Pipe tables support per-column alignment — left, centre, and right:
+
+| Part      |         Function          | Length (bp) |
+| :-------- | :-----------------------: | ----------: |
+| BBa_R0010 | LacI-repressible promoter |         200 |
+| BBa_B0034 |   Ribosome binding site   |          12 |
+| BBa_E0040 |       GFP reporter        |         720 |
+| BBa_B0015 |     Double terminator     |         129 |
+
+## Code blocks
+
+Fenced code blocks are syntax-highlighted on the client (Prism) and get an
+automatic "Copy" button. The renderer ships grammars for several languages.
 
 ```python
-def normalize(fluorescence: list[float], od600: list[float]) -> list[float]:
-    """Return per-cell fluorescence (RFU/OD) for each well."""
-    return [f / od for f, od in zip(fluorescence, od600) if od > 0]
+def hill_activation(ligand, k_d, n):
+    """Fractional occupancy under cooperative binding."""
+    return ligand**n / (k_d**n + ligand**n)
 
-# Example: average normalized signal across replicates
-wells = normalize([1200, 1180, 1250], [0.42, 0.40, 0.45])
-print(round(sum(wells) / len(wells), 1))  # mean RFU/OD
+
+print(hill_activation(ligand=2.0, k_d=1.0, n=2))
 ```
 
-## Reproducibility checklist
+```typescript
+import { processMarkdown } from "@/features/content/markdownService";
 
-- [ ] Strain genotypes and plasmid maps are published.
-- [ ] All reagents list supplier and catalog or lot numbers.
-- [ ] Each protocol states exact volumes, times, and temperatures.
-- [ ] Controls and replicate counts are specified.
-- [ ] Instrument settings (gains, wavelengths) are recorded.
-- [ ] Raw data and analysis scripts are archived and linked.
+export function renderArticle(raw: string): string {
+  const { html, toc } = processMarkdown(raw);
+  return `${toc.length} sections · ${html.length} bytes`;
+}
+```
 
-## References
+```bash
+bun run validate:pages && bun run type-check
+bun run build
+```
 
-Cite kits, published protocols, and prior literature using a consistent style
-(e.g., numbered or author-date). Include manufacturer protocol versions and DOIs
-where available, and link any adapted methods back to their original source.
+```sql
+SELECT part_id, name, length_bp
+FROM registry_parts
+WHERE chassis = 'E. coli'
+ORDER BY length_bp DESC
+LIMIT 5;
+```
+
+```json
+{
+  "part": "BBa_E0040",
+  "type": "reporter",
+  "excitation_nm": 488,
+  "emission_nm": 509
+}
+```
+
+```yaml
+strain: DH5-alpha
+plasmid: pSB1C3
+antibiotic: chloramphenicol
+induction:
+  inducer: IPTG
+  concentration_mM: 1.0
+```
+
+## Math
+
+Inline math sits in running text: the Michaelis constant $K_m$ is the substrate
+concentration $[S]$ at which the rate is half of $V_{max}$. Display equations are
+centred on their own line and rendered at build time, so they appear without any
+client JavaScript:
+
+$$
+v = \frac{V_{max}\,[S]}{K_m + [S]}
+\qquad\Longrightarrow\qquad
+\theta = \frac{[L]^{\,n}}{K_d^{\,n} + [L]^{\,n}}
+$$
+
+## Diagrams
+
+Fenced `mermaid` blocks are rendered to SVG on the client. A flowchart:
+
+```mermaid
+flowchart LR
+  A[Input signal] --> B[Engineered circuit]
+  B --> C{Threshold?}
+  C -- yes --> D[Reporter ON]
+  C -- no --> E[Reporter OFF]
+```
+
+And a sequence diagram:
+
+```mermaid
+sequenceDiagram
+  participant L as Ligand
+  participant R as Receptor
+  participant G as Reporter gene
+  L->>R: bind
+  R->>G: activate transcription
+  G-->>L: fluorescent readout
+```
+
+## Figures
+
+Images are referenced with root-relative paths and rewritten under the base path
+automatically:
+
+![A three-stage signal-to-readout diagram](/assets/markdown-demo-figure.svg)
+
+## Headings and rules
+
+Body headings render at three visible levels (the page title above owns the only
+`<h1>`); levels two and three feed the table of contents. In source they look
+like this:
+
+```markdown
+## Section (h2 — appears in the contents)
+
+### Subsection (h3 — nested in the contents)
+
+#### Detail (h4 — styled, not in the contents)
+```
+
+A horizontal rule separates major blocks:
+
+---
+
+That rule was written as three dashes on their own line.
+
+## Not supported here
+
+For safety and predictability, a few common Markdown extensions are **not**
+enabled in this renderer. The snippets below render as plain text rather than
+their intended widget — avoid them when authoring:
+
+```text
+Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
+Task lists:      - [ ] todo   - [x] done                (no checkboxes)
+Footnotes:       Here is a claim.[^1]                    (no footnote link)
+Definition list: Term\n: definition                      (no <dl>)
+Emoji shortcode: :rocket: :tada:                         (not converted)
+```
+
+If you need one of these, raise it with the dry-lab team rather than pasting raw
+HTML — the renderer disables HTML by design (security §22).

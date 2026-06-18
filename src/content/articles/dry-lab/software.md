@@ -6,83 +6,204 @@ date: 2026-05-01
 tags: [software, dry-lab, open-source, tools, igem]
 ---
 
-This page documents the software tool our team built to streamline a recurring
-synthetic-biology workflow. We cover the problem it solves, its features and
-architecture, and how anyone can install and run it.
+This page is a living demonstration of every Markdown feature the wiki renderer
+supports. Use it as an authoring reference: anything shown below renders the same
+way on any article page, because all pages share one rendering pipeline.
 
-> **Best Software Tool — Special Prize.** Describe software you developed that
-> makes synthetic biology easier, faster, better, or more accessible. See the
-> [Awards page](https://competition.igem.org/judging/awards) for details.
+The renderer enables "smart typography", so straight quotes become curly ones,
+`--` becomes an en dash (pages 3--9), `---` becomes an em dash --- like this ---
+and three dots fold into an ellipsis... Symbols such as (c), (tm) and (r) are
+converted automatically. Headings below are collected into the table of contents
+on the side, so this page also exercises the contents navigation.
 
-## The problem
+## Text and inline formatting
 
-Describe the specific pain point you observed in your own [wet lab](/wet-lab) or
-in the wider community. Ground it in concrete evidence:
+You can write **bold text**, _italic text_, **_bold italic text_**, and
+~~strikethrough~~. Technical terms read well as `inline code`, for example the
+`processMarkdown()` entry point or an environment variable like `VITE_BASE_PATH`.
 
-- What manual, error-prone, or slow step does the tool replace?
-- Who experiences this problem (your team, other iGEM teams, educators)?
-- Why do existing tools fall short for this use case?
+Links come in three forms. An **internal** link is rewritten under the
+deployment base path automatically — see the [Team page](/team). An **external**
+link is hardened with `target="_blank"` and `rel="noopener noreferrer"`, for
+example the [iGEM competition](https://igem.org). A bare URL is auto-linked too:
+https://2026.igem.wiki/basis-china.
 
-State the problem in one sentence a non-specialist can understand, then expand
-with the data or interviews from [Human Practices](/human-practices) that
-motivated the build.
+## Lists
 
-## Features
+Unordered lists nest cleanly:
 
-List the capabilities your tool delivers. Keep each item user-facing and
-verifiable.
+- Wet lab
+  - Strain construction
+  - Characterisation
+    - Plate reader assays
+    - Flow cytometry
+- Dry lab
+  - Modelling
+  - Software tooling
 
-| Feature            | What it does         | Who benefits |
-| ------------------ | -------------------- | ------------ |
-| Describe feature 1 | Describe the outcome | Target user  |
-| Describe feature 2 | Describe the outcome | Target user  |
-| Describe feature 3 | Describe the outcome | Target user  |
+Ordered lists keep their numbering, and the two kinds can mix:
 
-## Architecture
+1. Define the design goal.
+2. Build the genetic circuit.
+   - Choose a chassis.
+   - Assemble the parts.
+3. Measure, then iterate.
 
-Explain how the system is structured so others can extend it. The example below
-shows a typical layering; replace it with your real components.
+## Callouts and blockquotes
+
+Blockquotes double as callouts. The wiki convention is a bold lead-in label:
+
+> **Note.** This is the standard callout style used across the wiki for medal
+> criteria, safety reminders, and key takeaways.
+
+Quotes can nest, and may contain other formatting:
+
+> "Engineering biology is about making the unpredictable _measurable_."
+>
+> > A nested quote, attributed to the team's first design review.
+
+## Tables
+
+Pipe tables support per-column alignment — left, centre, and right:
+
+| Part      |         Function          | Length (bp) |
+| :-------- | :-----------------------: | ----------: |
+| BBa_R0010 | LacI-repressible promoter |         200 |
+| BBa_B0034 |   Ribosome binding site   |          12 |
+| BBa_E0040 |       GFP reporter        |         720 |
+| BBa_B0015 |     Double terminator     |         129 |
+
+## Code blocks
+
+Fenced code blocks are syntax-highlighted on the client (Prism) and get an
+automatic "Copy" button. The renderer ships grammars for several languages.
+
+```python
+def hill_activation(ligand, k_d, n):
+    """Fractional occupancy under cooperative binding."""
+    return ligand**n / (k_d**n + ligand**n)
+
+
+print(hill_activation(ligand=2.0, k_d=1.0, n=2))
+```
+
+```typescript
+import { processMarkdown } from "@/features/content/markdownService";
+
+export function renderArticle(raw: string): string {
+  const { html, toc } = processMarkdown(raw);
+  return `${toc.length} sections · ${html.length} bytes`;
+}
+```
+
+```bash
+bun run validate:pages && bun run type-check
+bun run build
+```
+
+```sql
+SELECT part_id, name, length_bp
+FROM registry_parts
+WHERE chassis = 'E. coli'
+ORDER BY length_bp DESC
+LIMIT 5;
+```
+
+```json
+{
+  "part": "BBa_E0040",
+  "type": "reporter",
+  "excitation_nm": 488,
+  "emission_nm": 509
+}
+```
+
+```yaml
+strain: DH5-alpha
+plasmid: pSB1C3
+antibiotic: chloramphenicol
+induction:
+  inducer: IPTG
+  concentration_mM: 1.0
+```
+
+## Math
+
+Inline math sits in running text: the Michaelis constant $K_m$ is the substrate
+concentration $[S]$ at which the rate is half of $V_{max}$. Display equations are
+centred on their own line and rendered at build time, so they appear without any
+client JavaScript:
+
+$$
+v = \frac{V_{max}\,[S]}{K_m + [S]}
+\qquad\Longrightarrow\qquad
+\theta = \frac{[L]^{\,n}}{K_d^{\,n} + [L]^{\,n}}
+$$
+
+## Diagrams
+
+Fenced `mermaid` blocks are rendered to SVG on the client. A flowchart:
 
 ```mermaid
 flowchart LR
-  A[User input / CLI] --> B[Core engine]
-  B --> C[Validation + algorithms]
-  C --> D[Output: files, reports, API]
+  A[Input signal] --> B[Engineered circuit]
+  B --> C{Threshold?}
+  C -- yes --> D[Reporter ON]
+  C -- no --> E[Reporter OFF]
 ```
 
-- **Language and stack.** State the language(s), key libraries, and runtime.
-- **Modules.** List the main modules and their responsibilities.
-- **Data flow.** Describe inputs, intermediate state, and outputs.
+And a sequence diagram:
 
-## How to run it
-
-Follow these steps to get started:
-
-1. Clone the repository and enter the directory.
-2. Install dependencies in a virtual environment.
-3. Run the tool against the bundled example input.
-
-```bash
-git clone https://github.com/your-org/your-tool.git
-cd your-tool
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
-your-tool run --input examples/sample.fasta --out results/
+```mermaid
+sequenceDiagram
+  participant L as Ligand
+  participant R as Receptor
+  participant G as Reporter gene
+  L->>R: bind
+  R->>G: activate transcription
+  G-->>L: fluorescent readout
 ```
 
-Document expected output and any configuration flags so results are
-reproducible. See [Results](/results) for benchmarks generated with this tool.
+## Figures
 
-## License and repository
+Images are referenced with root-relative paths and rewritten under the base path
+automatically:
 
-- **License.** Released under the MIT License (an OSI-approved open-source
-  license); update this if you choose another such as Apache-2.0 or GPL-3.0.
-- **Repository.** Source, issues, and contribution guidelines live at
-  `https://github.com/your-org/your-tool` (replace with your real URL).
-- **Reuse.** Note how other teams may install, cite, and adapt the tool.
+![A three-stage signal-to-readout diagram](/assets/markdown-demo-figure.svg)
 
-## References
+## Headings and rules
 
-Cite the libraries, datasets, algorithms, and papers your software builds on.
-Use a consistent citation style, link to each external source with a full
-`https://` URL, and credit any code you adapted from other iGEM teams.
+Body headings render at three visible levels (the page title above owns the only
+`<h1>`); levels two and three feed the table of contents. In source they look
+like this:
+
+```markdown
+## Section (h2 — appears in the contents)
+
+### Subsection (h3 — nested in the contents)
+
+#### Detail (h4 — styled, not in the contents)
+```
+
+A horizontal rule separates major blocks:
+
+---
+
+That rule was written as three dashes on their own line.
+
+## Not supported here
+
+For safety and predictability, a few common Markdown extensions are **not**
+enabled in this renderer. The snippets below render as plain text rather than
+their intended widget — avoid them when authoring:
+
+```text
+Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
+Task lists:      - [ ] todo   - [x] done                (no checkboxes)
+Footnotes:       Here is a claim.[^1]                    (no footnote link)
+Definition list: Term\n: definition                      (no <dl>)
+Emoji shortcode: :rocket: :tada:                         (not converted)
+```
+
+If you need one of these, raise it with the dry-lab team rather than pasting raw
+HTML — the renderer disables HTML by design (security §22).

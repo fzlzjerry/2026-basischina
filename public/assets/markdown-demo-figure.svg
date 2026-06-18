@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" role="img"
+     aria-labelledby="demo-fig-title demo-fig-desc" font-family="Nunito, 'Noto Sans SC', sans-serif">
+  <title id="demo-fig-title">Markdown demo figure</title>
+  <desc id="demo-fig-desc">A three-stage diagram — input signal, engineered circuit, measurable output — used to demonstrate inline images in the wiki Markdown renderer.</desc>
+
+  <rect x="0" y="0" width="800" height="360" rx="20" fill="#fdf7ec"/>
+  <rect x="0.5" y="0.5" width="799" height="359" rx="20" fill="none" stroke="#e7dcc4" stroke-width="1"/>
+
+  <text x="40" y="58" font-size="26" font-weight="800" fill="#3a2f23">Figure 1 — a sample inline figure</text>
+  <text x="40" y="86" font-size="16" fill="#8a7b66">Inline SVG referenced from Markdown via /assets, rewritten under the base path.</text>
+
+  <!-- Stage cards -->
+  <g>
+    <rect x="40"  y="140" width="200" height="120" rx="16" fill="#e6f9f6" stroke="#0d6f63" stroke-width="2"/>
+    <text x="140" y="195" text-anchor="middle" font-size="18" font-weight="800" fill="#0d6f63">Input signal</text>
+    <text x="140" y="222" text-anchor="middle" font-size="14" fill="#725d42">ligand / promoter</text>
+  </g>
+  <g>
+    <rect x="300" y="140" width="200" height="120" rx="16" fill="#f7f3df" stroke="#8a7b66" stroke-width="2"/>
+    <text x="400" y="195" text-anchor="middle" font-size="18" font-weight="800" fill="#794f27">Engineered circuit</text>
+    <text x="400" y="222" text-anchor="middle" font-size="14" fill="#725d42">gene network</text>
+  </g>
+  <g>
+    <rect x="560" y="140" width="200" height="120" rx="16" fill="#fdf0ea" stroke="#c0633f" stroke-width="2"/>
+    <text x="660" y="195" text-anchor="middle" font-size="18" font-weight="800" fill="#b4542f">Measured output</text>
+    <text x="660" y="222" text-anchor="middle" font-size="14" fill="#725d42">reporter / readout</text>
+  </g>
+
+  <!-- Arrows -->
+  <g stroke="#8a7b66" stroke-width="3" fill="none" marker-end="url(#arrow)">
+    <line x1="244" y1="200" x2="296" y2="200"/>
+    <line x1="504" y1="200" x2="556" y2="200"/>
+  </g>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a7b66"/>
+    </marker>
+  </defs>
+
+  <text x="400" y="318" text-anchor="middle" font-size="14" fill="#a99b85">BASIS-China · Markdown rendering reference</text>
+</svg>
