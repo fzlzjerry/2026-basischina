@@ -22,7 +22,7 @@ import "prismjs/themes/prism-tomorrow.css";
 // Favicon ships from public/ (no external host). Font preloads are NOT added
 // here: vite-react-ssg already injects a preload for every font asset in the
 // route manifest (including all Nunito weights) into the prerendered HTML.
-const faviconUrl = buildAssetUrl(wikiEnv.basePath, "favicon-catdog.svg");
+const faviconUrl = buildAssetUrl(wikiEnv.basePath, "favicon-heal.png");
 
 /**
  * App shell (§13): persistent layout only — skip link, navbar, route outlet,
@@ -37,7 +37,8 @@ export function AppShell() {
   return (
     <div className="flex min-h-screen flex-col">
       <Head>
-        <link rel="icon" href={faviconUrl} type="image/svg+xml" />
+        <link rel="icon" href={faviconUrl} type="image/png" />
+        <link rel="apple-touch-icon" href={faviconUrl} />
       </Head>
       <a
         href="#main-content"
