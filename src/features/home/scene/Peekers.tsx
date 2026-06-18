@@ -1,17 +1,16 @@
 /**
  * Small mascot cameos that keep the cat & dog IP alive below the fold —
- * a cat peeking over a tile edge, a big soft paw resting on a corner, and a
- * dog peeking around the molecule porthole. All decorative (aria-hidden) and
- * drawn in the same warm-outline register as the hero mascots.
+ * a cat peeking over a tile edge and a big soft paw resting on a corner. All
+ * decorative (aria-hidden) and drawn in the same warm-outline register as the
+ * hero mascots.
  *
- * The cat and dog carry quiet idle life (a slow bob + occasional blink), driven
- * by the consuming section's GSAP block. The outer <svg> keeps its Tailwind
- * placement transform; GSAP only ever touches the inner `js-*` groups, so the
- * two transform owners never fight (see DESIGN.md). PawCorner stays static.
+ * The cat carries quiet idle life (a slow bob + occasional blink), driven by the
+ * consuming section's GSAP block. The outer <svg> keeps its Tailwind placement
+ * transform; GSAP only ever touches the inner `js-*` groups, so the two
+ * transform owners never fight (see DESIGN.md). PawCorner stays static.
  */
 
 const CAT_OUTLINE = "#7a5230";
-const DOG_OUTLINE = "#27695a";
 
 /**
  * Cat peeking over an edge: ears + eyes + gripping paws. Place with
@@ -87,72 +86,6 @@ export function PawCorner({ className = "" }: { className?: string }) {
         <ellipse cx="52" cy="32" rx="11" ry="13" />
         <ellipse cx="78" cy="36" rx="11" ry="13" />
         <ellipse cx="97" cy="56" rx="10" ry="12" />
-      </g>
-    </svg>
-  );
-}
-
-/**
- * Dog peeking in from beside a round frame: just the happy face and a floppy
- * ear. Place at a porthole's lower-left with a slight tilt.
- */
-export function PeekingDog({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 150 140"
-      aria-hidden="true"
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <g
-        className="js-peek-dog"
-        stroke={DOG_OUTLINE}
-        strokeWidth="3.5"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      >
-        {/* floppy ear */}
-        <path
-          d="M38 42 C 18 50 14 92 30 116 C 44 122 56 106 54 84 C 52 60 50 48 38 42 Z"
-          fill="#6fc6ac"
-        />
-        {/* head */}
-        <circle cx="78" cy="78" r="48" fill="#92ddc6" />
-        {/* eye patch + eyes + cheeks (both sides, so the patch reads as a
-            patch and not a smudge) */}
-        <ellipse cx="64" cy="70" rx="15" ry="17" fill="#6fc6ac" stroke="none" />
-        <g stroke="none">
-          <g className="js-peek-dog-eyes">
-            <ellipse cx="64" cy="72" rx="7.5" ry="10" fill="#3a2e22" />
-            <ellipse cx="96" cy="72" rx="7.5" ry="10" fill="#3a2e22" />
-            <circle cx="67" cy="68" r="3" fill="#fff" />
-            <circle cx="99" cy="68" r="3" fill="#fff" />
-          </g>
-          <circle cx="46" cy="92" r="9" fill="#6fc6ac" opacity="0.6" />
-          <circle cx="112" cy="92" r="9" fill="#6fc6ac" opacity="0.6" />
-        </g>
-        {/* muzzle + nose + happy mouth */}
-        <ellipse
-          cx="82"
-          cy="100"
-          rx="26"
-          ry="19"
-          fill="#eafaf3"
-          stroke="none"
-        />
-        <ellipse
-          cx="82"
-          cy="93"
-          rx="8.5"
-          ry="6.5"
-          fill="#33473f"
-          stroke="none"
-        />
-        <path
-          d="M82 99 L 82 108 M82 108 q -9 9 -17 1 M82 108 q 9 9 17 1"
-          fill="none"
-          strokeWidth="3"
-        />
       </g>
     </svg>
   );

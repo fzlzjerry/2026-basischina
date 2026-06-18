@@ -11,8 +11,3 @@ renderer rewrites it under the base path automatically).
   1200×630). It is referenced by `src/config/seo.ts` (`defaultOgImage`). Until
   you add it, social share previews will fall back to no image. Override per page
   with `PageSEO.ogImage`.
-
-## Molecular data
-
-- Place `.sdf` / `.pdb` files used by the molecule viewer here (e.g.
-  `assets/molecules/example.sdf`).

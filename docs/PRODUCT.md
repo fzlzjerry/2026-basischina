@@ -19,7 +19,7 @@ abstract "DNA / code of life" science site.
 
 - **Identity: the cat (peach) & dog (teal) mascot duo IS the brand.** They
   appear in the hero scene and recur as cameos through the page (peeking over
-  tiles, at the porthole, sunset duo).
+  tiles, sunset duo).
 - **Visual register (homepage, since 2026-06-18): hand-drawn "HEAL" lab-notebook**
   — graph-paper canvas (synbio = lab notebook), Caveat/Gochi-Hand hand-lettering,
   sticker-cutout shapes (bold outline, hard offset shadow, wonky radius). Since

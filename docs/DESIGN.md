@@ -71,10 +71,9 @@ always pair it with a `bg-*` utility on the same element.
 - Scenes are EDGELESS on content surfaces: transparent SVG over CSS-painted
   architecture, gradients fade to transparent. EXCEPTION (homepage HEAL): the
   hero room scene sits inside a `.heal-frame` panel (a pasted-in illustration on
-  the notebook) with its own internal floor band; the molecule porthole is a
-  drawn circle (`border-sticker-ink` + hard shadow).
-- Mascot cameos: `Peekers.tsx` (PeekingCat, PawCorner, PeekingDog),
-  `SunsetDuo.tsx` (back-view duo), `StepSpots.tsx` (step illustrations).
+  the notebook) with its own internal floor band.
+- Mascot cameos: `Peekers.tsx` (PeekingCat, PawCorner), `SunsetDuo.tsx`
+  (back-view duo), `StepSpots.tsx` (step illustrations).
 
 ## Motion (GSAP, see `src/shared/motion/gsap.ts`)
 
