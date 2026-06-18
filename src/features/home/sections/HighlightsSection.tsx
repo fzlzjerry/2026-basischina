@@ -281,7 +281,7 @@ export function HighlightsSection() {
           })}
         </div>
       </div>
-      <SectionDivider fill="var(--color-room-wall)" />
+      <SectionDivider fill="var(--color-sunset-sky)" />
     </section>
   );
 }

@@ -26,10 +26,12 @@ the rules below in `check-all`.
 
 ## Page rhythm (homepage)
 
-Golden-hour room hero → mint `primary-soft` band → cream `page` → warm cream
-`room-wall` → drenched sunset band → brown scalloped footer. Adjacent sections
-interlock via `SectionDivider` (wave/scallop SVG, fill = NEXT section's bg
-token, fixed h-10/h-14 so no CLS).
+Golden-hour room hero → mint `primary-soft` band → cream `page` → drenched
+sunset band → brown scalloped footer. Adjacent sections interlock via
+`SectionDivider` (wave/scallop SVG, fill = NEXT section's bg token, fixed
+h-10/h-14 so no CLS). (A warm `room-wall` molecule-viewer beat sat between the
+cream and sunset bands until 2026-06-18, when the homepage molecule display was
+removed; the `room-*` scene tokens remain for content use.)
 
 **HEAL overlay (homepage, §20):** the homepage adopts a hand-drawn lab-notebook
 register over that colour rhythm. Every section pairs its bg token with

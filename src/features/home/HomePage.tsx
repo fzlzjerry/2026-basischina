@@ -3,7 +3,6 @@ import { PageHead } from "@/shared/components/PageHead";
 import { HeroSection } from "./sections/HeroSection";
 import { ApproachSection } from "./sections/ApproachSection";
 import { HighlightsSection } from "./sections/HighlightsSection";
-import { MoleculeSection } from "./sections/MoleculeSection";
 import { ClosingCtaSection } from "./sections/ClosingCtaSection";
 
 const page = requirePage("home");
@@ -19,7 +18,6 @@ export function HomePage() {
       <HeroSection />
       <ApproachSection />
       <HighlightsSection />
-      <MoleculeSection />
       <ClosingCtaSection />
     </>
   );
