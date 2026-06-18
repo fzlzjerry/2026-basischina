@@ -98,6 +98,22 @@ export function Footer() {
               </a>
               .
             </p>
+            {/* Credit for reused third-party assets (iGEM requires borrowed,
+                openly-licensed content to be attributed). Kept here, not on the
+                Attributions page, whose form is the only judged content. */}
+            <p>
+              Built with{" "}
+              <a
+                className="font-medium text-page underline transition hover:text-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
+                href="https://phosphoricons.com/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Phosphor Icons
+              </a>{" "}
+              (MIT) and the Caveat, Gochi Hand, and Nunito typefaces (SIL Open
+              Font License).
+            </p>
           </div>
         </div>
       </div>

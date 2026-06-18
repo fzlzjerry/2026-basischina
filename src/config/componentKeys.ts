@@ -8,7 +8,7 @@
  *
  * Keeping it free of React imports lets the Bun validation script use it.
  */
-export const componentKeys = ["home", "team"] as const;
+export const componentKeys = ["home", "team", "attributions"] as const;
 
 export type ComponentKey = (typeof componentKeys)[number];
 

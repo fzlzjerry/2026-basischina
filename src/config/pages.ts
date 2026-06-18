@@ -19,6 +19,7 @@ export type PageImporter = () => Promise<PageModule>;
 const importerByKey = {
   home: () => import("@/features/home/HomePage"),
   team: () => import("@/features/team/TeamPage"),
+  attributions: () => import("@/features/attributions/AttributionsPage"),
 } satisfies Record<ComponentKey, PageImporter>;
 
 export type MarkdownPageConfig = Extract<PageData, { kind: "markdown" }>;
