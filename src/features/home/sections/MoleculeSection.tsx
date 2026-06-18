@@ -99,7 +99,7 @@ export function MoleculeSection() {
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div className="js-reveal-up">
           <HomeSectionHeader
-            title="Molecules in motion"
+            title="The quiet stuff of life"
             lede="Synthetic biology is the engineering of molecular machines. Drag the model to rotate it and explore the structure from any angle."
           />
         </div>
