@@ -33,7 +33,7 @@ export function Footer() {
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <p className="text-lg font-bold text-page">
+              <p className="font-script text-3xl leading-none text-page">
                 <Link
                   to="/"
                   className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"

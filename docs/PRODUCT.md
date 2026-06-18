@@ -17,9 +17,13 @@ abstract "DNA / code of life" science site.
 
 ## Brand & tone
 
-- **Identity: cozy Animal-Crossing "猫猫狗狗"** — the cat (peach) & dog (teal)
-  mascot duo IS the brand. They appear in the hero room scene and recur as
-  cameos through the page (peeking over tiles, at the porthole, sunset duo).
+- **Identity: the cat (peach) & dog (teal) mascot duo IS the brand.** They
+  appear in the hero scene and recur as cameos through the page (peeking over
+  tiles, at the porthole, sunset duo).
+- **Visual register (homepage, since 2026-06-18): hand-drawn "HEAL" lab-notebook**
+  — graph-paper canvas (synbio = lab notebook), Caveat/Gochi-Hand hand-lettering,
+  sticker-cutout shapes (bold outline, hard offset shadow, wonky radius). Content
+  pages still use the rounded Animal-Crossing register. See DESIGN.md.
 - Voice: warm, plain-language, gently playful. "Healthier, happier companions."
 - 温暖友好 (warm & friendly), genuinely 可爱 (cute) AND 有设计感 (designed):
   committed color, depth/overlap in scenes, big rounded display type.

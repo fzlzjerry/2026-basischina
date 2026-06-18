@@ -136,7 +136,7 @@ export function EngineerSpot() {
 export function CareSpot() {
   return (
     <SpotSvg label="A cat sleeping peacefully under a small blanket">
-      <g strokeLinecap="round" strokeLinejoin="round">
+      <g className="js-nap-cat" strokeLinecap="round" strokeLinejoin="round">
         <ellipse cx="58" cy="98" rx="38" ry="7" fill="#9c6a44" opacity="0.15" />
         <path
           d="M30 86 C 28 96 46 102 62 99"

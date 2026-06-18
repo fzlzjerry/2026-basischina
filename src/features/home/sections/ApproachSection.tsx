@@ -1,6 +1,12 @@
 import { useRef } from "react";
 import { SectionDivider } from "@/shared/components/SectionDivider";
-import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
+import { stickerStyle } from "@/shared/styles/heal";
+import {
+  gsap,
+  ScrollTrigger,
+  registerGsap,
+  useGSAP,
+} from "@/shared/motion/gsap";
 import { HomeSectionHeader } from "../components/HomeSectionHeader";
 import { UnderstandSpot, EngineerSpot, CareSpot } from "../scene/StepSpots";
 
@@ -100,6 +106,30 @@ export function ApproachSection() {
             once: true,
           },
         });
+
+        // The sleeping cat in step 3 breathes: the one quiet idle beat in this
+        // section. Paused unless the section is on screen; reduced motion skips it.
+        const idle = gsap.timeline({ paused: true });
+        idle.to(".js-nap-cat", {
+          scaleY: 1.04,
+          scaleX: 1.015,
+          transformOrigin: "50% 100%",
+          duration: 3.4,
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true,
+        });
+        const idleVis = ScrollTrigger.create({
+          trigger: root.current,
+          start: "top bottom",
+          end: "bottom top",
+          onToggle: (self) => (self.isActive ? idle.play() : idle.pause()),
+        });
+
+        return () => {
+          idle.kill();
+          idleVis.kill();
+        };
       });
       return () => mm.revert();
     },
@@ -107,7 +137,7 @@ export function ApproachSection() {
   );
 
   return (
-    <section ref={root} className="bg-primary-soft">
+    <section ref={root} className="bg-primary-soft heal-grid">
       <div className="mx-auto max-w-5xl px-4 pt-20 sm:px-6 lg:px-8">
         <HomeSectionHeader
           className="js-approach-reveal"
@@ -175,10 +205,14 @@ export function ApproachSection() {
                 <span className="h-28 w-28">
                   <step.Spot />
                 </span>
-                <h3 className="mt-4 flex items-baseline gap-2 font-display text-2xl font-black text-ink">
-                  <span className="text-base font-bold text-primary-deep">
-                    {i + 1}
-                  </span>
+                <span
+                  className="heal-sticker mt-4 inline-flex h-9 w-9 items-center justify-center bg-app-orange font-hand text-lg leading-none text-sticker-ink"
+                  style={stickerStyle(i)}
+                  aria-hidden="true"
+                >
+                  {i + 1}
+                </span>
+                <h3 className="mt-3 font-hand text-2xl leading-none text-ink">
                   {step.title}
                 </h3>
                 <p className="mt-2 max-w-[34ch] text-ink-soft">{step.body}</p>

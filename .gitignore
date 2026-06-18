@@ -17,6 +17,9 @@ dist-ssr
 public/sitemap.xml
 public/robots.txt
 
+# Local design-QA screenshots (scripts/shot.ts); iGEM forbids committed binaries
+screenshots/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

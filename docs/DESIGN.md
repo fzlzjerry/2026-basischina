@@ -18,13 +18,24 @@ the rules below in `check-all`.
   (`sunset-sky`, `sunset` — both text-safe with ink; `sunset-deep` decoration
   ONLY, fails AA under body text).
 - Footer drenched brown `#794f27` with cream text.
+- **HEAL register accent (homepage):** `--color-app-orange #f0a868` (sticker
+  fill), `-soft` (hover tint), `-ink #9c5a1f` (orange-as-text, AA on cream).
+  `--color-sticker-ink #2f2417` is the bold cutout outline + label colour
+  (≥7:1 on cream and on orange). `--color-grid-line #aebfcb` is the notebook
+  grid. Orange is a NEW token, so it never collides with the two-teal rule.
 
 ## Page rhythm (homepage)
 
 Golden-hour room hero → mint `primary-soft` band → cream `page` → warm cream
-`surface` → drenched sunset band → brown scalloped footer. Adjacent sections
+`room-wall` → drenched sunset band → brown scalloped footer. Adjacent sections
 interlock via `SectionDivider` (wave/scallop SVG, fill = NEXT section's bg
 token, fixed h-10/h-14 so no CLS).
+
+**HEAL overlay (homepage, §20):** the homepage adopts a hand-drawn lab-notebook
+register over that colour rhythm. Every section pairs its bg token with
+`.heal-grid` (a faint blue-grey graph-paper grid, `multiply` blend, so it layers
+onto any tint and keeps the rhythm). `.heal-grid` sets ONLY the grid image —
+always pair it with a `bg-*` utility on the same element.
 
 ## Typography
 
@@ -33,18 +44,27 @@ token, fixed h-10/h-14 so no CLS).
   bundled by Vite. Fallbacks: ui-rounded / SF Pro Rounded / Hiragino Maru
   Gothic / Yuanti SC. "Noto Sans SC" stays name-only (system CJK covers stray
   Chinese; full CJK woff2 are multi-MB, do not self-host them).
-- Homepage headers: big left-aligned display (`HomeSectionHeader`), weight 900,
-  `clamp()` scales. NO eyebrow labels except the hero's single one; NO ribbon
-  on the homepage (ribbon `Title` stays for content pages).
-- Hero h1 `clamp(2.55rem → 5.25rem)`.
+- **HEAL hand-lettered faces (homepage display only).** `--font-script`: Caveat
+  (flowing script) — the wordmark + hero h1 + every `HomeSectionHeader` h2 +
+  closing h2. `--font-hand`: Gochi Hand (marker print) — nav sticker pills,
+  sticker CTAs, step titles, badges. Self-hosted woff2 (latin + latin-ext)
+  extracted from the HEAL reference bundle (OFL), `font-display: swap`. Both are
+  LATIN-ONLY: they fall back through the Nunito stack so CJK and body copy stay
+  on `--font-body`. NO eyebrow labels except the hero's single one; NO ribbon on
+  the homepage (ribbon `Title` + Nunito display stay for content pages).
+- Hero h1 `font-script clamp(3rem → 5.75rem)`; section h2 `font-script
+  clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
+  descender clearance.
 
 ## Illustration register
 
 - Inline SVG only (iGEM forbids binary media). Warm outlines (`#7a5230` cat,
   `#27695a` dog), round chibi shapes, big readable faces.
-- Scenes are EDGELESS: transparent SVG backgrounds over CSS-painted
-  architecture (hero floor bands), gradients fade to transparent. No framed
-  boxes around scenes.
+- Scenes are EDGELESS on content surfaces: transparent SVG over CSS-painted
+  architecture, gradients fade to transparent. EXCEPTION (homepage HEAL): the
+  hero room scene sits inside a `.heal-frame` panel (a pasted-in illustration on
+  the notebook) with its own internal floor band; the molecule porthole is a
+  drawn circle (`border-sticker-ink` + hard shadow).
 - Mascot cameos: `Peekers.tsx` (PeekingCat, PawCorner, PeekingDog),
   `SunsetDuo.tsx` (back-view duo), `StepSpots.tsx` (step illustrations).
 
@@ -64,6 +84,14 @@ token, fixed h-10/h-14 so no CLS).
 
 ## Components
 
-- Buttons: pill, 3D press rail (`shadow-btn-3d*`), primary deep teal.
+- Buttons (content pages): pill, 3D press rail (`shadow-btn-3d*`), primary deep
+  teal (`Button.tsx`).
+- **HEAL sticker family (homepage).** `.heal-sticker`: 2.5px `--color-sticker-ink`
+  outline + hard offset `--shadow-sticker` (no blur) + per-element wonky radius
+  and tilt via `--rot`. `.heal-frame`: solid outline + dashed inner matte.
+  `.heal-grid`: the notebook grid. Helpers (tilt/radius cycling, `ctaClasses`)
+  live in `src/shared/styles/heal.ts`; nav pills, CTAs, tiles, badges all use
+  them. Resting tilt + hover lift on GSAP-animated stickers require
+  `clearProps:"transform"` so the inline tween transform does not pin them.
 - Icons: Phosphor, named imports only (audit-enforced), duotone default.
 - No emoji anywhere (audit-enforced). PawPrint replaces arrow glyphs.

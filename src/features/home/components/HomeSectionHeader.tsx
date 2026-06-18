@@ -24,7 +24,7 @@ export function HomeSectionHeader({
   const centered = align === "center";
   return (
     <div className={`${centered ? "text-center" : "text-left"} ${className}`}>
-      <h2 className="font-display text-[clamp(2.1rem,1.45rem+2.2vw,3.4rem)] font-black leading-tight tracking-tight text-ink">
+      <h2 className="pb-1 font-script text-[clamp(2.6rem,1.7rem+3vw,4.25rem)] font-bold leading-[1.04] text-ink">
         {title}
       </h2>
       {lede ? (

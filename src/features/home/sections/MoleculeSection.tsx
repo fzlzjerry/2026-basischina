@@ -1,7 +1,12 @@
 import { useRef } from "react";
 import { MoleculeViewer } from "@/features/molecule/MoleculeViewer";
 import { SectionDivider } from "@/shared/components/SectionDivider";
-import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
+import {
+  gsap,
+  ScrollTrigger,
+  registerGsap,
+  useGSAP,
+} from "@/shared/motion/gsap";
 import { HomeSectionHeader } from "../components/HomeSectionHeader";
 import { PeekingDog } from "../scene/Peekers";
 
@@ -48,6 +53,41 @@ export function MoleculeSection() {
             once: true,
           },
         });
+
+        // PeekingDog at the porthole gets this section's one quiet idle beat:
+        // a slow bob plus an occasional blink, mirroring the highlights cat.
+        // GSAP touches only the inner js- groups; paused unless on screen.
+        const idle = gsap.timeline({ paused: true });
+        idle
+          .to(
+            ".js-peek-dog",
+            { y: 3, duration: 3.2, ease: "sine.inOut", repeat: -1, yoyo: true },
+            0,
+          )
+          .to(
+            ".js-peek-dog-eyes",
+            {
+              scaleY: 0.1,
+              transformOrigin: "50% 50%",
+              duration: 0.09,
+              ease: "power1.inOut",
+              repeat: -1,
+              repeatDelay: 4,
+              yoyo: true,
+            },
+            1.4,
+          );
+        const idleVis = ScrollTrigger.create({
+          trigger: root.current,
+          start: "top bottom",
+          end: "bottom top",
+          onToggle: (self) => (self.isActive ? idle.play() : idle.pause()),
+        });
+
+        return () => {
+          idle.kill();
+          idleVis.kill();
+        };
       });
       return () => mm.revert();
     },
@@ -55,7 +95,7 @@ export function MoleculeSection() {
   );
 
   return (
-    <section ref={root} className="bg-room-wall">
+    <section ref={root} className="bg-room-wall heal-grid">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div className="js-reveal-up">
           <HomeSectionHeader
@@ -68,11 +108,15 @@ export function MoleculeSection() {
           <div className="relative aspect-square">
             {/* porthole: wood ring + sunset-sky glass, echoing the hero window */}
             <div
-              className="absolute inset-0 rounded-full border-[10px] shadow-card-lift"
+              className="absolute inset-0 rounded-full border-[8px] border-sticker-ink"
               style={{
-                borderColor: "var(--color-room-frame)",
+                // Hard colour bands (no continuous blend) so the porthole reads
+                // as a drawn window, matching the flat sticker fills elsewhere.
+                // Sky band echoes the hero window's #bcd3ea; warm bands reuse
+                // sunset tokens.
                 background:
-                  "linear-gradient(180deg, #cfe0f2 0%, #ffeec9 72%, #ffe6ad 100%)",
+                  "linear-gradient(180deg, #bcd3ea 0 46%, var(--color-sunset-sky) 46% 78%, var(--color-sunset) 78% 100%)",
+                boxShadow: "var(--shadow-sticker-hover)",
               }}
             >
               <div className="absolute inset-0 overflow-hidden rounded-full">

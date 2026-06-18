@@ -82,6 +82,18 @@
   --color-sunset: #fbd9a0;
   --color-sunset-deep: #e89a4f;
 
+  /* ---- HEAL hand-drawn register (lab-notebook). Warm orange is the sticker
+          accent; sticker-ink is the bold cutout outline + label color (deep
+          warm espresso, ≥7:1 on cream and on orange). Orange is a NEW token,
+          so it never collides with the teal two-teal rule. Text on an orange
+          sticker uses --color-sticker-ink; -ink is the orange-as-text variant
+          (AA on cream, for the rare orange word). ---- */
+  --color-app-orange: #f0a868;
+  --color-app-orange-soft: #fbe3c6;
+  --color-app-orange-ink: #9c5a1f;
+  --color-sticker-ink: #2f2417;
+  --color-grid-line: #aebfcb;
+
   /* ---- Radii (min 12px on interactive; never 0) ---- */
   --radius-min: 12px;
   --radius-badge: 10px;
@@ -100,6 +112,12 @@
   --shadow-btn-danger-hover: 0 6px 0 0 var(--color-error-rail);
   --shadow-btn-danger-active: 0 1px 0 0 var(--color-error-rail);
 
+  /* ---- HEAL sticker shadows: HARD offset, NO blur, so shapes read as paper
+          cutouts pasted on the notebook (warm espresso ink at low alpha). ---- */
+  --shadow-sticker: 3px 4px 0 0 rgb(47 36 23 / 0.22);
+  --shadow-sticker-hover: 5px 7px 0 0 rgb(47 36 23 / 0.26);
+  --shadow-sticker-active: 2px 2px 0 0 rgb(47 36 23 / 0.22);
+
   /* ---- Fonts (families only; @font-face outside @theme) ----
      Nunito is self-hosted from src/assets/fonts (bundled). The rounded system
      faces behind it (ui-rounded / SF Pro Rounded, Yuanti SC / Hiragino Maru
@@ -109,6 +127,16 @@
   --font-display:
     "Nunito", ui-rounded, "SF Pro Rounded", "Hiragino Maru Gothic ProN",
     "Yuanti SC", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+
+  /* ---- HEAL hand-lettered display faces (latin-only, DISPLAY use only).
+     --font-script: Caveat, the flowing hero headline + wordmark.
+     --font-hand:   Gochi Hand, the chunky marker print on nav stickers + small
+                    hand labels. Both fall back to the rounded Nunito stack so
+                    CJK and any missing glyph stay legible (these faces carry no
+                    CJK). Body copy + all Chinese keep --font-body. */
+  --font-script:
+    "Caveat", "Segoe Script", "Bradley Hand", "Nunito", ui-rounded, cursive;
+  --font-hand: "Gochi Hand", "Nunito", ui-rounded, "SF Pro Rounded", sans-serif;
 
   /* ---- Easing + global transition default ---- */
   --ease-cozy: cubic-bezier(0.4, 0, 0.2, 1);
@@ -156,6 +184,43 @@
   font-family: "Nunito";
   src: url("../assets/fonts/nunito-900.woff2") format("woff2");
   font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===========================================================================
+   HEAL hand-lettered faces (§4): Caveat (variable, one file serves 600–700)
+   and Gochi Hand, self-hosted woff2 from the HEAL reference bundle (both OFL).
+   Latin + latin-ext only — no CJK glyphs by design; CJK falls back through the
+   --font-script / --font-hand stacks to Nunito/system-rounded. font-display:
+   swap keeps them off the critical path (display use only).
+   =========================================================================== */
+@font-face {
+  font-family: "Caveat";
+  src: url("../assets/fonts/caveat-latin.woff2") format("woff2");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Caveat";
+  src: url("../assets/fonts/caveat-latin-ext.woff2") format("woff2");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Gochi Hand";
+  src: url("../assets/fonts/gochi-hand-latin.woff2") format("woff2");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -215,6 +280,66 @@
   .ac-ribbon::after {
     right: -0.5em;
     border-left: 0.55em solid var(--color-border);
+  }
+
+  /* ===========================================================================
+     HEAL hand-drawn register (homepage hero + nav). Lab-notebook graph paper,
+     sticker-cutout surfaces, hand-drawn frames. The sticker family carries the
+     look: a bold dark outline, a HARD offset shadow (no blur), a wonky border-
+     radius and a slight rotation set per element, so each shape reads as a
+     paper cutout pasted onto grid paper.
+     =========================================================================== */
+
+  /* Lab-notebook canvas: a faint blue-grey grid. Sets ONLY the grid image and
+     multiplies it over whatever background-colour the element already carries,
+     so it layers onto any section tint (cream, mint, warm) and the page keeps
+     its colour rhythm. Pair with a bg-* utility (e.g. `bg-page heal-grid`). */
+  .heal-grid {
+    background-image:
+      linear-gradient(var(--color-grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-blend-mode: multiply;
+  }
+
+  /* Sticker-cutout surface. Drive --rot per element for the hand-pasted tilt;
+     pair with an inline wonky border-radius. Hover lifts, :active presses in —
+     both are pointer-state feedback, not autonomous motion (transition is
+     collapsed under prefers-reduced-motion by the global rule below). */
+  .heal-sticker {
+    --rot: 0deg;
+    transform: rotate(var(--rot));
+    border: 2.5px solid var(--color-sticker-ink);
+    box-shadow: var(--shadow-sticker);
+    transition:
+      transform 0.18s var(--ease-cozy),
+      box-shadow 0.18s var(--ease-cozy);
+  }
+  @media (hover: hover) {
+    .heal-sticker:hover {
+      transform: rotate(var(--rot)) translateY(-3px);
+      box-shadow: var(--shadow-sticker-hover);
+    }
+  }
+  .heal-sticker:active {
+    transform: rotate(var(--rot)) translateY(1px);
+    box-shadow: var(--shadow-sticker-active);
+  }
+
+  /* Hand-drawn frame: a solid sticker outline with a second, dashed inner rule
+     a few px in — the matte border of a sketchbook panel. */
+  .heal-frame {
+    position: relative;
+    border: 3px solid var(--color-sticker-ink);
+    box-shadow: var(--shadow-sticker-hover);
+  }
+  .heal-frame::after {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border: 2px dashed var(--color-room-frame);
+    border-radius: inherit;
+    pointer-events: none;
   }
 }
 

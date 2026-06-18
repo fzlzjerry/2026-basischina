@@ -120,6 +120,13 @@ const requiredTokens = [
   "--shadow-soft",
   "--shadow-btn-3d",
   "--shadow-btn-danger",
+  // HEAL hand-drawn register (homepage hero + nav).
+  "--shadow-sticker",
+  "--color-app-orange",
+  "--color-sticker-ink",
+  "--color-grid-line",
+  "--font-script",
+  "--font-hand",
   "--font-body",
   "--ease-cozy",
 ];

@@ -1,9 +1,13 @@
 /**
  * Small mascot cameos that keep the cat & dog IP alive below the fold —
  * a cat peeking over a tile edge, a big soft paw resting on a corner, and a
- * dog peeking around the molecule porthole. All decorative (aria-hidden),
- * static (never GSAP targets — Tailwind transforms are safe on them), and
+ * dog peeking around the molecule porthole. All decorative (aria-hidden) and
  * drawn in the same warm-outline register as the hero mascots.
+ *
+ * The cat and dog carry quiet idle life (a slow bob + occasional blink), driven
+ * by the consuming section's GSAP block. The outer <svg> keeps its Tailwind
+ * placement transform; GSAP only ever touches the inner `js-*` groups, so the
+ * two transform owners never fight (see DESIGN.md). PawCorner stays static.
  */
 
 const CAT_OUTLINE = "#7a5230";
@@ -24,6 +28,7 @@ export function PeekingCat({ className = "" }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
     >
       <g
+        className="js-peek-cat"
         stroke={CAT_OUTLINE}
         strokeWidth="3.5"
         strokeLinejoin="round"
@@ -43,7 +48,7 @@ export function PeekingCat({ className = "" }: { className?: string }) {
           strokeWidth="4"
         />
         {/* eyes looking down into the tile */}
-        <g stroke="none">
+        <g className="js-peek-cat-eyes" stroke="none">
           <ellipse cx="84" cy="82" rx="8.5" ry="11" fill="#43321f" />
           <ellipse cx="116" cy="82" rx="8.5" ry="11" fill="#43321f" />
           <circle cx="87" cy="78" r="3.4" fill="#fff" />
@@ -100,6 +105,7 @@ export function PeekingDog({ className = "" }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
     >
       <g
+        className="js-peek-dog"
         stroke={DOG_OUTLINE}
         strokeWidth="3.5"
         strokeLinejoin="round"
@@ -116,10 +122,12 @@ export function PeekingDog({ className = "" }: { className?: string }) {
             patch and not a smudge) */}
         <ellipse cx="64" cy="70" rx="15" ry="17" fill="#6fc6ac" stroke="none" />
         <g stroke="none">
-          <ellipse cx="64" cy="72" rx="7.5" ry="10" fill="#3a2e22" />
-          <ellipse cx="96" cy="72" rx="7.5" ry="10" fill="#3a2e22" />
-          <circle cx="67" cy="68" r="3" fill="#fff" />
-          <circle cx="99" cy="68" r="3" fill="#fff" />
+          <g className="js-peek-dog-eyes">
+            <ellipse cx="64" cy="72" rx="7.5" ry="10" fill="#3a2e22" />
+            <ellipse cx="96" cy="72" rx="7.5" ry="10" fill="#3a2e22" />
+            <circle cx="67" cy="68" r="3" fill="#fff" />
+            <circle cx="99" cy="68" r="3" fill="#fff" />
+          </g>
           <circle cx="46" cy="92" r="9" fill="#6fc6ac" opacity="0.6" />
           <circle cx="112" cy="92" r="9" fill="#6fc6ac" opacity="0.6" />
         </g>

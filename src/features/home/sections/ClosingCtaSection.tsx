@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { PawPrint, UsersThree } from "@phosphor-icons/react";
 import { Icon } from "@/shared/components/Icon";
-import { buttonClasses } from "@/shared/components/Button";
+import { ctaClasses, stickerStyleRaw } from "@/shared/styles/heal";
 import {
   gsap,
   ScrollTrigger,
@@ -79,7 +79,7 @@ export function ClosingCtaSection() {
       }}
     >
       <div className="mx-auto max-w-3xl px-4 pt-20 text-center sm:px-6 sm:pt-24">
-        <h2 className="js-closing font-display text-[clamp(2.2rem,1.5rem+2.6vw,3.6rem)] font-black tracking-tight text-ink">
+        <h2 className="js-closing pb-1 font-script text-[clamp(2.8rem,1.8rem+3.2vw,4.5rem)] font-bold leading-[1.04] text-ink">
           {"Come hang out with\u00A0us."}
         </h2>
         <p className="js-closing mx-auto mt-5 max-w-xl text-lg text-ink-soft">
@@ -89,12 +89,23 @@ export function ClosingCtaSection() {
         <div className="js-closing mt-9 flex flex-wrap justify-center gap-4">
           <Link
             to="/description"
-            className={buttonClasses("primary", "lg", "group")}
+            className={ctaClasses("primary")}
+            style={stickerStyleRaw(
+              "-1deg",
+              "16px 11px 18px 9px / 10px 17px 10px 16px",
+            )}
           >
             <Icon as={PawPrint} weight="fill" />
             <span>Explore the project</span>
           </Link>
-          <Link to="/team" className={buttonClasses("secondary", "lg")}>
+          <Link
+            to="/team"
+            className={ctaClasses("secondary")}
+            style={stickerStyleRaw(
+              "1.2deg",
+              "11px 17px 10px 16px / 16px 9px 18px 11px",
+            )}
+          >
             <Icon as={UsersThree} />
             <span>Meet the team</span>
           </Link>

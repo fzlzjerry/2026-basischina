@@ -32,6 +32,7 @@ export function MarkdownPage({ page }: MarkdownPageProps) {
       <MarkdownArticle
         title={page.title}
         summary={page.summary}
+        category={page.category}
         processed={processed}
         contentKey={page.contentPath}
       />

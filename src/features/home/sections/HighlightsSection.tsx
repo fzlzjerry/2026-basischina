@@ -14,6 +14,7 @@ import {
   registerGsap,
   useGSAP,
 } from "@/shared/motion/gsap";
+import { stickerStyle } from "@/shared/styles/heal";
 import { HomeSectionHeader } from "../components/HomeSectionHeader";
 import { PeekingCat, PawCorner } from "../scene/Peekers";
 
@@ -75,32 +76,18 @@ const TILES: Tile[] = [
 ];
 
 // Literal class strings (Tailwind only generates classes it can see in source).
-// Solid pastel surfaces + full-strength borders: committed color, not washes.
+// The sticker outline owns the edge now, so each tile carries only its solid
+// pastel fill — a colourful sticky note pasted on the notebook grid.
 const ACCENT: Record<CategoryAccent, { tile: string; chip: string }> = {
-  teal: {
-    tile: "bg-app-teal-soft border-app-teal",
-    chip: "bg-app-teal text-app-teal-ink",
-  },
-  blue: {
-    tile: "bg-app-blue-soft border-app-blue",
-    chip: "bg-app-blue text-app-blue-ink",
-  },
+  teal: { tile: "bg-app-teal-soft", chip: "bg-app-teal text-app-teal-ink" },
+  blue: { tile: "bg-app-blue-soft", chip: "bg-app-blue text-app-blue-ink" },
   purple: {
-    tile: "bg-app-purple-soft border-app-purple",
+    tile: "bg-app-purple-soft",
     chip: "bg-app-purple text-app-purple-ink",
   },
-  green: {
-    tile: "bg-app-green-soft border-app-green",
-    chip: "bg-app-green text-app-green-ink",
-  },
-  peach: {
-    tile: "bg-app-peach-soft border-app-peach",
-    chip: "bg-app-peach text-app-peach-ink",
-  },
-  pink: {
-    tile: "bg-app-pink-soft border-app-pink",
-    chip: "bg-app-pink text-app-pink-ink",
-  },
+  green: { tile: "bg-app-green-soft", chip: "bg-app-green text-app-green-ink" },
+  peach: { tile: "bg-app-peach-soft", chip: "bg-app-peach text-app-peach-ink" },
+  pink: { tile: "bg-app-pink-soft", chip: "bg-app-pink text-app-pink-ink" },
 };
 
 export function HighlightsSection() {
@@ -134,8 +121,52 @@ export function HighlightsSection() {
               duration: 0.6,
               ease: "power3.out",
               overwrite: true,
+              // Clear the inline transform so each sticker tile's CSS tilt
+              // (rotate var(--rot)) and hover lift are restored after the reveal.
+              clearProps: "transform",
             }),
         });
+
+        // PeekingCat over the Project tile gets a slow bob plus an occasional
+        // blink: this section's one quiet below-fold beat. GSAP touches only the
+        // inner js- groups, never the Tailwind-placed <svg>. Paused off screen.
+        const idle = gsap.timeline({ paused: true });
+        idle
+          .to(
+            ".js-peek-cat",
+            {
+              y: 3,
+              duration: 3,
+              ease: "sine.inOut",
+              repeat: -1,
+              yoyo: true,
+            },
+            0,
+          )
+          .to(
+            ".js-peek-cat-eyes",
+            {
+              scaleY: 0.1,
+              transformOrigin: "50% 50%",
+              duration: 0.09,
+              ease: "power1.inOut",
+              repeat: -1,
+              repeatDelay: 4.2,
+              yoyo: true,
+            },
+            1.2,
+          );
+        const idleVis = ScrollTrigger.create({
+          trigger: root.current,
+          start: "top bottom",
+          end: "bottom top",
+          onToggle: (self) => (self.isActive ? idle.play() : idle.pause()),
+        });
+
+        return () => {
+          idle.kill();
+          idleVis.kill();
+        };
       });
       return () => mm.revert();
     },
@@ -143,15 +174,15 @@ export function HighlightsSection() {
   );
 
   return (
-    <section ref={root} className="bg-page">
+    <section ref={root} className="bg-page heal-grid">
       <div className="mx-auto max-w-6xl px-4 pt-20 sm:px-6 lg:px-8">
         <HomeSectionHeader
           className="js-reveal-title"
           title="Start exploring"
         />
 
-        <div className="mt-14 grid grid-cols-1 gap-5 pb-24 sm:grid-cols-2 lg:grid-cols-3">
-          {TILES.map((tile) => {
+        <div className="mt-14 grid grid-cols-1 gap-6 pb-24 sm:grid-cols-2 lg:grid-cols-3">
+          {TILES.map((tile, i) => {
             const meta = pageCategoryMeta[tile.category];
             const accent = ACCENT[meta.accent];
             const linkContent = (
@@ -185,7 +216,7 @@ export function HighlightsSection() {
                   </span>
                   <div className={tile.wide ? "" : "mt-4 flex flex-1 flex-col"}>
                     <h3
-                      className={`font-display font-black text-ink ${tile.wide ? "text-2xl" : "text-xl"}`}
+                      className={`font-hand leading-none text-ink ${tile.wide ? "text-2xl" : "text-xl"}`}
                     >
                       {tile.title}
                     </h3>
@@ -193,7 +224,7 @@ export function HighlightsSection() {
                       {tile.description}
                     </p>
                     <span
-                      className={`inline-flex items-center gap-2 font-semibold text-primary-deep ${
+                      className={`inline-flex items-center gap-2 font-hand text-primary-deep ${
                         tile.wide ? "mt-4" : "mt-auto pt-4"
                       }`}
                     >
@@ -209,7 +240,7 @@ export function HighlightsSection() {
               </>
             );
             const linkClasses = [
-              "group relative block overflow-hidden rounded-card border-2 outline-focus-ring transition-shadow hover:shadow-card-lift focus-visible:outline-2 focus-visible:outline-offset-2",
+              "group heal-sticker relative block overflow-hidden outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2",
               accent.tile,
               tile.wide ? "p-8" : "js-bento p-6",
             ].join(" ");
@@ -224,7 +255,11 @@ export function HighlightsSection() {
                   key={tile.to}
                   className="js-bento relative sm:col-span-2 lg:col-span-3"
                 >
-                  <Link to={tile.to} className={`${linkClasses} h-full`}>
+                  <Link
+                    to={tile.to}
+                    className={`${linkClasses} h-full`}
+                    style={stickerStyle(i)}
+                  >
                     {linkContent}
                   </Link>
                   {tile.cameo === "cat" ? (
@@ -234,7 +269,12 @@ export function HighlightsSection() {
               );
             }
             return (
-              <Link key={tile.to} to={tile.to} className={linkClasses}>
+              <Link
+                key={tile.to}
+                to={tile.to}
+                className={linkClasses}
+                style={stickerStyle(i)}
+              >
                 {linkContent}
               </Link>
             );
