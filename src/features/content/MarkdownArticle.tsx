@@ -3,6 +3,7 @@ import { pageCategoryMeta } from "@/config/pageCategoryMeta";
 import type { CategoryAccent } from "@/config/pageCategoryMeta";
 import type { PageCategory } from "@/config/pageData";
 import { stickerStyle, stickerStyleRaw } from "@/shared/styles/heal";
+import { resolveAssetUrl } from "@/shared/utils/assetUrl";
 import { PawCorner } from "@/features/home/scene/Peekers";
 import { ArticleTableOfContents } from "./ArticleTableOfContents";
 import { useMarkdownEnhancements } from "./useMarkdownEnhancements";
@@ -25,6 +26,33 @@ const CHIP_ICON: Record<CategoryAccent, string> = {
   green: "text-app-green-ink",
   peach: "text-app-peach-ink",
   pink: "text-app-pink-ink",
+};
+
+// Section cover illustrations keyed by category. When a category has a cover,
+// the article header shows it as a full-width cinematic banner IN PLACE OF the
+// category chip: the cover art already names the section, so keeping the chip
+// would stack a redundant label next to the banner and the article h1. `path` is
+// a PUBLIC asset (resolved through the deploy base path at render), not a bundled
+// `import`: MarkdownArticle is loaded eagerly by every route, so a static asset
+// import would make vite-react-ssg emit a `<link rel=preload as=image>` for the
+// cover on all 22 pages, not just the dry-lab ones. width/height are the asset's
+// intrinsic size (ratio hint); the banner's aspect-ratio box is what reserves
+// layout height. Extend to another section by adding a sibling entry ("wet-lab").
+const CATEGORY_COVER: Partial<
+  Record<
+    PageCategory,
+    { path: string; alt: string; width: number; height: number }
+  >
+> = {
+  "dry-lab": {
+    path: "assets/dry-lab-cover.webp",
+    // Accessible name lives WITH the asset (not the category label) so a future
+    // cover whose baked-in wording differs from its category label can't
+    // silently misdescribe itself.
+    alt: "Dry Lab",
+    width: 1600,
+    height: 1132,
+  },
 };
 
 interface MarkdownArticleProps {
@@ -56,26 +84,59 @@ export function MarkdownArticle({
 
   const description = processed.meta.description ?? summary;
   const { Icon: CategoryIcon, accent, label } = pageCategoryMeta[category];
+  const cover = CATEGORY_COVER[category];
 
   return (
     <div className="min-h-screen bg-page heal-grid">
       <article className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         <header className="mb-8 border-b-2 border-dashed border-sticker-ink/40 pb-6">
-          <span
-            className={`heal-cutout mb-4 inline-flex items-center gap-1.5 px-3 py-1 font-hand text-sm leading-none text-sticker-ink ${CHIP_FILL[accent]}`}
-            style={stickerStyle(1)}
-          >
-            <CategoryIcon
-              size={15}
-              weight="duotone"
-              className={CHIP_ICON[accent]}
-              aria-hidden="true"
-            />
-            {label}
-          </span>
-          <h1 className="pb-1 font-script text-[clamp(2.4rem,1.8rem+2.4vw,3.5rem)] font-bold leading-[1.05] text-ink">
-            {processed.meta.title ?? title}
-          </h1>
+          {cover ? (
+            // Masthead: the cover is a full-width banner cropped to a clean 2:1
+            // letterbox (object-cover keeps the "DRY LAB" wordmark and both cats
+            // in frame), and the page title rides on it as a cream sticker label
+            // overlapping the lower-left, so type and image read as one designed
+            // header instead of a stacked image + title. cover.alt names the
+            // section for screen readers; the overlapping <h1> is the real page
+            // heading (not a duplicate). The aspect box reserves height (no CLS).
+            <div className="relative mb-5">
+              <div className="aspect-[2/1] overflow-hidden rounded-2xl ring-1 ring-sticker-ink/10">
+                <img
+                  src={resolveAssetUrl(cover.path)}
+                  alt={cover.alt}
+                  width={cover.width}
+                  height={cover.height}
+                  className="h-full w-full object-cover object-[50%_30%]"
+                />
+              </div>
+              <h1
+                className="heal-cutout absolute bottom-4 left-4 max-w-[85%] bg-surface px-5 py-1.5 font-script text-[clamp(1.9rem,1.5rem+1.8vw,3rem)] leading-none text-ink sm:bottom-6 sm:left-6"
+                style={stickerStyleRaw(
+                  "-1deg",
+                  "14px 9px 16px 8px / 8px 16px 9px 14px",
+                )}
+              >
+                {processed.meta.title ?? title}
+              </h1>
+            </div>
+          ) : (
+            <>
+              <span
+                className={`heal-cutout mb-4 inline-flex items-center gap-1.5 px-3 py-1 font-hand text-sm leading-none text-sticker-ink ${CHIP_FILL[accent]}`}
+                style={stickerStyle(1)}
+              >
+                <CategoryIcon
+                  size={15}
+                  weight="duotone"
+                  className={CHIP_ICON[accent]}
+                  aria-hidden="true"
+                />
+                {label}
+              </span>
+              <h1 className="pb-1 font-script text-[clamp(2.4rem,1.8rem+2.4vw,3.5rem)] font-bold leading-[1.05] text-ink">
+                {processed.meta.title ?? title}
+              </h1>
+            </>
+          )}
           {description ? (
             <p className="mt-3 max-w-3xl text-lg text-ink-soft">
               {description}
