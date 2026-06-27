@@ -26,13 +26,31 @@ export function ClosingCtaSection() {
       registerGsap();
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // Calm rise (text register): h2, lede, the CTA cluster + duo lift together.
         gsap.from(".js-closing", {
           y: 28,
           opacity: 0,
           duration: 0.7,
           ease: "power3.out",
           stagger: 0.12,
-          clearProps: "all",
+          clearProps: "transform",
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top 80%",
+            once: true,
+          },
+        });
+        // The two CTAs pop in (sticker register) over that rise. Their fade comes
+        // from the parent .js-closing cluster, so this stays transform-only;
+        // clearProps restores each pill's resting --rot tilt + hover.
+        gsap.from(".js-closing-cta", {
+          y: 10,
+          scale: 0.9,
+          duration: 0.5,
+          ease: "back.out(1.6)",
+          stagger: 0.08,
+          delay: 0.2,
+          clearProps: "transform",
           scrollTrigger: {
             trigger: root.current,
             start: "top 80%",
@@ -89,7 +107,7 @@ export function ClosingCtaSection() {
         <div className="js-closing mt-9 flex flex-wrap justify-center gap-4">
           <Link
             to="/description"
-            className={ctaClasses("primary")}
+            className={`js-closing-cta ${ctaClasses("primary")}`}
             style={stickerStyleRaw(
               "-1deg",
               "16px 11px 18px 9px / 10px 17px 10px 16px",
@@ -100,7 +118,7 @@ export function ClosingCtaSection() {
           </Link>
           <Link
             to="/team"
-            className={ctaClasses("secondary")}
+            className={`js-closing-cta ${ctaClasses("secondary")}`}
             style={stickerStyleRaw(
               "1.2deg",
               "11px 17px 10px 16px / 16px 9px 18px 11px",

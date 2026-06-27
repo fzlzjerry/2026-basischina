@@ -68,13 +68,31 @@ export function ApproachSection() {
       registerGsap();
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // Calm rise (text register): headers + step copy lift together.
         gsap.from(".js-approach-reveal", {
           y: 28,
           opacity: 0,
           duration: 0.7,
           ease: "power3.out",
           stagger: 0.12,
-          clearProps: "all",
+          clearProps: "transform",
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top 78%",
+            once: true,
+          },
+        });
+        // The numbered 1·2·3 badges stamp in (sticker register), a beat after
+        // their steps. clearProps restores each badge's CSS --rot tilt.
+        gsap.from(".js-step-badge", {
+          scale: 0,
+          opacity: 0,
+          transformOrigin: "50% 50%",
+          duration: 0.45,
+          ease: "back.out(2)",
+          stagger: 0.18,
+          delay: 0.25,
+          clearProps: "transform",
           scrollTrigger: {
             trigger: root.current,
             start: "top 78%",
@@ -206,7 +224,7 @@ export function ApproachSection() {
                   <step.Spot />
                 </span>
                 <span
-                  className="heal-sticker mt-4 inline-flex h-9 w-9 items-center justify-center bg-app-orange font-hand text-lg leading-none text-sticker-ink"
+                  className="js-step-badge heal-sticker mt-4 inline-flex h-9 w-9 items-center justify-center bg-app-orange font-hand text-lg leading-none text-sticker-ink"
                   style={stickerStyle(i)}
                   aria-hidden="true"
                 >

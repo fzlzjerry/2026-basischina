@@ -110,16 +110,19 @@ export function HighlightsSection() {
             once: true,
           },
         });
-        gsap.set(".js-bento", { autoAlpha: 0, y: 30 });
+        gsap.set(".js-bento", { autoAlpha: 0, y: 24, scale: 0.94 });
         ScrollTrigger.batch(".js-bento", {
           start: "top 88%",
           onEnter: (els) =>
+            // Sticker register: a springy "just-pasted" pop (back-ease + a
+            // little scale), distinct from the calm rise the title uses.
             gsap.to(els, {
               autoAlpha: 1,
               y: 0,
+              scale: 1,
               stagger: 0.1,
               duration: 0.6,
-              ease: "power3.out",
+              ease: "back.out(1.4)",
               overwrite: true,
               // Clear the inline transform so each sticker tile's CSS tilt
               // (rotate var(--rot)) and hover lift are restored after the reveal.
