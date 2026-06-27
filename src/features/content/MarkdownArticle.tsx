@@ -28,30 +28,49 @@ const CHIP_ICON: Record<CategoryAccent, string> = {
   pink: "text-app-pink-ink",
 };
 
-// Section cover illustrations keyed by category. When a category has a cover,
-// the article header shows it as a full-width cinematic banner IN PLACE OF the
-// category chip: the cover art already names the section, so keeping the chip
-// would stack a redundant label next to the banner and the article h1. `path` is
-// a PUBLIC asset (resolved through the deploy base path at render), not a bundled
-// `import`: MarkdownArticle is loaded eagerly by every route, so a static asset
-// import would make vite-react-ssg emit a `<link rel=preload as=image>` for the
-// cover on all 22 pages, not just the dry-lab ones. width/height are the asset's
-// intrinsic size (ratio hint); the banner's aspect-ratio box is what reserves
-// layout height. Extend to another section by adding a sibling entry ("wet-lab").
-const CATEGORY_COVER: Partial<
-  Record<
-    PageCategory,
-    { path: string; alt: string; width: number; height: number }
-  >
-> = {
+// Section cover illustrations keyed by category. A cover REPLACES the category
+// chip in the article header: the art already names its section (a baked-in
+// wordmark), so a chip would just stack a redundant label. Two layouts, chosen
+// per art by `variant`:
+//   • "overlay" — the art carries a compact wordmark in one corner and has open
+//     space elsewhere (dry-lab's retro window). We crop it to a 2:1 letterbox
+//     and paste the page <h1> as a cream sticker in the OPEN corner, so type and
+//     image read as one masthead.
+//   • "cutout" — the art is a dense, self-titled, edge-to-edge panel that leaves
+//     no clean corner for an overlay (engagement's notebook collage, "ENGAGEMENT"
+//     hand-lettered across its base). Its exterior is die-cut to transparency, so
+//     it sits whole on the page grid like a pasted sticker, and the page <h1>
+//     follows BELOW it in normal flow (no collision with the baked-in wordmark).
+// `path` is a PUBLIC asset (resolved through the deploy base path at render), not
+// a bundled `import`: MarkdownArticle is loaded eagerly by every route, so a
+// static import would make vite-react-ssg emit a `<link rel=preload as=image>`
+// for the cover on ALL pages, not just the section's own. width/height are the
+// asset's intrinsic size, set on the <img> to reserve layout height (no CLS).
+// Extend to another section by adding a sibling entry.
+type CoverConfig = {
+  variant: "overlay" | "cutout";
+  path: string;
+  // Accessible name lives WITH the asset (not the category label) so a cover
+  // whose baked-in wording differs from its category label can't silently
+  // misdescribe itself.
+  alt: string;
+  width: number;
+  height: number;
+};
+const CATEGORY_COVER: Partial<Record<PageCategory, CoverConfig>> = {
   "dry-lab": {
+    variant: "overlay",
     path: "assets/dry-lab-cover.webp",
-    // Accessible name lives WITH the asset (not the category label) so a future
-    // cover whose baked-in wording differs from its category label can't
-    // silently misdescribe itself.
     alt: "Dry Lab",
     width: 1600,
     height: 1132,
+  },
+  "human-practices": {
+    variant: "cutout",
+    path: "assets/engagement-cover.webp",
+    alt: "Engagement",
+    width: 1800,
+    height: 1193,
   },
 };
 
@@ -90,7 +109,7 @@ export function MarkdownArticle({
     <div className="min-h-screen bg-page heal-grid">
       <article className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         <header className="mb-8 border-b-2 border-dashed border-sticker-ink/40 pb-6">
-          {cover ? (
+          {cover?.variant === "overlay" ? (
             // Masthead: the cover is a full-width banner cropped to a clean 2:1
             // letterbox (object-cover keeps the "DRY LAB" wordmark and both cats
             // in frame), and the page title rides on it as a cream sticker label
@@ -120,18 +139,34 @@ export function MarkdownArticle({
             </div>
           ) : (
             <>
-              <span
-                className={`heal-cutout mb-4 inline-flex items-center gap-1.5 px-3 py-1 font-hand text-sm leading-none text-sticker-ink ${CHIP_FILL[accent]}`}
-                style={stickerStyle(1)}
-              >
-                <CategoryIcon
-                  size={15}
-                  weight="duotone"
-                  className={CHIP_ICON[accent]}
-                  aria-hidden="true"
-                />
-                {label}
-              </span>
+              {cover ? (
+                // Cutout cover: the die-cut illustration sits whole on the page
+                // grid (its transparent exterior lets the graph paper show
+                // through, like a sticker pasted on the notebook), naming the
+                // section in place of the chip. The page <h1> follows below.
+                <div className="mb-6 w-full max-w-3xl">
+                  <img
+                    src={resolveAssetUrl(cover.path)}
+                    alt={cover.alt}
+                    width={cover.width}
+                    height={cover.height}
+                    className="h-auto w-full"
+                  />
+                </div>
+              ) : (
+                <span
+                  className={`heal-cutout mb-4 inline-flex items-center gap-1.5 px-3 py-1 font-hand text-sm leading-none text-sticker-ink ${CHIP_FILL[accent]}`}
+                  style={stickerStyle(1)}
+                >
+                  <CategoryIcon
+                    size={15}
+                    weight="duotone"
+                    className={CHIP_ICON[accent]}
+                    aria-hidden="true"
+                  />
+                  {label}
+                </span>
+              )}
               <h1 className="pb-1 font-script text-[clamp(2.4rem,1.8rem+2.4vw,3.5rem)] font-bold leading-[1.05] text-ink">
                 {processed.meta.title ?? title}
               </h1>
