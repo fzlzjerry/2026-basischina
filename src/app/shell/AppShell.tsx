@@ -10,6 +10,7 @@ import { useRouteFocus } from "@/shared/hooks/useRouteFocus";
 import { useWarmLazyRoutes } from "@/shared/hooks/useWarmLazyRoutes";
 import { wikiEnv } from "@/config/env";
 import { buildAssetUrl } from "@/config/envShared";
+import { EdgeCat } from "@/features/mascots/EdgeCat";
 
 // Global stylesheets are imported from the shell because the shell is declared
 // as the SSG route `entry` — this ensures their CSS is linked into every
@@ -54,6 +55,7 @@ export function AppShell() {
       </main>
       <PageTransition />
       <Footer />
+      <EdgeCat />
     </div>
   );
 }
