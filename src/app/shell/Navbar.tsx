@@ -234,7 +234,7 @@ export function Navbar() {
       {mobileOpen ? (
         <div
           id="mobile-nav"
-          className="border-t-[3px] border-sticker-ink bg-page px-4 py-3 lg:hidden"
+          className="max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t-[3px] border-sticker-ink bg-page px-4 py-3 lg:hidden"
         >
           {groups.map((group) => (
             <div key={group.key} className="py-2">
