@@ -27,8 +27,8 @@ the rules below in `check-all`.
 
 ## Page rhythm (homepage)
 
-Golden-hour room hero → mint `primary-soft` band → cream `page` → drenched
-sunset band → brown scalloped footer. Adjacent sections interlock via
+Cream notebook hero (the washi-taped HEAL banner) → mint `primary-soft` band →
+cream `page` → drenched sunset band → brown scalloped footer. Adjacent sections interlock via
 `SectionDivider` (SVG edge, fill = NEXT section's bg token, fixed h-10/h-14 so
 no CLS). Since 2026-07-02 both divider paths are HAND-CUT: baked, seeded
 meanders (varied segment lengths, jittered amplitude, no repeating period), so
@@ -74,29 +74,48 @@ background images — always pair it with a `bg-*` utility on the same element.
 - Inline SVG only (iGEM forbids binary media). Warm outlines (`#7a5230` cat,
   `#27695a` dog), round chibi shapes, big readable faces.
 - Scenes are EDGELESS on content surfaces: transparent SVG over CSS-painted
-  architecture, gradients fade to transparent. EXCEPTION (homepage HEAL): the
-  hero room scene sits inside a `.heal-frame` panel (a pasted-in illustration on
-  the notebook) with its own internal floor band.
+  architecture, gradients fade to transparent. (The old hero room scene and its
+  `HeroRoom`/`Mascots` components were deleted 2026-07-02; the homepage hero is
+  the washi-taped HEAL banner image on the notebook page.)
 - Mascot cameos: `Peekers.tsx` (PeekingCat, PawCorner), `SunsetDuo.tsx`
   (back-view duo), `StepSpots.tsx` (step illustrations).
 
 ## Motion (GSAP, see `src/shared/motion/gsap.ts`)
 
+- **Content never translates (audit rule g).** No `x`/`y`/`xPercent`/`yPercent`
+  on any content node in entrances or reveals — displacement entrances were
+  user-rejected twice as gimmicky ("突然往上拱一下"). Content either paints in
+  place or fades in place. Mascot idle loops and the scroll-progress scrub are
+  life, not entrances, and are exempt.
+- **First load animates the annotation layer only.** Navbar, banner, tagline,
+  and CTAs paint static from the very first frame and are never animation
+  targets. Only the hero's aria-hidden decorations (`.heal-paste-in`: washi
+  tape, handwritten note, arrow) paste in (~0.9s: autoAlpha + sub-100% scale
+  press + DrawSVG stroke).
+- **Markup-baked hidden states** are allowed ONLY for aria-hidden decoration,
+  ONLY via the `html.js .heal-paste-in` rule wrapped in
+  `@media (prefers-reduced-motion: no-preference)` (the `js` class comes from
+  the inline bootstrap in `index.html`), so no-JS and reduced-motion visitors
+  get the complete page at first paint. NEVER `clearProps` opacity/visibility
+  on those nodes — the CSS hide would re-apply.
+- **Below-fold reveals are opacity-only fades (`scrollFadeIn`) or hand-drawn
+  strokes (`drawIn`)**, both `once: true` with shared timings from `MOTION`;
+  both skip entirely when the section already intersects the viewport at init
+  (`inViewAtInit`) — a refresh never hides or moves anything on screen.
 - ALL motion inside `gsap.matchMedia("(prefers-reduced-motion: no-preference)")`
   with `mm.revert()` cleanup; `js-*` class sentinels are the targets.
 - **No overshoot eases, ever (user-rejected 2026-07-02 as gimmicky).** No
-  `back.*`, `elastic.*`, `bounce.*`; entrances use the power family
-  (power2/power3/power4 `.out`). Buttons/tiles/badges never animate `scale`
-  at all (y-rise + fade only); decorative scale-ins (tape, paw stamps) may
-  grow toward 100% but never past it.
-- Above-the-fold entrances are transform-only (prerendered HTML paints
-  visible; no opacity flash). Below-fold reveals may fade, but the hidden
-  state is set client-side only (never in markup/CSS).
+  `back.*`, `elastic.*`, `bounce.*`; power family only. Buttons/tiles/badges
+  never animate `scale` at all; decorative scale-ins (tape press, paw stamps)
+  may grow toward 100% but never past it.
 - GSAP owns transforms on animated nodes (no Tailwind transforms there);
-  static art may use Tailwind transforms.
-- Idle life: head bob, tail sway (bbox-percentage transformOrigin, never
-  svgOrigin in nested scaled groups), blink (`js-*-eye` scaleY), pupil
-  cursor-tracking (`js-*-pupil` x/y via quickTo, `(pointer: fine)` only).
+  static art may use Tailwind transforms. Sticker tweens that touch transform
+  end with `clearProps:"transform"` (restores the `--rot` tilt + hover lift);
+  SVG groups placed via the transform ATTRIBUTE never use clearProps (it wipes
+  the attribute and collapses the art).
+- Idle life: nap-cat breathe, peek-cat bob + blink (`js-*-eyes` scaleY), duo
+  tail wag — bbox-percentage transformOrigin, never svgOrigin in nested scaled
+  groups; each paused off-screen via a ScrollTrigger visibility toggle.
 - NO scroll pinning/hijack.
 
 ## Components

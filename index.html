@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light" />
+    <!-- JS sentinel, set synchronously before first paint: decorations hidden
+         by CSS (html.js .heal-paste-in) for the first-load paste-in entrance
+         never flash. No-JS visitors never get the class, so for them the page
+         is complete and static from the first frame. -->
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
     <!-- Favicon + font preloads are injected by the head manager from
          AppShell (base-path-aware, hashed Vite asset URLs). Per-route page
          title, meta, canonical, and JSON-LD are injected at build time by

@@ -53,9 +53,9 @@ export function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const { pathname } = useLocation();
 
-  // Scroll-progress bar + a one-time, subtle entrance for the header. The
-  // progress bar is a scroll-linked indicator (not autonomous motion), so it
-  // stays on for everyone; the entrance is gated behind reduced-motion.
+  // Scroll-progress bar: a scroll-linked indicator (not autonomous motion), so
+  // it stays on for everyone. The header itself never animates in — it paints
+  // static with the prerendered HTML (content never translates on load).
   useGSAP(
     () => {
       registerGsap();
@@ -71,22 +71,8 @@ export function Navbar() {
       const onLoad = () => ScrollTrigger.refresh();
       window.addEventListener("load", onLoad);
 
-      const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // y-only entrance with clearProps: the sticker pills' rotate() lives in
-        // CSS, so clearing GSAP's inline transform restores each pill's tilt.
-        gsap.from(".js-nav-animate", {
-          y: -12,
-          duration: 0.6,
-          ease: "power3.out",
-          stagger: 0.08,
-          clearProps: "transform",
-        });
-      });
-
       return () => {
         window.removeEventListener("load", onLoad);
-        mm.revert();
       };
     },
     { scope: navRef },
@@ -132,7 +118,7 @@ export function Navbar() {
         <NavLink
           to="/"
           end
-          className="js-nav-animate flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+          className="flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
         >
           <span className="font-script text-[2rem] font-bold leading-none text-ink">
             {wikiEnv.teamName}
@@ -142,7 +128,7 @@ export function Navbar() {
         </NavLink>
 
         {/* Desktop navigation */}
-        <ul className="js-nav-animate hidden items-center gap-1.5 lg:flex">
+        <ul className="hidden items-center gap-1.5 lg:flex">
           {groups.map((group, i) => {
             if (group.pages.length === 1) {
               const page = group.pages[0];

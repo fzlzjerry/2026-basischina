@@ -6,6 +6,8 @@
  *   (d) missing required design tokens in src/styles/main.css
  *   (e) non-named @phosphor-icons/react imports
  *   (f) overshoot eases (back/elastic/bounce) in GSAP `ease:` params
+ *   (g) content displacement (x/y/xPercent/yPercent) in GSAP .from()/.fromTo()
+ *       under src/features/home + src/app/shell — content never translates
  *
  * Bun script. Intentionally scoped to src/ only, so this file's own regex
  * sources and the #19c8b9 literal below are never scanned (no self-trip).
@@ -33,6 +35,14 @@ const phosphorBadImport =
 // (f) No overshoot eases (user-rejected as gimmicky): entrances use the power
 // family only. Matches GSAP `ease:` params, not prose or other strings.
 const overshootEase = /\bease:\s*["'](?:back|elastic|bounce)\b/;
+// (g) Content never translates (user rule, 2026-07-02): entrance tweens must
+// not displace content — no x/y/xPercent/yPercent inside .from()/.fromTo()
+// bodies on the homepage or shell. Idle `.to()` loops (peek-cat bob) and the
+// PageTransition curtain (.to) are exempt by construction; `(?<!Array)` keeps
+// Array.from() out of the match.
+const displacementScopes = ["src/features/home", "src/app/shell"];
+const fromCall = /(?<!Array)\.from(?:To)?\(/g;
+const displacementProp = /\b(?:x|y|xPercent|yPercent)\s*:\s*[-\d"']/;
 // (c) emoji: pictographs, symbols, dingbats, regional indicators, arrows, and
 // technical symbols. Excludes ordinary CJK/Latin text used across the wiki.
 // (Non-printing modifiers U+FE0F/U+200D are intentionally omitted — they never
@@ -103,6 +113,32 @@ for (const file of files) {
       });
     }
   });
+
+  // (g) content-displacement scan. Tween vars span lines, so this pass walks
+  // the raw text: find each .from(/.fromTo( call, slice to its balanced
+  // closing paren, and flag x/y props inside the body.
+  if (displacementScopes.some((scope) => rel.startsWith(scope))) {
+    const text = lines.join("\n");
+    for (const match of text.matchAll(fromCall)) {
+      const openIdx = (match.index ?? 0) + match[0].length - 1;
+      let depth = 1;
+      let end = openIdx + 1;
+      while (end < text.length && depth > 0) {
+        if (text[end] === "(") depth += 1;
+        else if (text[end] === ")") depth -= 1;
+        end += 1;
+      }
+      if (displacementProp.test(text.slice(openIdx + 1, end - 1))) {
+        const lineNo = text.slice(0, match.index ?? 0).split("\n").length;
+        findings.push({
+          file: rel,
+          line: lineNo,
+          rule: "content displacement (x/y) in from()/fromTo() — content never translates",
+          text: lines[lineNo - 1].trim(),
+        });
+      }
+    }
+  }
 }
 
 // (d) required token presence in main.css.

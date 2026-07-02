@@ -7,6 +7,7 @@ import {
   gsap,
   ScrollTrigger,
   registerGsap,
+  scrollFadeIn,
   useGSAP,
 } from "@/shared/motion/gsap";
 import { SunsetDuo } from "../scene/SunsetDuo";
@@ -26,36 +27,12 @@ export function ClosingCtaSection() {
       registerGsap();
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Calm rise (text register): h2, lede, the CTA cluster + duo lift together.
-        gsap.from(".js-closing", {
-          y: 28,
-          opacity: 0,
-          duration: 0.7,
-          ease: "power3.out",
+        // Content fades in place: h2, lede, CTA cluster, then the duo. The
+        // CTAs ride their parent cluster's fade — nothing translates, so the
+        // pills' resting --rot tilt + hover lift are never touched.
+        scrollFadeIn(".js-closing", {
+          trigger: root.current,
           stagger: 0.12,
-          clearProps: "transform",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 80%",
-            once: true,
-          },
-        });
-        // The two CTAs settle in over that rise — no scale, no overshoot
-        // (buttons never balloon). Their fade comes from the parent
-        // .js-closing cluster, so this stays transform-only; clearProps
-        // restores each pill's resting --rot tilt + hover.
-        gsap.from(".js-closing-cta", {
-          y: 10,
-          duration: 0.5,
-          ease: "power3.out",
-          stagger: 0.08,
-          delay: 0.2,
-          clearProps: "transform",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 80%",
-            once: true,
-          },
         });
 
         // The dog can't help it. Paused off-screen like the hero idle.
@@ -107,7 +84,7 @@ export function ClosingCtaSection() {
         <div className="js-closing mt-9 flex flex-wrap justify-center gap-4">
           <Link
             to="/description"
-            className={`js-closing-cta ${ctaClasses("primary")}`}
+            className={ctaClasses("primary")}
             style={stickerStyleRaw(
               "-1deg",
               "16px 11px 18px 9px / 10px 17px 10px 16px",
@@ -118,7 +95,7 @@ export function ClosingCtaSection() {
           </Link>
           <Link
             to="/team"
-            className={`js-closing-cta ${ctaClasses("secondary")}`}
+            className={ctaClasses("secondary")}
             style={stickerStyleRaw(
               "1.2deg",
               "11px 17px 10px 16px / 16px 9px 18px 11px",

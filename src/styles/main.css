@@ -443,6 +443,19 @@ html {
   scroll-margin-top: 5rem;
 }
 
+/* First-load "paste-in" layer (§20, homepage hero annotations). Hidden at
+   first paint ONLY when JS is live (html.js — inline bootstrap in index.html)
+   AND motion is welcome, so no-JS visitors and reduced-motion users get the
+   complete page from the very first frame. The GSAP entrance ends with inline
+   autoAlpha:1, which overrides this rule; NEVER clearProps opacity/visibility
+   on a .heal-paste-in node or the hide re-applies. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .heal-paste-in {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 /* Respect users who prefer reduced motion (§23). */
 @media (prefers-reduced-motion: reduce) {
   html {

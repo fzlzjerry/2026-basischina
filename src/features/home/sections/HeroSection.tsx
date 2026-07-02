@@ -17,11 +17,15 @@ import bannerUrl from "@/assets/brand/heal-banner.webp";
  * An sr-only h1 carries the page title so the decorative banner stays out of the
  * accessibility tree; the margin / tape / note are all aria-hidden.
  *
- * Gentle entrance (§20 motion): a one-time settle on load. Above the fold, so
- * TRANSFORM-ONLY — the prerendered HTML paints visible and useGSAP's layout
- * effect applies the from-state before paint (no opacity flash, no CLS on the
- * banner). The exception is the handwritten arrow, which DrawSVG draws by stroke
- * length, not opacity. Gated behind prefers-reduced-motion; reverted on unmount.
+ * Motion (§20): CONTENT NEVER MOVES. The banner, tagline, and CTAs paint
+ * static in the prerendered HTML and are never animation targets — a hard
+ * refresh shows zero displacement (on first load the static HTML paints long
+ * before hydration, so any client-set from-state would visibly jump). The only
+ * entrance is the aria-hidden annotation layer "pasting in": the tape presses
+ * on, the note fades in, the arrow draws itself. Its hidden start state is
+ * markup-baked via `.heal-paste-in` (html.js + no-preference media query in
+ * main.css), so hydration never hides something already painted. Gated behind
+ * prefers-reduced-motion; reverted on unmount.
  */
 export function HeroSection() {
   const root = useRef<HTMLElement>(null);
@@ -31,51 +35,40 @@ export function HeroSection() {
       registerGsap();
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-        // Banner settles in: small transform offsets so the LCP image never
-        // reads as a layout jump. No opacity (above the fold).
-        tl.from(
-          ".js-hero-banner",
-          { y: 16, scale: 0.985, duration: 0.7, ease: "power4.out" },
+        // Paste-up entrance, annotation layer only (~0.9s). fromTo (not from):
+        // the hidden start state already lives in CSS, so the tween declares
+        // both ends explicitly and finishes with inline autoAlpha:1, which
+        // out-cascades the .heal-paste-in hide.
+        const tl = gsap.timeline();
+        // Washi tape presses on — fade + sub-100% scale settle, no overshoot.
+        // clearProps restores ONLY the transform (its Tailwind placement +
+        // tilt); opacity/visibility must stay inline or the CSS hide returns.
+        tl.fromTo(
+          ".js-hero-tape",
+          { autoAlpha: 0, scale: 0.92 },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.35,
+            ease: "power3.out",
+            clearProps: "transform",
+          },
           0,
         )
-          // Washi tape gets pressed on — a calm scale-in that never overshoots
-          // (no bounce eases anywhere). clearProps restores its CSS tilt.
-          .from(
-            ".js-hero-tape",
-            {
-              scale: 0.75,
-              duration: 0.5,
-              ease: "power3.out",
-              clearProps: "transform",
-            },
-            0.05,
-          )
-          // Value-prop tagline: calm rise (text register).
-          .from(".js-hero-tagline", { y: 12, duration: 0.6 }, 0.25)
-          // Handwritten note rises while its arrow draws itself.
-          .from(
+          // Handwritten note fades in place (desktop-only node; on mobile it
+          // is display:none and this is a harmless no-op).
+          .fromTo(
             ".js-hero-note",
-            { y: 8, duration: 0.5, clearProps: "transform" },
-            0.3,
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.35, ease: "power2.out" },
+            0.25,
           )
+          // The arrow draws itself: curve first, then the head. drawSVG's
+          // hidden start applies at tween creation, under cover of the note
+          // container's markup-baked hide.
           .from(
             ".js-hero-arrow",
-            { drawSVG: 0, duration: 0.6, stagger: 0.12, ease: "power1.inOut" },
-            0.3,
-          )
-          // Sticker CTAs settle in with the same calm rise as the tagline —
-          // no scale, no overshoot (buttons must never balloon). clearProps
-          // restores each pill's resting --rot tilt + hover lift.
-          .from(
-            ".js-hero-cta",
-            {
-              y: 14,
-              duration: 0.5,
-              ease: "power3.out",
-              stagger: 0.08,
-              clearProps: "transform",
-            },
+            { drawSVG: 0, duration: 0.4, stagger: 0.12, ease: "power2.inOut" },
             0.4,
           );
       });
@@ -118,7 +111,7 @@ export function HeroSection() {
       {/* handwritten annotation pointing at the banner (desktop only) */}
       <div
         aria-hidden="true"
-        className="js-hero-note pointer-events-none absolute right-[7%] top-[18%] hidden -rotate-6 text-right lg:block"
+        className="js-hero-note heal-paste-in pointer-events-none absolute right-[7%] top-[18%] hidden -rotate-6 text-right lg:block"
       >
         <span className="font-hand text-xl text-ink-muted">our project!</span>
         <svg
@@ -137,8 +130,8 @@ export function HeroSection() {
 
       <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col items-center justify-center gap-7 px-4 pb-14 pt-8 sm:px-6 lg:px-12">
         {/* banner + tape */}
-        <div className="js-hero-banner relative w-full max-w-5xl">
-          <WashiTape className="js-hero-tape -top-3 left-1/2 w-28 -translate-x-1/2 -rotate-3" />
+        <div className="relative w-full max-w-5xl">
+          <WashiTape className="js-hero-tape heal-paste-in -top-3 left-1/2 w-28 -translate-x-1/2 -rotate-3" />
           <img
             src={bannerUrl}
             alt=""
@@ -150,7 +143,7 @@ export function HeroSection() {
         </div>
 
         {/* value-prop tagline */}
-        <p className="js-hero-tagline max-w-xl text-center font-hand text-xl text-ink-soft sm:text-2xl">
+        <p className="max-w-xl text-center font-hand text-xl text-ink-soft sm:text-2xl">
           Gentle, bio-made care for the cats and dogs we love.
         </p>
 
@@ -158,7 +151,7 @@ export function HeroSection() {
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             to="/description"
-            className={`js-hero-cta ${ctaClasses("primary")}`}
+            className={ctaClasses("primary")}
             style={stickerStyleRaw(
               "-1.2deg",
               "16px 11px 18px 9px / 10px 17px 10px 16px",
@@ -169,7 +162,7 @@ export function HeroSection() {
           </Link>
           <Link
             to="/team"
-            className={`js-hero-cta ${ctaClasses("secondary")}`}
+            className={ctaClasses("secondary")}
             style={stickerStyleRaw(
               "1deg",
               "11px 17px 10px 16px / 16px 9px 18px 11px",

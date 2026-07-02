@@ -4,7 +4,10 @@ import { stickerStyle } from "@/shared/styles/heal";
 import {
   gsap,
   ScrollTrigger,
+  drawIn,
+  inViewAtInit,
   registerGsap,
+  scrollFadeIn,
   useGSAP,
 } from "@/shared/motion/gsap";
 import { HomeSectionHeader } from "../components/HomeSectionHeader";
@@ -68,78 +71,56 @@ export function ApproachSection() {
       registerGsap();
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Calm rise (text register): headers + step copy lift together.
-        gsap.from(".js-approach-reveal", {
-          y: 28,
-          opacity: 0,
-          duration: 0.7,
-          ease: "power3.out",
+        // Content fades in place — no displacement anywhere (content never
+        // translates; the strokes and stamps below carry the motion instead).
+        scrollFadeIn(".js-approach-reveal", {
+          trigger: root.current,
+          start: "top 78%",
           stagger: 0.12,
-          clearProps: "transform",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 78%",
-            once: true,
-          },
         });
         // The header's marker swash draws itself a beat after the header lands
         // (hand register: strokes draw by length, they don't fade).
-        gsap.from(".js-swash", {
-          drawSVG: 0,
-          duration: 0.55,
-          ease: "power2.inOut",
+        drawIn(".js-swash", {
+          trigger: root.current,
+          start: "top 78%",
           delay: 0.35,
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 78%",
-            once: true,
-          },
         });
-        // The numbered 1·2·3 badges rise in a beat after their steps — calm,
-        // no scale, no overshoot. clearProps restores each badge's CSS tilt.
-        gsap.from(".js-step-badge", {
-          y: 10,
-          opacity: 0,
-          duration: 0.45,
-          ease: "power3.out",
+        // The numbered 1·2·3 badges fade in a beat after their steps — in
+        // place, no scale, so each badge's CSS tilt (--rot) is never touched.
+        scrollFadeIn(".js-step-badge", {
+          trigger: root.current,
+          start: "top 78%",
           stagger: 0.18,
           delay: 0.25,
-          clearProps: "transform",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 78%",
-            once: true,
-          },
+          duration: 0.45,
         });
-        gsap.from(".js-paw-trail", {
-          drawSVG: 0,
+        drawIn(".js-paw-trail", {
+          trigger: root.current,
+          start: "top 70%",
           duration: 1.6,
-          ease: "power2.inOut",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 70%",
-            once: true,
-          },
         });
         // NO clearProps: the stamps are SVG <g>s placed via the transform
         // ATTRIBUTE with an inline-style fill — GSAP's clearProps on SVG
         // removes the transform attribute and wipes style.cssText, collapsing
         // them into an unstyled pile. A from-tween ends at the authored state.
         // Scale-in stays BELOW 100% the whole way (no overshoot anywhere).
-        gsap.from(".js-paw-stamp", {
-          scale: 0.6,
-          opacity: 0,
-          transformOrigin: "50% 50%",
-          duration: 0.45,
-          ease: "power2.out",
-          stagger: 0.3,
-          delay: 0.35,
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 70%",
-            once: true,
-          },
-        });
+        // Guarded like the shared helpers: never hide stamps already on screen.
+        if (!inViewAtInit(root.current)) {
+          gsap.from(".js-paw-stamp", {
+            scale: 0.6,
+            opacity: 0,
+            transformOrigin: "50% 50%",
+            duration: 0.45,
+            ease: "power2.out",
+            stagger: 0.3,
+            delay: 0.35,
+            scrollTrigger: {
+              trigger: root.current,
+              start: "top 70%",
+              once: true,
+            },
+          });
+        }
 
         // The sleeping cat in step 3 breathes: the one quiet idle beat in this
         // section. Paused unless the section is on screen; reduced motion skips it.

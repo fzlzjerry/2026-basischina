@@ -10,8 +10,12 @@ import { Icon } from "@/shared/components/Icon";
 import { SectionDivider } from "@/shared/components/SectionDivider";
 import {
   gsap,
+  MOTION,
   ScrollTrigger,
+  drawIn,
+  inViewAtInit,
   registerGsap,
+  scrollFadeIn,
   useGSAP,
 } from "@/shared/motion/gsap";
 import { stickerStyle } from "@/shared/styles/heal";
@@ -98,49 +102,34 @@ export function HighlightsSection() {
       registerGsap();
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.from(".js-reveal-title", {
-          y: 24,
-          opacity: 0,
-          duration: 0.7,
-          ease: "power3.out",
-          clearProps: "all",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 80%",
-            once: true,
-          },
+        // Content fades in place (content never translates).
+        scrollFadeIn(".js-reveal-title", {
+          trigger: root.current,
+          duration: 0.6,
         });
         // The header's marker swash draws itself a beat after the title lands
         // (hand register: strokes draw by length, they don't fade).
-        gsap.from(".js-swash", {
-          drawSVG: 0,
-          duration: 0.55,
-          ease: "power2.inOut",
-          delay: 0.35,
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 80%",
+        drawIn(".js-swash", { trigger: root.current, delay: 0.35 });
+        // Bento tiles fade in per row as they scroll up — the batch keeps the
+        // wave without any displacement, so each sticker tile's CSS tilt
+        // (rotate var(--rot)) and hover lift are never touched and need no
+        // clearProps. Skipped entirely when the grid is already on screen at
+        // init (a tall viewport or mid-page refresh must never hide content).
+        if (!inViewAtInit(root.current)) {
+          gsap.set(".js-bento", { autoAlpha: 0 });
+          ScrollTrigger.batch(".js-bento", {
+            start: "top 88%",
             once: true,
-          },
-        });
-        gsap.set(".js-bento", { autoAlpha: 0, y: 24 });
-        ScrollTrigger.batch(".js-bento", {
-          start: "top 88%",
-          onEnter: (els) =>
-            // Calm rise + fade, same register as the title — tiles never
-            // scale or overshoot (no bounce eases anywhere on the site).
-            gsap.to(els, {
-              autoAlpha: 1,
-              y: 0,
-              stagger: 0.1,
-              duration: 0.6,
-              ease: "power3.out",
-              overwrite: true,
-              // Clear the inline transform so each sticker tile's CSS tilt
-              // (rotate var(--rot)) and hover lift are restored after the reveal.
-              clearProps: "transform",
-            }),
-        });
+            onEnter: (els) =>
+              gsap.to(els, {
+                autoAlpha: 1,
+                stagger: 0.1,
+                duration: MOTION.fadeDuration,
+                ease: MOTION.fadeEase,
+                overwrite: true,
+              }),
+          });
+        }
 
         // PeekingCat over the Project tile gets a slow bob plus an occasional
         // blink: this section's one quiet below-fold beat. GSAP touches only the
