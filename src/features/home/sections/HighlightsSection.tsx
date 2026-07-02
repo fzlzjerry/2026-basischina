@@ -110,19 +110,31 @@ export function HighlightsSection() {
             once: true,
           },
         });
-        gsap.set(".js-bento", { autoAlpha: 0, y: 24, scale: 0.94 });
+        // The header's marker swash draws itself a beat after the title lands
+        // (hand register: strokes draw by length, they don't fade).
+        gsap.from(".js-swash", {
+          drawSVG: 0,
+          duration: 0.55,
+          ease: "power2.inOut",
+          delay: 0.35,
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top 80%",
+            once: true,
+          },
+        });
+        gsap.set(".js-bento", { autoAlpha: 0, y: 24 });
         ScrollTrigger.batch(".js-bento", {
           start: "top 88%",
           onEnter: (els) =>
-            // Sticker register: a springy "just-pasted" pop (back-ease + a
-            // little scale), distinct from the calm rise the title uses.
+            // Calm rise + fade, same register as the title — tiles never
+            // scale or overshoot (no bounce eases anywhere on the site).
             gsap.to(els, {
               autoAlpha: 1,
               y: 0,
-              scale: 1,
               stagger: 0.1,
               duration: 0.6,
-              ease: "back.out(1.4)",
+              ease: "power3.out",
               overwrite: true,
               // Clear the inline transform so each sticker tile's CSS tilt
               // (rotate var(--rot)) and hover lift are restored after the reveal.

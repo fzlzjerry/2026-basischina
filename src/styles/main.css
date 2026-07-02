@@ -93,6 +93,7 @@
   --color-app-orange-ink: #9c5a1f;
   --color-sticker-ink: #2f2417;
   --color-grid-line: #aebfcb;
+  --color-grid-line-major: #a5b7c4;
 
   /* ---- Radii (min 12px on interactive; never 0) ---- */
   --radius-min: 12px;
@@ -290,16 +291,89 @@
      paper cutout pasted onto grid paper.
      =========================================================================== */
 
-  /* Lab-notebook canvas: a faint blue-grey grid. Sets ONLY the grid image and
-     multiplies it over whatever background-colour the element already carries,
-     so it layers onto any section tint (cream, mint, warm) and the page keeps
-     its colour rhythm. Pair with a bg-* utility (e.g. `bg-page heal-grid`). */
+  /* Lab-notebook canvas: a faint blue-grey grid with printed-paper realism —
+     a heavier MAJOR rule every 5 cells (like real graph paper) and a whisper
+     of warm paper grain (a static feTurbulence noise tile at ~3% alpha) so
+     surfaces read as paper tooth instead of flat vector fill. Sets ONLY the
+     background images and multiplies them over whatever background-colour the
+     element already carries, so it layers onto any section tint (cream, mint,
+     warm) and the page keeps its colour rhythm. Pair with a bg-* utility
+     (e.g. `bg-page heal-grid`). */
   .heal-grid {
     background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.29 0 0 0 0 0.22 0 0 0 0 0.14 0 0 0 0.034 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E"),
+      linear-gradient(var(--color-grid-line-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid-line-major) 1px, transparent 1px),
       linear-gradient(var(--color-grid-line) 1px, transparent 1px),
       linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
-    background-size: 30px 30px;
+    background-size:
+      180px 180px,
+      150px 150px,
+      150px 150px,
+      30px 30px,
+      30px 30px;
     background-blend-mode: multiply;
+  }
+
+  /* Hand-ruled lines. Both are alpha MASKS (the wobbly stroke is the visible
+     part), so the line's colour comes from the element's own background —
+     pair with a bg-* utility and a height (e.g. `heal-rule h-2 bg-border`).
+     `.heal-rule` is a solid scissor-steady ink rule; `.heal-rule-dash` is the
+     same drifting baseline drawn with irregular dash lengths and gaps, for
+     the "ruled this off by hand" page-header divider. Both tiles are drawn
+     EDGE-TO-EDGE (x=0 to x=720, matching y at both ends) so repeat-x joins
+     seamlessly — no gap, no orphan dot, and a 720px period long enough that
+     the wobble never visibly repeats inside a content column. */
+  .heal-rule,
+  .heal-rule-dash {
+    -webkit-mask-image: var(--heal-rule-mask);
+    mask-image: var(--heal-rule-mask);
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+    -webkit-mask-size: 720px 8px;
+    mask-size: 720px 8px;
+    -webkit-mask-position: left center;
+    mask-position: left center;
+  }
+  .heal-rule {
+    --heal-rule-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='8'%3E%3Cpath d='M0 4.4 C 34 2.9 66 6.2 102 4.9 C 138 3.6 164 6.4 200 5.1 C 236 3.8 262 3.2 300 4.6 C 338 6 372 3 410 4.4 C 448 5.8 480 6.2 516 4.7 C 552 3.2 586 5.9 622 5.2 C 658 4.5 692 3.3 720 4.4' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3C/svg%3E");
+  }
+  .heal-rule-dash {
+    --heal-rule-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='8'%3E%3Cpath d='M0 4.5 C 120 2.9 240 6.1 360 4.4 C 480 2.8 600 6 720 4.5' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-dasharray='15 9 24 11 8 7 18 12 30 10 13 8'/%3E%3C/svg%3E");
+  }
+
+  /* Washi tape strip: translucent striped tape with TORN ends (clip-path
+     zig-zag on the short edges only; long edges stay factory-straight). The
+     tape tint comes from a bg-* utility with alpha (e.g. `bg-app-orange/55`)
+     so whatever it is stuck to shows through. drop-shadow (not box-shadow)
+     follows the torn silhouette after clipping. */
+  .heal-tape {
+    clip-path: polygon(
+      1.5% 0%,
+      98.2% 1.5%,
+      100% 12%,
+      97.6% 26%,
+      99.4% 38%,
+      97.2% 52%,
+      100% 64%,
+      97.8% 78%,
+      99.6% 90%,
+      98% 100%,
+      2.2% 99%,
+      0% 88%,
+      2.6% 74%,
+      0.4% 60%,
+      2.4% 47%,
+      0% 34%,
+      2.8% 20%,
+      0.6% 9%
+    );
+    background-image: repeating-linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0.18) 0 5px,
+      rgb(255 255 255 / 0) 5px 11px
+    );
+    filter: drop-shadow(0 1px 1.5px rgb(61 52 40 / 0.22));
   }
 
   /* Sticker-cutout surface. Drive --rot per element for the hand-pasted tilt;
@@ -414,6 +488,30 @@ html {
     background: #fff !important;
     color: #000 !important;
     border: 1px solid #000 !important;
+  }
+
+  /* Browsers strip background images and masks in print, which would erase
+     the hand-ruled strokes — restore plain printable rules. */
+  .markdown-body h2 {
+    background-image: none !important;
+    border-bottom: 2px solid #000 !important;
+    padding-bottom: 0.3rem !important;
+  }
+  .markdown-body hr {
+    background-image: none !important;
+    height: 0 !important;
+    border-top: 2px solid #000 !important;
+  }
+  .heal-rule,
+  .heal-rule-dash {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    background: none !important;
+    height: 0 !important;
+    border-top: 1px solid #000 !important;
+  }
+  .heal-rule-dash {
+    border-top-style: dashed !important;
   }
 
   /* Expand collapsibles and TOC so nothing is hidden on paper. */

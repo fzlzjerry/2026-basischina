@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { PawPrint, UsersThree } from "@phosphor-icons/react";
 import { Icon } from "@/shared/components/Icon";
 import { SectionDivider } from "@/shared/components/SectionDivider";
+import { WashiTape } from "@/shared/components/WashiTape";
 import { ctaClasses, stickerStyleRaw } from "@/shared/styles/heal";
 import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
 import bannerUrl from "@/assets/brand/heal-banner.webp";
@@ -38,14 +39,14 @@ export function HeroSection() {
           { y: 16, scale: 0.985, duration: 0.7, ease: "power4.out" },
           0,
         )
-          // Washi tape gets pressed on — a sticker-register pop. clearProps
-          // restores its CSS tilt/centering.
+          // Washi tape gets pressed on — a calm scale-in that never overshoots
+          // (no bounce eases anywhere). clearProps restores its CSS tilt.
           .from(
             ".js-hero-tape",
             {
-              scale: 0.6,
-              duration: 0.45,
-              ease: "back.out(2)",
+              scale: 0.75,
+              duration: 0.5,
+              ease: "power3.out",
               clearProps: "transform",
             },
             0.05,
@@ -63,15 +64,15 @@ export function HeroSection() {
             { drawSVG: 0, duration: 0.6, stagger: 0.12, ease: "power1.inOut" },
             0.3,
           )
-          // Sticker CTAs pop in (sticker register); clearProps restores each
-          // pill's resting --rot tilt + hover lift.
+          // Sticker CTAs settle in with the same calm rise as the tagline —
+          // no scale, no overshoot (buttons must never balloon). clearProps
+          // restores each pill's resting --rot tilt + hover lift.
           .from(
             ".js-hero-cta",
             {
               y: 14,
-              scale: 0.9,
               duration: 0.5,
-              ease: "back.out(1.6)",
+              ease: "power3.out",
               stagger: 0.08,
               clearProps: "transform",
             },
@@ -137,10 +138,7 @@ export function HeroSection() {
       <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col items-center justify-center gap-7 px-4 pb-14 pt-8 sm:px-6 lg:px-12">
         {/* banner + tape */}
         <div className="js-hero-banner relative w-full max-w-5xl">
-          <div
-            aria-hidden="true"
-            className="js-hero-tape absolute -top-3 left-1/2 h-7 w-28 -translate-x-1/2 -rotate-3 rounded-[3px] bg-app-orange/55 shadow-sm"
-          />
+          <WashiTape className="js-hero-tape -top-3 left-1/2 w-28 -translate-x-1/2 -rotate-3" />
           <img
             src={bannerUrl}
             alt=""

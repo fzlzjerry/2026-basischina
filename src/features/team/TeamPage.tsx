@@ -3,6 +3,7 @@ import { requirePage } from "@/config/pageData";
 import { Icon } from "@/shared/components/Icon";
 import { PageHead } from "@/shared/components/PageHead";
 import { Tag } from "@/shared/components/Tag";
+import { WashiTape } from "@/shared/components/WashiTape";
 import { stickerStyle } from "@/shared/styles/heal";
 import { resolveAssetUrl } from "@/shared/utils/assetUrl";
 import { teamMembers, teamSections } from "./teamData";
@@ -10,16 +11,24 @@ import type { TeamMember } from "./teamTypes";
 
 const page = requirePage("team");
 
+// Tape tilt/tone cycle so neighbouring roster cards never match exactly.
+const TAPE_TILTS = ["-rotate-3", "rotate-2", "-rotate-1", "rotate-3"] as const;
+
 function MemberCard({ member, index }: { member: TeamMember; index: number }) {
   return (
     <li>
       {/* Each member is a paper cutout pasted into the notebook: a framed photo
-          with a hand-printed name. Static tilt (heal-cutout), no false hover
-          affordance since the card is not a link. */}
+          with a hand-printed name, held down by a strip of washi tape. Static
+          tilt (heal-cutout), no false hover affordance since the card is not a
+          link. */}
       <div
-        className="heal-cutout h-full bg-surface p-5 text-center"
+        className="heal-cutout relative h-full bg-surface p-5 text-center"
         style={stickerStyle(index)}
       >
+        <WashiTape
+          tone={index % 2 ? "teal" : "orange"}
+          className={`-top-3.5 left-1/2 w-24 -translate-x-1/2 ${TAPE_TILTS[index % TAPE_TILTS.length]}`}
+        />
         <div className="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-sticker-ink bg-primary-soft">
           {member.photo ? (
             <img
@@ -69,7 +78,7 @@ export function TeamPage() {
       <PageHead path={page.path} title={page.title} seo={page.seo} />
       <div className="min-h-screen bg-page heal-grid">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-          <header className="mb-10 border-b-2 border-dashed border-sticker-ink/40 pb-6">
+          <header className="mb-10">
             <h1 className="pb-1 font-script text-[clamp(2.6rem,2rem+2.5vw,3.9rem)] font-bold leading-[1.04] text-ink">
               {page.title}
             </h1>
@@ -78,6 +87,11 @@ export function TeamPage() {
                 {page.summary}
               </p>
             ) : null}
+            {/* Hand-ruled header divider: irregular ink dashes, not machine ones. */}
+            <div
+              aria-hidden="true"
+              className="heal-rule-dash mt-6 h-2 bg-sticker-ink/40"
+            />
           </header>
 
           {renderedSections.length === 0 ? (

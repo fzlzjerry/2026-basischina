@@ -4,6 +4,8 @@
  *   (b) any literal #19c8b9 OUTSIDE the single `--color-primary:` definition line
  *   (c) any emoji glyph (the site is SVG-only — Phosphor icons, never emoji)
  *   (d) missing required design tokens in src/styles/main.css
+ *   (e) non-named @phosphor-icons/react imports
+ *   (f) overshoot eases (back/elastic/bounce) in GSAP `ease:` params
  *
  * Bun script. Intentionally scoped to src/ only, so this file's own regex
  * sources and the #19c8b9 literal below are never scanned (no self-trip).
@@ -28,6 +30,9 @@ const primaryDef = /--color-primary:\s*#19c8b9/i;
 // (e) Phosphor must be imported via NAMED imports only (default / namespace are banned).
 const phosphorBadImport =
   /import\s+(?:\*\s+as\s+\w+|\w+)\s+from\s+["']@phosphor-icons\/react["']/;
+// (f) No overshoot eases (user-rejected as gimmicky): entrances use the power
+// family only. Matches GSAP `ease:` params, not prose or other strings.
+const overshootEase = /\bease:\s*["'](?:back|elastic|bounce)\b/;
 // (c) emoji: pictographs, symbols, dingbats, regional indicators, arrows, and
 // technical symbols. Excludes ordinary CJK/Latin text used across the wiki.
 // (Non-printing modifiers U+FE0F/U+200D are intentionally omitted — they never
@@ -86,6 +91,14 @@ for (const file of files) {
         file: rel,
         line: lineNo,
         rule: "non-named @phosphor-icons/react import (use named imports)",
+        text: text.trim(),
+      });
+    }
+    if (overshootEase.test(text)) {
+      findings.push({
+        file: rel,
+        line: lineNo,
+        rule: "overshoot ease (back/elastic/bounce) — use power-family ease-outs",
         text: text.trim(),
       });
     }

@@ -40,14 +40,14 @@ export function ClosingCtaSection() {
             once: true,
           },
         });
-        // The two CTAs pop in (sticker register) over that rise. Their fade comes
-        // from the parent .js-closing cluster, so this stays transform-only;
-        // clearProps restores each pill's resting --rot tilt + hover.
+        // The two CTAs settle in over that rise — no scale, no overshoot
+        // (buttons never balloon). Their fade comes from the parent
+        // .js-closing cluster, so this stays transform-only; clearProps
+        // restores each pill's resting --rot tilt + hover.
         gsap.from(".js-closing-cta", {
           y: 10,
-          scale: 0.9,
           duration: 0.5,
-          ease: "back.out(1.6)",
+          ease: "power3.out",
           stagger: 0.08,
           delay: 0.2,
           clearProps: "transform",

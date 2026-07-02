@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CaretDown, CaretRight } from "@phosphor-icons/react";
 import { Icon } from "@/shared/components/Icon";
+import { WashiTape } from "@/shared/components/WashiTape";
 import { stickerStyle } from "@/shared/styles/heal";
 import type { TocItem } from "./markdownService";
 
@@ -39,8 +40,13 @@ export function ArticleTableOfContents({ items }: ArticleTableOfContentsProps) {
 
   return (
     // A <div>; the contained nav carries the landmark + label. Sits as a sticker
-    // cutout pasted into the notebook margin (static tilt, no hover-lift).
-    <div className="heal-cutout bg-page p-4" style={stickerStyle(2)}>
+    // cutout pasted into the notebook margin (static tilt, no hover-lift), held
+    // down by a strip of washi tape straddling its top edge.
+    <div className="heal-cutout relative bg-page p-4" style={stickerStyle(2)}>
+      <WashiTape
+        tone="teal"
+        className="-top-3.5 left-1/2 w-20 -translate-x-1/2 rotate-2"
+      />
       <nav aria-label="Table of contents">
         <button
           type="button"

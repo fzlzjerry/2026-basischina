@@ -48,7 +48,9 @@ export function Footer() {
             </div>
             {footerGroups.map((group) => (
               <nav key={group.key} aria-label={group.label}>
-                <p className="text-sm font-semibold uppercase tracking-wide text-footer-text-muted">
+                {/* Hand-printed column headers (Gochi), not uppercase tracked
+                    scaffolding — the footer keeps the notebook's voice. */}
+                <p className="font-hand text-lg leading-none text-footer-text-muted">
                   {group.label}
                 </p>
                 <ul className="mt-3 space-y-2">
@@ -67,7 +69,8 @@ export function Footer() {
             ))}
           </div>
 
-          <hr className="my-8 border-footer-divider" />
+          {/* Hand-ruled divider (mask takes its colour from the bg utility). */}
+          <hr className="heal-rule my-8 h-2 border-0 bg-footer-divider" />
 
           {/* Required on every iGEM wiki page: license + repository link.
               Full-strength footer text: the muted tone sits below AA at this

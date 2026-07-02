@@ -22,22 +22,27 @@ the rules below in `check-all`.
   fill), `-soft` (hover tint), `-ink #9c5a1f` (orange-as-text, AA on cream).
   `--color-sticker-ink #2f2417` is the bold cutout outline + label colour
   (≥7:1 on cream and on orange). `--color-grid-line #aebfcb` is the notebook
-  grid. Orange is a NEW token, so it never collides with the two-teal rule.
+  grid; `--color-grid-line-major #a5b7c4` is the heavier printed rule every 5
+  cells. Orange is a NEW token, so it never collides with the two-teal rule.
 
 ## Page rhythm (homepage)
 
 Golden-hour room hero → mint `primary-soft` band → cream `page` → drenched
 sunset band → brown scalloped footer. Adjacent sections interlock via
-`SectionDivider` (wave/scallop SVG, fill = NEXT section's bg token, fixed
-h-10/h-14 so no CLS). (A warm `room-wall` molecule-viewer beat sat between the
-cream and sunset bands until 2026-06-18, when the homepage molecule display was
-removed; the `room-*` scene tokens remain for content use.)
+`SectionDivider` (SVG edge, fill = NEXT section's bg token, fixed h-10/h-14 so
+no CLS). Since 2026-07-02 both divider paths are HAND-CUT: baked, seeded
+meanders (varied segment lengths, jittered amplitude, no repeating period), so
+each section reads as a strip of coloured paper cut with scissors — never a
+smooth wave or a perfect scallop repeat. (A warm `room-wall` molecule-viewer
+beat sat between the cream and sunset bands until 2026-06-18, when the homepage
+molecule display was removed; the `room-*` scene tokens remain for content use.)
 
 **HEAL overlay (homepage, §20):** the homepage adopts a hand-drawn lab-notebook
 register over that colour rhythm. Every section pairs its bg token with
-`.heal-grid` (a faint blue-grey graph-paper grid, `multiply` blend, so it layers
-onto any tint and keeps the rhythm). `.heal-grid` sets ONLY the grid image —
-always pair it with a `bg-*` utility on the same element.
+`.heal-grid` (a faint blue-grey graph-paper grid + a heavier major rule every 5
+cells + a whisper of warm paper grain at ~3% alpha, all `multiply` blend, so it
+layers onto any tint and keeps the rhythm). `.heal-grid` sets ONLY the
+background images — always pair it with a `bg-*` utility on the same element.
 
 ## Typography
 
@@ -79,6 +84,11 @@ always pair it with a `bg-*` utility on the same element.
 
 - ALL motion inside `gsap.matchMedia("(prefers-reduced-motion: no-preference)")`
   with `mm.revert()` cleanup; `js-*` class sentinels are the targets.
+- **No overshoot eases, ever (user-rejected 2026-07-02 as gimmicky).** No
+  `back.*`, `elastic.*`, `bounce.*`; entrances use the power family
+  (power2/power3/power4 `.out`). Buttons/tiles/badges never animate `scale`
+  at all (y-rise + fade only); decorative scale-ins (tape, paw stamps) may
+  grow toward 100% but never past it.
 - Above-the-fold entrances are transform-only (prerendered HTML paints
   visible; no opacity flash). Below-fold reveals may fade, but the hidden
   state is set client-side only (never in markup/CSS).
@@ -106,5 +116,23 @@ always pair it with a `bg-*` utility on the same element.
   `stickerStyleRaw`) live in `src/shared/styles/heal.ts`. Resting tilt + hover
   lift on GSAP-animated stickers require `clearProps:"transform"` so the inline
   tween transform does not pin them.
+- **Hand-ruled lines (no machine rules in HEAL chrome).** `.heal-rule` (solid
+  wobbly stroke) and `.heal-rule-dash` (drifting baseline, irregular dashes)
+  are alpha MASKS — pair with a `bg-*` utility + a height (e.g.
+  `heal-rule-dash h-2 bg-sticker-ink/40` under page headers,
+  `heal-rule h-2 bg-footer-divider` in the footer). Markdown prose keeps its
+  own self-contained versions: the h2 underline and `hr` are wobbly data-URI
+  strokes in `markdown.css`, and blockquotes wear a full soft ink outline with
+  wonky corners (never a side-stripe rail).
+- **Washi tape (`WashiTape.tsx` + `.heal-tape`).** Translucent striped strip
+  with torn short edges (clip-path); tint from `bg-app-orange/55` or
+  `bg-app-teal/55`. Recurs so the paste-up conceit stays a system: hero
+  banner, team roster cards (alternating tone/tilt), the TOC aside. Always
+  aria-hidden; the caller positions it straddling a cutout's top edge.
+- **Marker swash.** `HomeSectionHeader` underlines its Caveat headline with a
+  hand-drawn orange stroke (`js-swash`); section timelines draw it in with
+  DrawSVG on reveal, and reduced-motion/no-JS get the complete stroke.
+- Footer column headers are Gochi Hand (normal case), never uppercase tracked
+  labels.
 - Icons: Phosphor, named imports only (audit-enforced), duotone default.
 - No emoji anywhere (audit-enforced). PawPrint replaces arrow glyphs.

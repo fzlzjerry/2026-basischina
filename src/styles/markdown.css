@@ -21,8 +21,15 @@
   font-size: 1.6rem;
   font-weight: 700;
   color: #794f27; /* --color-ink */
-  padding-bottom: 0.3rem;
-  border-bottom: 2px solid #8a7b66; /* --color-border */
+  padding-bottom: 0.55rem;
+  /* Hand-ruled underline (HEAL register): a wobbly ink stroke instead of a
+     machine-straight border. Stroke colour is --color-border (#8a7b66). The
+     tile is drawn edge-to-edge (x=0..720, same y both ends) so repeat-x joins
+     seamlessly with no gap or visible period inside a prose column. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='8'%3E%3Cpath d='M0 4.4 C 34 2.9 66 6.2 102 4.9 C 138 3.6 164 6.4 200 5.1 C 236 3.8 262 3.2 300 4.6 C 338 6 372 3 410 4.4 C 448 5.8 480 6.2 516 4.7 C 552 3.2 586 5.9 622 5.2 C 658 4.5 692 3.3 720 4.4' fill='none' stroke='%238a7b66' stroke-width='2.4'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: left bottom;
+  background-size: 720px 8px;
 }
 
 .markdown-body h3 {
@@ -83,11 +90,13 @@
 }
 
 .markdown-body blockquote {
-  border-left: 4px solid #0d6f63; /* --color-primary-deep rail */
+  /* Full soft ink outline + slightly wonky corners (HEAL register) — never a
+     side-stripe rail. Tint stays --color-primary-soft. */
+  border: 2px solid rgb(47 36 23 / 0.3); /* --color-sticker-ink @ 30% */
   background: #e6f9f6; /* --color-primary-soft */
   padding: 0.75rem 1rem;
   color: #725d42; /* --color-ink-soft */
-  border-radius: 0 12px 12px 0; /* --radius-min */
+  border-radius: 14px 10px 15px 9px / 10px 15px 9px 14px;
 }
 
 .markdown-body blockquote > :last-child {
@@ -146,7 +155,12 @@
 .markdown-body hr {
   margin: 2rem 0;
   border: 0;
-  border-top: 2px solid #8a7b66; /* --color-border */
+  height: 8px;
+  /* Same seamless hand-ruled stroke as the h2 underline (--color-border ink). */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='8'%3E%3Cpath d='M0 4.4 C 34 2.9 66 6.2 102 4.9 C 138 3.6 164 6.4 200 5.1 C 236 3.8 262 3.2 300 4.6 C 338 6 372 3 410 4.4 C 448 5.8 480 6.2 516 4.7 C 552 3.2 586 5.9 622 5.2 C 658 4.5 692 3.3 720 4.4' fill='none' stroke='%238a7b66' stroke-width='2.4'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: left center;
+  background-size: 720px 8px;
 }
 
 /* KaTeX inherits color (no hardcoded #000); pin to ink defensively (§9). */

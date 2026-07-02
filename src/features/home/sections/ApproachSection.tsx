@@ -82,14 +82,26 @@ export function ApproachSection() {
             once: true,
           },
         });
-        // The numbered 1·2·3 badges stamp in (sticker register), a beat after
-        // their steps. clearProps restores each badge's CSS --rot tilt.
+        // The header's marker swash draws itself a beat after the header lands
+        // (hand register: strokes draw by length, they don't fade).
+        gsap.from(".js-swash", {
+          drawSVG: 0,
+          duration: 0.55,
+          ease: "power2.inOut",
+          delay: 0.35,
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top 78%",
+            once: true,
+          },
+        });
+        // The numbered 1·2·3 badges rise in a beat after their steps — calm,
+        // no scale, no overshoot. clearProps restores each badge's CSS tilt.
         gsap.from(".js-step-badge", {
-          scale: 0,
+          y: 10,
           opacity: 0,
-          transformOrigin: "50% 50%",
           duration: 0.45,
-          ease: "back.out(2)",
+          ease: "power3.out",
           stagger: 0.18,
           delay: 0.25,
           clearProps: "transform",
@@ -109,15 +121,19 @@ export function ApproachSection() {
             once: true,
           },
         });
+        // NO clearProps: the stamps are SVG <g>s placed via the transform
+        // ATTRIBUTE with an inline-style fill — GSAP's clearProps on SVG
+        // removes the transform attribute and wipes style.cssText, collapsing
+        // them into an unstyled pile. A from-tween ends at the authored state.
+        // Scale-in stays BELOW 100% the whole way (no overshoot anywhere).
         gsap.from(".js-paw-stamp", {
-          scale: 0,
+          scale: 0.6,
           opacity: 0,
           transformOrigin: "50% 50%",
           duration: 0.45,
-          ease: "back.out(2)",
+          ease: "power2.out",
           stagger: 0.3,
           delay: 0.35,
-          clearProps: "all",
           scrollTrigger: {
             trigger: root.current,
             start: "top 70%",

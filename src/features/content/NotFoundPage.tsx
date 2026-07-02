@@ -1,13 +1,126 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { PageHead } from "@/shared/components/PageHead";
-import { stickerStyle } from "@/shared/styles/heal";
-import { navbarPages, navLabelFor } from "@/config/navigation";
+import { WashiTape } from "@/shared/components/WashiTape";
+import { PeekingCat } from "@/features/home/scene/Peekers";
+import { stickerStyle, stickerStyleRaw } from "@/shared/styles/heal";
+import { getNavGroups } from "@/config/navigation";
+import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
+
+// Six tidy destinations instead of the full 22-page sitemap dump: one sticker
+// per nav GROUP (still derived from the registry — never a second route list),
+// each landing on the group's first page.
+const groups = getNavGroups();
+
+/** Paw stamps wandering from the poster down to the suggestions. */
+const TRAIL_STAMPS: { x: number; y: number; r: number }[] = [
+  { x: 38, y: 14, r: 16 },
+  { x: 68, y: 38, r: 30 },
+  { x: 48, y: 64, r: 8 },
+];
 
 /**
- * 404 page (§11). Suggestions are derived from navbar pages — no second route
- * list. Marked noindex so search engines do not surface it.
+ * 404 page (§11), HEAL register: a MISSING poster taped to the notebook — the
+ * perfect lost-page gag for a pet-care wiki — while the "missing" cat peeks
+ * over the poster's top edge, hiding in plain sight. A little paw trail
+ * wanders from the poster down to the suggestion stickers. Marked noindex so
+ * search engines do not surface it.
+ *
+ * Motion (gated behind prefers-reduced-motion, reverted on unmount): the
+ * poster settles transform-only (above the fold), the tape presses on, the cat
+ * rises from behind the poster into its resting peek, paw stamps appear along
+ * the trail, and the suggestion stickers rise in last. The cat then keeps the
+ * same quiet idle (slow bob + occasional blink) it has on the homepage.
  */
 export function NotFoundPage() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      registerGsap();
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        tl.from(".js-nf-poster", { y: 14, scale: 0.985, duration: 0.6 }, 0)
+          .from(
+            ".js-nf-tape",
+            {
+              scale: 0.75,
+              duration: 0.5,
+              ease: "power3.out",
+              clearProps: "transform",
+            },
+            0.05,
+          )
+          // The cat emerges from behind the poster edge into its resting peek.
+          // The tween moves the INNER js-peek-cat group (GSAP owns inner-group
+          // transforms; the outer <svg> keeps its Tailwind placement), and the
+          // svg viewport clips the group, so sliding it down hides the cat
+          // "behind" the paper edge — rising out reads as coming out of hiding.
+          // y is in SVG user units; 100 pushes even the ear tips (y=14 in the
+          // 112-tall viewBox) below the viewport, so the cat starts fully hidden.
+          .from(".js-peek-cat", { y: 100, duration: 0.8 }, 0.35)
+          // NO clearProps here: these are SVG <g>s whose placement lives in the
+          // transform ATTRIBUTE (and fill in inline style) — GSAP's clearProps
+          // on SVG removes the transform attribute and wipes style.cssText,
+          // which would collapse the stamps into an unstyled pile at the
+          // origin. A from-tween already ends at the authored state.
+          .from(
+            ".js-nf-stamp",
+            {
+              scale: 0,
+              transformOrigin: "50% 50%",
+              duration: 0.4,
+              ease: "power2.out",
+              stagger: 0.14,
+            },
+            0.5,
+          )
+          // Suggestion pills settle with a calm rise — no scale, no overshoot.
+          .from(
+            ".js-nf-pill",
+            {
+              y: 12,
+              duration: 0.45,
+              ease: "power3.out",
+              stagger: 0.06,
+              clearProps: "transform",
+            },
+            0.65,
+          );
+
+        // Same quiet idle the cat carries on the homepage tile. Paused until
+        // the entrance rise finishes so the two never fight over the group's y.
+        const idle = gsap.timeline({ paused: true });
+        idle
+          .to(
+            ".js-peek-cat",
+            { y: 3, duration: 3, ease: "sine.inOut", repeat: -1, yoyo: true },
+            0,
+          )
+          .to(
+            ".js-peek-cat-eyes",
+            {
+              scaleY: 0.1,
+              transformOrigin: "50% 50%",
+              duration: 0.09,
+              ease: "power1.inOut",
+              repeat: -1,
+              repeatDelay: 4.2,
+              yoyo: true,
+            },
+            1.4,
+          );
+        tl.call(() => idle.play(), [], 1.2);
+        return () => {
+          idle.kill();
+        };
+      });
+      return () => mm.revert();
+    },
+    { scope: root },
+  );
+
   return (
     <>
       <PageHead
@@ -20,125 +133,84 @@ export function NotFoundPage() {
           robots: "noindex, follow",
         }}
       />
-      <section className="min-h-screen bg-page heal-grid">
-        <div className="mx-auto max-w-2xl px-4 py-24 text-center">
-          {/* A lost cat in the hero/mascot register: the perfect on-brand 404. */}
+      <section ref={root} className="min-h-screen bg-page heal-grid">
+        <div className="mx-auto max-w-2xl px-4 pb-24 pt-28 text-center sm:pt-32">
+          {/* The MISSING poster. The cat lives INSIDE the tilted card so it
+              shares the card's rotation and its paws grip the actual paper
+              edge; its own svg viewport clips the rise-from-behind entrance. */}
+          <div className="mx-auto max-w-md">
+            <div
+              className="js-nf-poster heal-cutout relative bg-surface px-6 pb-7 pt-9 sm:px-10"
+              style={stickerStyleRaw(
+                "-1.6deg",
+                "22px 17px 24px 15px / 16px 24px 15px 22px",
+              )}
+            >
+              <PeekingCat className="pointer-events-none absolute bottom-full right-7 w-24 translate-y-[6px] sm:right-10 sm:w-28" />
+              {/* Tape rides left of centre so it never crowds the cat's paws,
+                  even on narrow cards — deliberate collage asymmetry. */}
+              <WashiTape className="js-nf-tape -top-3.5 left-[32%] w-20 -translate-x-1/2 -rotate-2 sm:left-[40%] sm:w-24" />
+              <p className="font-hand text-base tracking-[0.3em] text-app-orange-ink">
+                MISSING
+              </p>
+              <p className="mt-1 font-script text-[clamp(4.5rem,3.5rem+5vw,7rem)] font-bold leading-none text-ink">
+                404
+              </p>
+              <h1 className="mt-1 pb-1 font-script text-[clamp(1.9rem,1.5rem+1.6vw,2.6rem)] font-bold leading-[1.05] text-ink">
+                Page not found
+              </h1>
+              <p className="mt-2 text-ink-soft">
+                {"This page doesn't exist, or it wandered off."}
+              </p>
+              <div
+                aria-hidden="true"
+                className="heal-rule-dash mx-auto mt-5 h-2 w-4/5 bg-sticker-ink/40"
+              />
+              <p className="mt-4 font-hand text-base text-app-orange-ink">
+                Reward: belly rubs.
+              </p>
+            </div>
+          </div>
+
+          {/* Paw trail wandering off the poster toward the suggestions. */}
           <svg
-            viewBox="0 0 240 200"
-            role="img"
-            aria-label="A lost cat looking around for its way home"
-            className="mx-auto mb-6 w-44 sm:w-52"
+            aria-hidden="true"
+            viewBox="0 0 110 84"
+            className="mx-auto mb-1 mt-3 h-20 w-24"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <defs>
-              <linearGradient id="nf-cat" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#ec9b80" />
-                <stop offset="1" stopColor="#e18c6f" />
-              </linearGradient>
-            </defs>
-            <ellipse
-              cx="120"
-              cy="184"
-              rx="58"
-              ry="8"
-              fill="#9c6a44"
-              opacity="0.13"
-            />
-            <g
-              stroke="#7a5230"
-              strokeWidth="3.5"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-            >
-              <path
-                d="M82 170 C 48 172 46 138 72 130 C 86 126 92 140 84 150"
-                fill="url(#nf-cat)"
-              />
-              <path
-                d="M120 96 C 86 96 74 134 80 162 C 84 180 156 180 160 162 C 166 134 154 96 120 96 Z"
-                fill="url(#nf-cat)"
-              />
-              <ellipse cx="104" cy="174" rx="13" ry="9" fill="url(#nf-cat)" />
-              <ellipse cx="136" cy="174" rx="13" ry="9" fill="url(#nf-cat)" />
-            </g>
-            <path
-              d="M96 104 Q 120 116 144 104"
-              stroke="#f3899a"
-              strokeWidth="7"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <circle
-              cx="120"
-              cy="112"
-              r="7"
-              fill="#f6c453"
-              stroke="#7a5230"
-              strokeWidth="2.5"
-            />
-            <path d="M120 108 v6" stroke="#7a5230" strokeWidth="1.5" />
-            <g transform="rotate(-7 120 86)">
+            {TRAIL_STAMPS.map((s) => (
               <g
-                stroke="#7a5230"
-                strokeWidth="3.5"
-                strokeLinejoin="round"
-                strokeLinecap="round"
+                key={`${s.x}-${s.y}`}
+                className="js-nf-stamp"
+                transform={`translate(${s.x} ${s.y}) rotate(${s.r})`}
+                style={{ fill: "var(--color-primary-deep)" }}
               >
-                <path d="M92 54 L 82 22 L 116 44 Z" fill="url(#nf-cat)" />
-                <path d="M148 54 L 158 22 L 124 44 Z" fill="url(#nf-cat)" />
-                <circle cx="120" cy="80" r="40" fill="url(#nf-cat)" />
+                <ellipse cx="0" cy="5" rx="6.5" ry="5" />
+                <circle cx="-7.5" cy="-2.5" r="2.8" />
+                <circle cx="0" cy="-6" r="2.8" />
+                <circle cx="7.5" cy="-2.5" r="2.8" />
               </g>
-              <path d="M96 50 L 90 30 L 112 44 Z" fill="#f4a9b8" />
-              <path d="M144 50 L 150 30 L 128 44 Z" fill="#f4a9b8" />
-              <circle cx="98" cy="90" r="6" fill="#f0967f" opacity="0.6" />
-              <circle cx="142" cy="90" r="6" fill="#f0967f" opacity="0.6" />
-              <ellipse cx="107" cy="80" rx="6.5" ry="9" fill="#43321f" />
-              <ellipse cx="133" cy="80" rx="6.5" ry="9" fill="#43321f" />
-              <circle cx="109.5" cy="76" r="2.6" fill="#fff" />
-              <circle cx="135.5" cy="76" r="2.6" fill="#fff" />
-              <path
-                d="M120 96 C 116 91 110 91.5 110.5 87 C 111 83.5 116.5 83.5 120 88 C 123.5 83.5 129 83.5 129.5 87 C 130 91.5 124 91 120 96 Z"
-                fill="#db6f6f"
-              />
-              <path
-                d="M120 95 q -6 6 -12 2 M120 95 q 6 6 12 2"
-                stroke="#7a5230"
-                strokeWidth="2.5"
-                fill="none"
-                strokeLinecap="round"
-              />
-              <path
-                d="M84 84 q -18 -2 -28 -7 M84 91 q -18 3 -28 3 M156 84 q 18 -2 28 -7 M156 91 q 18 3 28 3"
-                stroke="#c2a087"
-                strokeWidth="2.5"
-                fill="none"
-                strokeLinecap="round"
-              />
-            </g>
+            ))}
           </svg>
-          <p className="font-script text-[clamp(5rem,4rem+8vw,9rem)] font-bold leading-none text-ink">
-            404
-          </p>
-          <h1 className="mt-2 pb-1 font-script text-[clamp(2rem,1.6rem+2vw,3rem)] font-bold leading-[1.05] text-ink">
-            Page not found
-          </h1>
-          <p className="mt-3 text-ink-soft">
-            The page you are looking for doesn&apos;t exist or has moved.
-          </p>
 
-          <nav aria-label="Suggested pages" className="mt-10">
+          <nav aria-label="Suggested pages">
             <h2 className="font-hand text-base text-app-orange-ink">
               Try one of these
             </h2>
             <ul className="mt-4 flex flex-wrap justify-center gap-3">
-              {navbarPages.map((suggestion, index) => (
-                <li key={suggestion.path}>
+              {groups.map((group, index) => (
+                <li key={group.key}>
                   <Link
-                    to={suggestion.path}
-                    className="heal-sticker inline-flex items-center bg-surface-2 px-4 py-2 font-hand text-base leading-none text-sticker-ink transition hover:bg-app-orange-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+                    to={group.pages[0].path}
+                    className={`js-nf-pill heal-sticker inline-flex items-center px-5 py-2.5 font-hand text-base leading-none text-sticker-ink transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring ${
+                      group.key === "home"
+                        ? "bg-app-orange"
+                        : "bg-surface-2 hover:bg-app-orange-soft"
+                    }`}
                     style={stickerStyle(index)}
                   >
-                    {navLabelFor(suggestion)}
+                    {group.label}
                   </Link>
                 </li>
               ))}

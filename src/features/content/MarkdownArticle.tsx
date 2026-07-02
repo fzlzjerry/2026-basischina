@@ -108,7 +108,7 @@ export function MarkdownArticle({
   return (
     <div className="min-h-screen bg-page heal-grid">
       <article className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-        <header className="mb-8 border-b-2 border-dashed border-sticker-ink/40 pb-6">
+        <header className="mb-8">
           {cover?.variant === "overlay" ? (
             // Masthead: the cover is a full-width banner cropped to a clean 2:1
             // letterbox (object-cover keeps the "DRY LAB" wordmark and both cats
@@ -185,6 +185,11 @@ export function MarkdownArticle({
               </time>
             </p>
           ) : null}
+          {/* Hand-ruled header divider: irregular ink dashes, not machine ones. */}
+          <div
+            aria-hidden="true"
+            className="heal-rule-dash mt-6 h-2 bg-sticker-ink/40"
+          />
         </header>
 
         <div className="gap-10 lg:grid lg:grid-cols-[1fr_16rem]">
