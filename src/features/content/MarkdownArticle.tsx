@@ -178,7 +178,7 @@ export function MarkdownArticle({
             </p>
           ) : null}
           {processed.meta.date ? (
-            <p className="mt-2 text-sm text-ink-secondary">
+            <p className="mt-2 text-sm text-ink-soft">
               Updated{" "}
               <time dateTime={String(processed.meta.date)}>
                 {String(processed.meta.date)}

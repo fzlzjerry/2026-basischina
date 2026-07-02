@@ -8,7 +8,9 @@
 import { wikiEnv } from "./env";
 import { buildAssetUrl, buildCanonicalUrl } from "./envShared";
 
-export const siteName = `${wikiEnv.teamName} · iGEM ${wikiEnv.teamYear}`;
+// Same token order as every page title's "· <team> <year> iGEM" suffix, so
+// og:site_name and <title> read identically in social embeds.
+export const siteName = `${wikiEnv.teamName} ${wikiEnv.teamYear} iGEM`;
 
 /** Default social share image. Override per page via PageSEO.ogImage. */
 export const defaultOgImage = buildAssetUrl(

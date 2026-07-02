@@ -73,7 +73,14 @@ export function ClosingCtaSection() {
           "linear-gradient(180deg, var(--color-sunset-sky) 0%, var(--color-sunset) 62%, var(--color-sunset-deep) 100%)",
       }}
     >
-      <div className="mx-auto max-w-3xl px-4 pt-20 text-center sm:px-6 sm:pt-24">
+      {/* Notebook grid over the sunset gradient (multiply), so this band sits
+          on the same graph paper as every other section; the scene and copy
+          are positioned above it, pasted onto the page. */}
+      <div
+        aria-hidden="true"
+        className="heal-grid pointer-events-none absolute inset-0 mix-blend-multiply"
+      />
+      <div className="relative mx-auto max-w-3xl px-4 pt-20 text-center sm:px-6 sm:pt-24">
         <h2 className="js-closing pb-1 font-script text-[clamp(2.8rem,1.8rem+3.2vw,4.5rem)] font-bold leading-[1.04] text-ink">
           {"Come hang out with\u00A0us."}
         </h2>
@@ -107,7 +114,7 @@ export function ClosingCtaSection() {
         </div>
       </div>
 
-      <SunsetDuo className="js-closing mt-6 block h-56 w-full sm:h-72 lg:h-80" />
+      <SunsetDuo className="js-closing relative mt-6 block h-56 w-full sm:h-72 lg:h-80" />
     </section>
   );
 }

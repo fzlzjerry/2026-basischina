@@ -75,6 +75,12 @@
   color: #0a5249; /* --color-primary-rail */
 }
 
+.markdown-body a:focus-visible {
+  outline: 2px solid #794f27; /* --color-focus-ring, same ring as site chrome */
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .markdown-body ul {
   list-style: disc;
   padding-left: 1.5rem;
@@ -86,6 +92,15 @@
 }
 
 .markdown-body li {
+  margin-bottom: 0.4rem;
+}
+
+/* Nested lists sit on the 0.4rem li rhythm, not the 1.25rem block rhythm —
+   otherwise a nested group opens a paragraph-sized gap before the next
+   top-level item. */
+.markdown-body li > ul,
+.markdown-body li > ol {
+  margin-top: 0.4rem;
   margin-bottom: 0.4rem;
 }
 
@@ -168,6 +183,15 @@
   color: #794f27; /* --color-ink */
 }
 
+/* Wide display equations scroll inside their own box (the same overflow-x
+   pattern as pre/table above) — without this they clip at the card edge AND
+   stretch the mobile viewport, shrink-to-fitting the whole page. */
+.markdown-body .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.25rem;
+}
+
 .markdown-body .katex-error {
   color: #c0392b; /* --color-error */
 }
@@ -210,7 +234,7 @@
 .markdown-body .token.attr-name,
 .markdown-body .token.namespace,
 .markdown-body .token.deleted {
-  color: #b04a28; /* peach-ink, 4.85:1 */
+  color: #a84523; /* peach-ink, 5.7:1 */
 }
 
 .markdown-body .token.function-name,
@@ -243,13 +267,13 @@
 .markdown-body .token.attr-value,
 .markdown-body .token.regex,
 .markdown-body .token.variable {
-  color: #2f7a36; /* success/green-ink, 4.76:1 */
+  color: #2b7031; /* green-ink, 5.5:1 */
 }
 
 .markdown-body .token.operator,
 .markdown-body .token.entity,
 .markdown-body .token.url {
-  color: #1f7a5e; /* teal-ink, 4.71:1 */
+  color: #1c6f55; /* teal-ink, 5.5:1 */
 }
 
 .markdown-body .token.inserted {

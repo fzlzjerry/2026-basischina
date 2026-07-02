@@ -51,6 +51,10 @@ export function Navbar() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
+  // Disclosure triggers, so Escape can hand keyboard focus back instead of
+  // dropping it to <body> when the focused menu unmounts.
+  const groupButtonRefs = useRef(new Map<string, HTMLButtonElement | null>());
+  const mobileToggleRef = useRef<HTMLButtonElement>(null);
   const { pathname } = useLocation();
 
   // Scroll-progress bar: a scroll-linked indicator (not autonomous motion), so
@@ -79,9 +83,12 @@ export function Navbar() {
   );
 
   // The persistent shell never remounts, so recalc trigger positions whenever
-  // the route (and therefore page height) changes.
+  // the route (and therefore page height) changes — and dismiss any open
+  // disclosure, which would otherwise float over the new page.
   useEffect(() => {
     registerGsap();
+    setOpenGroup(null);
+    setMobileOpen(false);
     const id = window.requestAnimationFrame(() => ScrollTrigger.refresh());
     return () => window.cancelAnimationFrame(id);
   }, [pathname]);
@@ -93,10 +100,22 @@ export function Navbar() {
       }
     }
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setOpenGroup(null);
-        setMobileOpen(false);
+      if (event.key !== "Escape") return;
+      // Hand focus back to the disclosure's trigger, but only when the menu
+      // being dismissed actually contains focus (never steal it otherwise).
+      const active = document.activeElement;
+      if (openGroup) {
+        const trigger = groupButtonRefs.current.get(openGroup);
+        if (trigger?.closest("li")?.contains(active)) trigger.focus();
       }
+      if (
+        mobileOpen &&
+        document.getElementById("mobile-nav")?.contains(active)
+      ) {
+        mobileToggleRef.current?.focus();
+      }
+      setOpenGroup(null);
+      setMobileOpen(false);
     }
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
@@ -104,7 +123,7 @@ export function Navbar() {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, []);
+  }, [openGroup, mobileOpen]);
 
   return (
     <header
@@ -148,11 +167,28 @@ export function Navbar() {
             const isOpen = openGroup === group.key;
             const groupActive = group.pages.some((p) => pathname === p.path);
             return (
-              <li key={group.key} className="relative">
+              <li
+                key={group.key}
+                className="relative"
+                // Close the disclosure when focus moves past its last item
+                // (Tab out), matching the APG disclosure-navigation pattern.
+                onBlur={(event) => {
+                  if (
+                    !event.currentTarget.contains(
+                      event.relatedTarget as Node | null,
+                    )
+                  ) {
+                    setOpenGroup(null);
+                  }
+                }}
+              >
                 <button
+                  ref={(el) => {
+                    groupButtonRefs.current.set(group.key, el);
+                  }}
                   type="button"
                   aria-expanded={isOpen}
-                  aria-haspopup="true"
+                  aria-controls={`nav-group-${group.key}`}
                   onClick={() =>
                     setOpenGroup((current) =>
                       current === group.key ? null : group.key,
@@ -171,6 +207,7 @@ export function Navbar() {
                 </button>
                 {isOpen ? (
                   <ul
+                    id={`nav-group-${group.key}`}
                     className="heal-sticker absolute left-0 z-50 mt-2 min-w-52 bg-page p-1.5"
                     style={stickerStyle(0, "0deg")}
                   >
@@ -197,6 +234,7 @@ export function Navbar() {
 
         {/* Mobile toggle */}
         <button
+          ref={mobileToggleRef}
           type="button"
           aria-expanded={mobileOpen}
           aria-controls="mobile-nav"

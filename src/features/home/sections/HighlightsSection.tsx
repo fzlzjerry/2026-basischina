@@ -179,10 +179,11 @@ export function HighlightsSection() {
 
   return (
     <section ref={root} className="bg-page heal-grid">
-      <div className="mx-auto max-w-6xl px-4 pt-20 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 pt-14 sm:px-6 lg:px-8">
+        {/* Terminal period matches the other handwritten section headers. */}
         <HomeSectionHeader
           className="js-reveal-title"
-          title="Start exploring"
+          title="Start exploring."
         />
 
         <div className="mt-14 grid grid-cols-1 gap-6 pb-24 sm:grid-cols-2 lg:grid-cols-3">
@@ -203,7 +204,9 @@ export function HighlightsSection() {
                   />
                 ) : null}
                 {tile.cameo === "paw" ? (
-                  <PawCorner className="pointer-events-none absolute right-5 top-4 h-20 w-20 rotate-12" />
+                  // lg-only: below lg the wide tile narrows enough for the
+                  // description text to run beneath the corner paw.
+                  <PawCorner className="pointer-events-none absolute right-5 top-4 hidden h-20 w-20 rotate-12 lg:block" />
                 ) : null}
 
                 <div
@@ -224,7 +227,7 @@ export function HighlightsSection() {
                     >
                       {tile.title}
                     </h3>
-                    <p className="mt-2 max-w-prose text-ink-soft">
+                    <p className="mt-2 max-w-prose text-pretty text-ink-soft">
                       {tile.description}
                     </p>
                     <span

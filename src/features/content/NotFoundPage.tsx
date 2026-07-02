@@ -127,7 +127,7 @@ export function NotFoundPage() {
         path="/404"
         title="Page not found"
         seo={{
-          title: "Page not found — BASIS-China 2026 iGEM",
+          title: "Page not found · BASIS-China 2026 iGEM",
           description: "The requested page could not be found.",
           keywords: ["404", "not found"],
           robots: "noindex, follow",

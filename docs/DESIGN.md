@@ -30,7 +30,9 @@ the rules below in `check-all`.
 Cream notebook hero (the washi-taped HEAL banner) → mint `primary-soft` band →
 cream `page` → drenched sunset band → brown scalloped footer. Adjacent sections interlock via
 `SectionDivider` (SVG edge, fill = NEXT section's bg token, fixed h-10/h-14 so
-no CLS). Since 2026-07-02 both divider paths are HAND-CUT: baked, seeded
+no CLS) — EXCEPT the mint→cream seam, which is a flush straight edge
+(user-requested 2026-07-02: the ungridded cream wave read as a foreign blank
+strip there). Since 2026-07-02 both divider paths are HAND-CUT: baked, seeded
 meanders (varied segment lengths, jittered amplitude, no repeating period), so
 each section reads as a strip of coloured paper cut with scissors — never a
 smooth wave or a perfect scallop repeat. (A warm `room-wall` molecule-viewer

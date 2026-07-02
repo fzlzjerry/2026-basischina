@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { SectionDivider } from "@/shared/components/SectionDivider";
 import { stickerStyle } from "@/shared/styles/heal";
 import {
   gsap,
@@ -160,7 +159,7 @@ export function ApproachSection() {
           lede="How a synthetic-biology idea becomes gentle, everyday care for the animals we live with."
         />
 
-        <div className="relative mt-12 pb-20 lg:mt-16">
+        <div className="relative mt-12 pb-14 lg:mt-16">
           {/* dotted paw trail weaving through the steps (desktop) */}
           <svg
             aria-hidden="true"
@@ -230,13 +229,14 @@ export function ApproachSection() {
                 <h3 className="mt-3 font-hand text-2xl leading-none text-ink">
                   {step.title}
                 </h3>
-                <p className="mt-2 max-w-[34ch] text-ink-soft">{step.body}</p>
+                <p className="mt-2 max-w-[34ch] text-balance text-ink-soft">
+                  {step.body}
+                </p>
               </li>
             ))}
           </ol>
         </div>
       </div>
-      <SectionDivider fill="var(--color-page)" flip />
     </section>
   );
 }

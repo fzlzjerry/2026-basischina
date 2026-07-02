@@ -24,28 +24,34 @@ const teamSlug = wikiEnv.basePath.replace(/^\/+|\/+$/g, "");
  */
 export function Footer() {
   return (
-    <footer className="text-footer-text">
+    // relative z-10 so the scallop paints ABOVE the homepage's
+    // position:relative sunset band (its -mb pulls the footer's divider zone
+    // underneath it, which would otherwise flatten the hand-cut edge).
+    <footer className="relative z-10 text-footer-text">
       {/* Scalloped ground edge into the brown footer. No top margin: on the
           homepage the sunset band sits flush above the scallop, and content
           pages bring their own bottom padding. */}
       <SectionDivider variant="scallop" fill="var(--color-footer)" />
       <div className="bg-footer">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <p className="font-script text-3xl leading-none text-page">
-                <Link
-                  to="/"
-                  className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
-                >
-                  {wikiEnv.teamName}
-                </Link>
-              </p>
-              <p className="mt-2 text-sm text-footer-text-muted">
-                iGEM {wikiEnv.teamYear}. Engineering biology for healthier,
-                happier companions.
-              </p>
-            </div>
+          {/* Brand row above the columns, then all five nav groups on one lg
+              row — a short column just ends instead of reserving a tall,
+              empty grid row beneath it. */}
+          <div className="mb-10">
+            <p className="font-script text-3xl leading-none text-page">
+              <Link
+                to="/"
+                className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
+              >
+                {wikiEnv.teamName}
+              </Link>
+            </p>
+            <p className="mt-2 max-w-xs text-sm text-footer-text-muted">
+              iGEM {wikiEnv.teamYear}. Engineering biology for healthier,
+              happier companions.
+            </p>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
             {footerGroups.map((group) => (
               <nav key={group.key} aria-label={group.label}>
                 {/* Hand-printed column headers (Gochi), not uppercase tracked
@@ -86,6 +92,7 @@ export function Footer() {
                 target="_blank"
               >
                 Creative Commons Attribution 4.0 International license
+                <span className="sr-only"> (opens in new tab)</span>
               </a>
               .
             </p>
@@ -98,6 +105,7 @@ export function Footer() {
                 target="_blank"
               >
                 gitlab.igem.org/{wikiEnv.teamYear}/{teamSlug}
+                <span className="sr-only"> (opens in new tab)</span>
               </a>
               .
             </p>
@@ -113,6 +121,7 @@ export function Footer() {
                 target="_blank"
               >
                 Phosphor Icons
+                <span className="sr-only"> (opens in new tab)</span>
               </a>{" "}
               (MIT) and the Caveat, Gochi Hand, and Nunito typefaces (SIL Open
               Font License).

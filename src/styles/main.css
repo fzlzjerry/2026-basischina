@@ -14,7 +14,7 @@
   --color-hover: #f0ede5;
   --color-ink: #794f27;
   --color-ink-soft: #725d42;
-  --color-ink-secondary: #9f927d;
+  --color-ink-secondary: #9f927d; /* decoration ONLY — 2.86:1 on page, never text */
   --color-ink-muted: #8a7b66;
   --color-placeholder: #6b5e50;
   --color-disabled: #c4b89e;
@@ -50,15 +50,15 @@
 
   /* ---- Category accent palette: LIGHT = backgrounds/rails, INK = text/icon ---- */
   --color-app-teal: #82d5bb;
-  --color-app-teal-ink: #1f7a5e;
+  --color-app-teal-ink: #1c6f55;
   --color-app-blue: #889df0;
   --color-app-blue-ink: #2f4fa8;
   --color-app-purple: #b77dee;
   --color-app-purple-ink: #6a3fa0;
   --color-app-green: #8ac68a;
-  --color-app-green-ink: #2f7a36;
+  --color-app-green-ink: #2b7031;
   --color-app-peach: #e18c6f;
-  --color-app-peach-ink: #b04a28;
+  --color-app-peach-ink: #a84523;
   --color-app-pink: #f8a6b2;
   --color-app-pink-ink: #b03a52;
 
@@ -431,6 +431,13 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Warm notebook text selection — the UA default blue fights the palette.
+   sticker-ink on orange-soft is 12.2:1, legible on every band. */
+::selection {
+  background-color: var(--color-app-orange-soft);
+  color: var(--color-sticker-ink);
 }
 
 /* Note: SVG transform origins for the mascot/theatre animations are set by GSAP

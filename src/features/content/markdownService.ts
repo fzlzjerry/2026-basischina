@@ -83,6 +83,17 @@ const defaultLinkOpen =
   ((tokens, idx, options, _env, self) =>
     self.renderToken(tokens, idx, options));
 
+const defaultLinkClose =
+  md.renderer.rules.link_close ??
+  ((tokens, idx, options, _env, self) =>
+    self.renderToken(tokens, idx, options));
+
+/** Set by link_open, consumed by the matching link_close (links cannot nest,
+ *  so a single env flag is safe). */
+interface LinkRenderEnv {
+  externalLink?: boolean;
+}
+
 md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
   const token = tokens[idx];
   const hrefIndex = token.attrIndex("href");
@@ -91,11 +102,23 @@ md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
     if (isExternalUrl(href)) {
       token.attrSet("target", "_blank");
       token.attrSet("rel", "noopener noreferrer");
+      (env as LinkRenderEnv).externalLink = true;
     } else if (href.startsWith("/")) {
       token.attrs[hrefIndex][1] = resolveInternalHref(href);
     }
   }
   return defaultLinkOpen(tokens, idx, options, env, self);
+};
+
+// Announce the new-tab behaviour to screen readers, inside the link and after
+// its visible label (WCAG G201).
+md.renderer.rules.link_close = (tokens, idx, options, env, self) => {
+  const linkEnv = env as LinkRenderEnv;
+  const suffix = linkEnv.externalLink
+    ? '<span class="sr-only"> (opens in new tab)</span>'
+    : "";
+  linkEnv.externalLink = false;
+  return suffix + defaultLinkClose(tokens, idx, options, env, self);
 };
 
 md.renderer.rules.image = (tokens, idx, options, _env, self) => {
