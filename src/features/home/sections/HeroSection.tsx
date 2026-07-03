@@ -108,27 +108,7 @@ export function HeroSection() {
         ))}
       </div>
 
-      {/* handwritten annotation pointing at the banner (desktop only) */}
-      <div
-        aria-hidden="true"
-        className="js-hero-note heal-paste-in pointer-events-none absolute right-[7%] top-[18%] hidden -rotate-6 text-right lg:block"
-      >
-        <span className="font-hand text-xl text-ink-muted">our project!</span>
-        <svg
-          viewBox="0 0 90 64"
-          className="ml-auto h-12 w-20"
-          fill="none"
-          stroke="var(--color-ink-muted)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path className="js-hero-arrow" d="M82 8 C 54 6 22 18 12 52" />
-          <path className="js-hero-arrow" d="M4 40 L 12 54 L 26 48" />
-        </svg>
-      </div>
-
-      <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col items-center justify-center gap-7 px-4 pb-14 pt-8 sm:px-6 lg:px-12">
+      <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col items-center justify-center gap-6 px-4 pb-14 pt-8 sm:px-6 lg:px-12">
         {/* banner + tape */}
         <div className="relative w-full max-w-5xl">
           <WashiTape className="js-hero-tape heal-paste-in -top-3 left-1/2 w-28 -translate-x-1/2 -rotate-3" />
@@ -142,15 +122,48 @@ export function HeroSection() {
           />
         </div>
 
-        {/* value-prop tagline */}
-        {/* Body register, not font-hand: the one connected sentence stays on
-            the legible face (Gochi's capital G reads as a numeral 6). */}
-        <p className="max-w-2xl text-balance text-center text-2xl font-medium leading-snug text-ink-soft sm:text-3xl">
-          Gentle, bio-made care for the cats and dogs we love.
-        </p>
+        {/* HEAL expansion + value-prop, as one tight text block. The expansion
+            surfaces the sr-only h1's meaning for sighted readers (aria-hidden
+            here so the h1 stays the single spoken page title). Static paint:
+            content never animates on load. */}
+        <div className="flex flex-col items-center gap-2.5">
+          <p
+            aria-hidden="true"
+            className="font-hand text-lg leading-none text-app-orange-ink sm:text-xl"
+          >
+            Healthier, happier companions
+          </p>
+          {/* Body register, not font-hand: the one connected sentence stays on
+              the legible face (Gochi's capital G reads as a numeral 6). */}
+          <p className="max-w-2xl text-balance text-center text-2xl font-medium leading-snug text-ink-soft sm:text-3xl">
+            Gentle, bio-made care for the cats and dogs we love.
+          </p>
+        </div>
 
-        {/* sticker CTAs */}
-        <div className="flex flex-wrap items-center justify-center gap-4">
+        {/* sticker CTAs. The hand-drawn note is anchored to this row (not the
+            banner) so it points at the primary action and tracks the button
+            regardless of hero height. */}
+        <div className="relative flex flex-wrap items-center justify-center gap-4">
+          {/* "our project!" annotation aimed at Explore (desktop only).
+              aria-hidden decoration; pastes in on load via .heal-paste-in. */}
+          <div
+            aria-hidden="true"
+            className="js-hero-note heal-paste-in pointer-events-none absolute -top-16 left-0 hidden -translate-x-[80%] -rotate-6 text-right lg:block"
+          >
+            <span className="font-hand text-xl text-ink-muted">our project!</span>
+            <svg
+              viewBox="0 0 96 72"
+              className="ml-auto h-14 w-24"
+              fill="none"
+              stroke="var(--color-ink-muted)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path className="js-hero-arrow" d="M6 6 C 40 8 78 22 88 60" />
+              <path className="js-hero-arrow" d="M70 54 L 89 63 L 84 43" />
+            </svg>
+          </div>
           <Link
             to="/description"
             className={ctaClasses("primary")}
