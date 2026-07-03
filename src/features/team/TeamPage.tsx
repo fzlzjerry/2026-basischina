@@ -16,7 +16,7 @@ const TAPE_TILTS = ["-rotate-3", "rotate-2", "-rotate-1", "rotate-3"] as const;
 
 function MemberCard({ member, index }: { member: TeamMember; index: number }) {
   return (
-    <li>
+    <li className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]">
       {/* Each member is a paper cutout pasted into the notebook: a framed photo
           with a hand-printed name, held down by a strip of washi tape. Static
           tilt (heal-cutout), no false hover affordance since the card is not a
@@ -120,7 +120,11 @@ export function TeamPage() {
                 <h2 className="pb-1 font-script text-[clamp(2rem,1.6rem+1.6vw,2.9rem)] font-bold leading-[1.05] text-ink">
                   {section.title}
                 </h2>
-                <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {/* Centered flex-wrap (not a fixed grid): a section with fewer
+                    than a full row of members stays centered instead of leaving
+                    a lonely card against dead space, and it fills out cleanly as
+                    real members are added. */}
+                <ul className="mt-6 flex flex-wrap justify-center gap-6">
                   {members.map((member, index) => (
                     <MemberCard
                       key={`${member.name}-${index}`}

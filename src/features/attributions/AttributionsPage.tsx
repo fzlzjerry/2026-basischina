@@ -77,7 +77,11 @@ export function AttributionsPage() {
                 title="iGEM Project Attributions Form"
                 src={FORM_SRC}
                 className="w-full"
-                style={{ height: "1200px", border: "0" }}
+                // Modest initial height so an unsubmitted form is not a giant
+                // blank void; the effect above grows it to fit once the real
+                // form content posts its height. id/src stay exactly as iGEM
+                // specifies.
+                style={{ height: "640px", border: "0" }}
               />
             </div>
           ) : (

@@ -145,7 +145,7 @@ export function HeroSection() {
         {/* value-prop tagline */}
         {/* Body register, not font-hand: the one connected sentence stays on
             the legible face (Gochi's capital G reads as a numeral 6). */}
-        <p className="max-w-xl text-center text-xl text-ink-soft sm:text-2xl">
+        <p className="max-w-2xl text-balance text-center text-2xl font-medium leading-snug text-ink-soft sm:text-3xl">
           Gentle, bio-made care for the cats and dogs we love.
         </p>
 

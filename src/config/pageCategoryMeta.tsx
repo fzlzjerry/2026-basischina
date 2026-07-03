@@ -29,7 +29,7 @@ type PhosphorIcon = ComponentType<{
   className?: string;
 }>;
 
-/** Accent keys mirror the Card `accent` union so `meta.accent` is pass-through. */
+/** Accent keys match the app-accent token families (see `--color-app-*`). */
 export type CategoryAccent =
   | "teal"
   | "blue"

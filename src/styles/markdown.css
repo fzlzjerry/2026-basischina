@@ -136,9 +136,19 @@
 
 .markdown-body pre.mermaid {
   background: transparent;
-  display: flex;
-  justify-content: center;
   padding: 0;
+  text-align: center;
+}
+
+/* Size the rendered SVG to its own aspect ratio, capped to the column width. A
+   flex parent lets mermaid's (max-width + width:100%) SVG balloon its height on
+   wide viewports — a wide LR flowchart rendered ~715px tall on desktop, leaving
+   a large empty gap. block + height:auto honors the viewBox aspect ratio. */
+.markdown-body pre.mermaid svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
 }
 
 .markdown-body img {

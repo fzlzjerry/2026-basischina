@@ -50,6 +50,9 @@ function mobileLinkClasses(isActive: boolean): string {
 export function Navbar() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Which mobile group is expanded (single-open accordion). Multi-page groups
+  // collapse so the panel is a scannable list of 6 sections, not ~25 links.
+  const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
   const navRef = useRef<HTMLElement>(null);
   // Disclosure triggers, so Escape can hand keyboard focus back instead of
   // dropping it to <body> when the focused menu unmounts.
@@ -89,9 +92,20 @@ export function Navbar() {
     registerGsap();
     setOpenGroup(null);
     setMobileOpen(false);
+    setOpenMobileGroup(null);
     const id = window.requestAnimationFrame(() => ScrollTrigger.refresh());
     return () => window.cancelAnimationFrame(id);
   }, [pathname]);
+
+  // When the mobile menu opens, expand the group that holds the current page so
+  // the visitor lands oriented instead of on a wall of collapsed sections.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const active = groups.find((group) =>
+      group.pages.some((page) => page.path === pathname),
+    );
+    setOpenMobileGroup(active && active.pages.length > 1 ? active.key : null);
+  }, [mobileOpen, pathname]);
 
   useEffect(() => {
     function onPointerDown(event: MouseEvent) {
@@ -260,27 +274,74 @@ export function Navbar() {
           id="mobile-nav"
           className="max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t-[3px] border-sticker-ink bg-page px-4 py-3 lg:hidden"
         >
-          {groups.map((group) => (
-            <div key={group.key} className="py-2">
-              <p className="px-3 font-hand text-sm uppercase tracking-wide text-app-orange-ink">
-                {group.label}
-              </p>
-              <ul className="mt-1 flex flex-col gap-0.5">
-                {group.pages.map((page) => (
-                  <li key={page.path}>
-                    <NavLink
-                      to={page.path}
-                      end={page.path === "/"}
-                      onClick={() => setMobileOpen(false)}
-                      className={({ isActive }) => mobileLinkClasses(isActive)}
-                    >
-                      {navLabelFor(page)}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {groups.map((group) => {
+            // Single-page groups (e.g. Home) stay flat links, mirroring desktop.
+            if (group.pages.length === 1) {
+              const page = group.pages[0];
+              return (
+                <div
+                  key={group.key}
+                  className="border-b border-sticker-ink/10 py-1 last:border-b-0"
+                >
+                  <NavLink
+                    to={page.path}
+                    end={page.path === "/"}
+                    onClick={() => setMobileOpen(false)}
+                    className={({ isActive }) => mobileLinkClasses(isActive)}
+                  >
+                    {navLabelFor(page)}
+                  </NavLink>
+                </div>
+              );
+            }
+            const isOpen = openMobileGroup === group.key;
+            const groupActive = group.pages.some((p) => pathname === p.path);
+            return (
+              <div
+                key={group.key}
+                className="border-b border-sticker-ink/10 py-1 last:border-b-0"
+              >
+                <button
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={`mobile-group-${group.key}`}
+                  onClick={() =>
+                    setOpenMobileGroup((current) =>
+                      current === group.key ? null : group.key,
+                    )
+                  }
+                  className={`flex w-full items-center justify-between rounded-[12px] px-3 py-2 font-hand text-base leading-none transition hover:bg-app-orange-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring ${groupActive ? "text-app-orange-ink" : "text-sticker-ink"}`}
+                >
+                  <span>{group.label}</span>
+                  <Icon
+                    as={CaretDown}
+                    size="xs"
+                    className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  />
+                </button>
+                {isOpen ? (
+                  <ul
+                    id={`mobile-group-${group.key}`}
+                    className="mt-0.5 flex flex-col gap-0.5 pb-1 pl-2"
+                  >
+                    {group.pages.map((page) => (
+                      <li key={page.path}>
+                        <NavLink
+                          to={page.path}
+                          end={page.path === "/"}
+                          onClick={() => setMobileOpen(false)}
+                          className={({ isActive }) => mobileLinkClasses(isActive)}
+                        >
+                          {navLabelFor(page)}
+                        </NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       ) : null}
     </header>
