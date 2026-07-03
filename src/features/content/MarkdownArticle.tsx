@@ -128,7 +128,7 @@ export function MarkdownArticle({
                 />
               </div>
               <h1
-                className="heal-cutout absolute bottom-4 left-4 max-w-[85%] bg-surface px-5 py-1.5 font-script text-[clamp(1.9rem,1.5rem+1.8vw,3rem)] leading-none text-ink sm:bottom-6 sm:left-6"
+                className="heal-cutout absolute bottom-4 left-4 max-w-[85%] text-balance bg-surface px-5 py-1.5 font-script text-[clamp(1.9rem,1.5rem+1.8vw,3rem)] leading-none text-ink sm:bottom-6 sm:left-6"
                 style={stickerStyleRaw(
                   "-1deg",
                   "14px 9px 16px 8px / 8px 16px 9px 14px",
@@ -167,7 +167,7 @@ export function MarkdownArticle({
                   {label}
                 </span>
               )}
-              <h1 className="pb-1 font-script text-[clamp(2.4rem,1.8rem+2.4vw,3.5rem)] font-bold leading-[1.05] text-ink">
+              <h1 className="pb-1 font-script text-[clamp(2.4rem,1.8rem+2.4vw,3.5rem)] font-bold leading-[1.05] text-balance text-ink">
                 {processed.meta.title ?? title}
               </h1>
             </>

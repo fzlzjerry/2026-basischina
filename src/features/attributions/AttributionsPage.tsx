@@ -54,7 +54,7 @@ export function AttributionsPage() {
       <div className="min-h-screen bg-page heal-grid">
         <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
           <header className="mb-8 border-b-2 border-dashed border-sticker-ink/40 pb-6">
-            <h1 className="pb-1 font-script text-[clamp(2.6rem,2rem+2.5vw,3.9rem)] font-bold leading-[1.04] text-ink">
+            <h1 className="pb-1 font-script text-[clamp(2.6rem,2rem+2.5vw,3.9rem)] font-bold leading-[1.04] text-balance text-ink">
               {page.title}
             </h1>
             <p className="mt-4 max-w-3xl text-lg text-ink-soft">

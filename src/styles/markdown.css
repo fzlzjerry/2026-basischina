@@ -59,10 +59,27 @@
 }
 
 /* Cap the reading measure for prose (tables, code, and images stay full width)
-   so lines land in the comfortable 65-75ch range on wide content columns. */
+   so lines land in the comfortable 65-75ch range on wide content columns.
+   text-wrap: pretty trims widows/orphans on longer paragraphs. overflow-wrap
+   breaks the long unbroken tokens real content carries (DNA/protein sequences,
+   part IDs, bare URLs) so they wrap inside the column instead of overflowing —
+   scoped to prose on purpose, so data tables keep scrolling (overflow-x) rather
+   than cramming a 100-char sequence into one narrow cell. */
 .markdown-body p,
 .markdown-body li {
   max-width: 70ch;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+/* Even out line lengths when a real section heading wraps to two lines (so it
+   reads as a deliberate break, not one long line + an orphan word), and break a
+   pathologically long heading token rather than let it overflow the column. */
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 .markdown-body a {
