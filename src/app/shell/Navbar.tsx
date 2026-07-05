@@ -331,7 +331,9 @@ export function Navbar() {
                           to={page.path}
                           end={page.path === "/"}
                           onClick={() => setMobileOpen(false)}
-                          className={({ isActive }) => mobileLinkClasses(isActive)}
+                          className={({ isActive }) =>
+                            mobileLinkClasses(isActive)
+                          }
                         >
                           {navLabelFor(page)}
                         </NavLink>

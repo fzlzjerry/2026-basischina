@@ -6,17 +6,34 @@
  * sitemap/validation scripts could reuse it if needed.
  */
 import { wikiEnv } from "./env";
-import { buildAssetUrl, buildCanonicalUrl } from "./envShared";
+import { buildCanonicalUrl } from "./envShared";
 
 // Same token order as every page title's "· <team> <year> iGEM" suffix, so
 // og:site_name and <title> read identically in social embeds.
 export const siteName = `${wikiEnv.teamName} ${wikiEnv.teamYear} iGEM`;
 
-/** Default social share image. Override per page via PageSEO.ogImage. */
-export const defaultOgImage = buildAssetUrl(
-  wikiEnv.basePath,
-  "assets/og-default.png",
+/**
+ * Default social share image. Override per page via PageSEO.ogImage.
+ *
+ * Absolute URL on purpose: og:image must be a full URL for crawlers
+ * (Facebook/WeChat do not resolve origin-relative paths). siteUrl already
+ * carries the deployment's base segment, mirroring how canonical URLs are
+ * built. The PNG itself is a committed asset rendered by
+ * `bun scripts/generate-og.ts` from scripts/og/og-card.html.
+ */
+export const defaultOgImage = buildCanonicalUrl(
+  wikiEnv.siteUrl,
+  "/assets/og-default.png",
 );
+
+/** Intrinsic size of the default share image (og:image:width/height). */
+export const defaultOgImageWidth = 1200;
+export const defaultOgImageHeight = 630;
+
+/** og:image:alt / twitter:image:alt for the default share image. */
+export const defaultOgImageAlt =
+  "Hand-drawn HEAL banner taped onto a lab-notebook page, with the motto " +
+  `"Healthier, happier companions" — ${wikiEnv.teamName} iGEM ${wikiEnv.teamYear}.`;
 
 export const defaultKeywords: string[] = [
   "iGEM",

@@ -7,7 +7,10 @@ renderer rewrites it under the base path automatically).
 
 ## Required for SEO
 
-- `og-default.png` — the default Open Graph / social share image (recommended
-  1200×630). It is referenced by `src/config/seo.ts` (`defaultOgImage`). Until
-  you add it, social share previews will fall back to no image. Override per page
-  with `PageSEO.ogImage`.
+- `og-default.png` — the default Open Graph / social share image (1200×630),
+  referenced by `src/config/seo.ts` (`defaultOgImage`) as an absolute URL.
+  It is a COMMITTED asset, not a build product: regenerate it with
+  `bun scripts/generate-og.ts` after editing the art board at
+  `scripts/og/og-card.html` (headless system Chrome renders the board; the
+  CI/iGEM build environment has no Chrome). Override per page with
+  `PageSEO.ogImage`.

@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "VITE_BASE_PATH=/ bun run build",
+  "buildCommand": "VITE_BASE_PATH=/ VITE_SITE_URL=https://2026-basischina.vercel.app bun run build",
   "outputDirectory": "dist",
   "cleanUrls": true
 }
