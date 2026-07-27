@@ -725,6 +725,272 @@
     transform: scaleX(0);
     will-change: transform;
   }
+
+  /* Kinetic manifesto: a long dark intermission that keeps moving without
+     introducing another nested scroller. The sticky canvas remains in normal
+     document flow; GSAP only scrubs the oversized lines and the pasted badge. */
+  .kinetic-statement {
+    position: relative;
+    min-height: 190vh;
+    overflow: clip;
+    color: var(--color-page);
+    background-color: var(--color-sticker-ink);
+    background-image:
+      linear-gradient(rgb(231 249 245 / 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(231 249 245 / 0.08) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .kinetic-statement-sticky {
+    position: sticky;
+    top: 3.9rem;
+    display: flex;
+    height: calc(100dvh - 3.9rem);
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .kinetic-statement-meta {
+    position: absolute;
+    top: clamp(1.5rem, 4vh, 3rem);
+    right: clamp(1.25rem, 4vw, 4rem);
+    left: clamp(1.25rem, 4vw, 4rem);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: rgb(249 246 237 / 0.72);
+    font-family: var(--font-body);
+    font-size: clamp(0.62rem, 0.54rem + 0.22vw, 0.78rem);
+    font-weight: 900;
+    letter-spacing: 0.2em;
+  }
+
+  .kinetic-statement-lines {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.2rem, 1vh, 0.8rem);
+    width: max-content;
+    min-width: 100%;
+    font-family: var(--font-body);
+    font-size: clamp(4.2rem, 9.65vw, 10.5rem);
+    font-weight: 900;
+    letter-spacing: -0.075em;
+    line-height: 0.78;
+    white-space: nowrap;
+  }
+
+  .kinetic-statement-lines p:nth-child(2) {
+    align-self: flex-end;
+  }
+
+  .kinetic-mobile-break {
+    display: none;
+  }
+
+  .kinetic-statement-fill-wrap {
+    position: relative;
+    display: inline-block;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--color-page);
+  }
+
+  .kinetic-statement-fill {
+    position: absolute;
+    inset: 0;
+    color: var(--color-primary);
+    -webkit-text-stroke: 0;
+    will-change: clip-path;
+  }
+
+  .kinetic-badge {
+    position: absolute;
+    right: clamp(3rem, 7vw, 7rem);
+    bottom: clamp(4.3rem, 8vh, 5.8rem);
+    width: clamp(16rem, 22vw, 20rem);
+    aspect-ratio: 1400 / 773;
+    contain: layout paint;
+  }
+
+  .kinetic-badge-art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+  }
+
+  .kinetic-peel-canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    touch-action: pan-y;
+  }
+
+  .kinetic-badge.is-peel-ready .kinetic-badge-art {
+    opacity: 0;
+  }
+
+  .kinetic-badge.is-peel-ready .kinetic-peel-canvas {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .kinetic-peel-canvas canvas {
+    touch-action: pan-y !important;
+  }
+
+  .kinetic-peel-canvas canvas:focus {
+    outline: none;
+  }
+
+  .kinetic-peel-canvas canvas:focus-visible {
+    border-radius: 1rem;
+    outline: 2px dashed var(--color-primary);
+    outline-offset: -4px;
+  }
+
+  .kinetic-statement-note {
+    position: absolute;
+    bottom: clamp(1.5rem, 4vh, 3rem);
+    left: clamp(1.25rem, 4vw, 4rem);
+    max-width: 36ch;
+    color: rgb(249 246 237 / 0.7);
+    font-size: clamp(0.9rem, 0.8rem + 0.25vw, 1.05rem);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  /* Four project leaves. In the no-JS and reduced-motion baseline the leaves
+     form a normal vertical stack. The motion media rule below collapses that
+     stack into one pinned viewport and lets GSAP wipe each sheet upward. */
+  .workstreams-section {
+    position: relative;
+    overflow: clip;
+    background: var(--color-page);
+  }
+
+  .workstream-stage {
+    position: relative;
+  }
+
+  .workstream-card {
+    position: relative;
+    display: grid;
+    min-height: clamp(42rem, 100dvh, 58rem);
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--color-surface);
+  }
+
+  .workstream-card-project,
+  .workstream-card-wet {
+    background: var(--color-app-orange-soft);
+  }
+
+  .workstream-card-dry {
+    background: var(--color-app-purple-soft);
+  }
+
+  .workstream-card-engagement {
+    background: var(--color-app-green-soft);
+  }
+
+  .workstream-image {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    will-change: transform;
+  }
+
+  .workstream-copy {
+    position: absolute;
+    z-index: 4;
+    top: 50%;
+    left: clamp(1.5rem, 6vw, 6rem);
+    display: flex;
+    width: min(33vw, 30rem);
+    flex-direction: column;
+    align-items: flex-start;
+    transform: translateY(-50%);
+  }
+
+  .workstream-eyebrow {
+    padding-bottom: 0.7rem;
+    border-bottom: 2px solid currentColor;
+    font-family: var(--font-body);
+    font-size: clamp(0.65rem, 0.56rem + 0.28vw, 0.86rem);
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    line-height: 1;
+  }
+
+  .workstream-number {
+    margin-top: clamp(1.5rem, 3vh, 2.3rem);
+    color: var(--color-app-orange-ink);
+    font-family: var(--font-body);
+    font-size: clamp(0.9rem, 0.8rem + 0.3vw, 1.1rem);
+    font-weight: 900;
+    letter-spacing: 0.2em;
+  }
+
+  .workstream-copy h3 {
+    margin-top: 0.25rem;
+    font-family: var(--font-script);
+    font-size: clamp(4.5rem, 8vw, 8rem);
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    line-height: 0.86;
+  }
+
+  .workstream-copy p {
+    max-width: 25ch;
+    margin-top: clamp(1.5rem, 3vh, 2.25rem);
+    font-size: clamp(1rem, 0.84rem + 0.5vw, 1.35rem);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .workstream-chrome {
+    position: absolute;
+    z-index: 10;
+    right: clamp(1rem, 3vw, 3rem);
+    bottom: clamp(1rem, 2.5vw, 2.3rem);
+    left: clamp(1rem, 3vw, 3rem);
+    display: grid;
+    grid-template-columns: auto minmax(8rem, 1fr) auto;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 2.5rem);
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+  }
+
+  .workstream-progress-track {
+    position: relative;
+    display: block;
+    height: 3px;
+    overflow: hidden;
+    background: rgb(47 36 23 / 0.18);
+  }
+
+  .workstream-progress {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background: var(--color-sticker-ink);
+    will-change: transform;
+  }
 }
 
 /* Compact-height laptops should still see the proposition and actions in the
@@ -810,6 +1076,92 @@
   .hero-cinema-scroll-cue {
     display: none;
   }
+
+  .kinetic-statement {
+    min-height: 165vh;
+    background-size: 32px 32px;
+  }
+
+  .kinetic-statement-sticky {
+    top: 4.75rem;
+    height: calc(100dvh - 4.75rem);
+  }
+
+  .kinetic-statement-meta span:last-child {
+    display: none;
+  }
+
+  .kinetic-statement-lines {
+    gap: 0.45rem;
+    font-size: clamp(3rem, 15.5vw, 3.8rem);
+    line-height: 0.78;
+  }
+
+  .kinetic-mobile-break {
+    display: inline;
+  }
+
+  .kinetic-badge {
+    right: 1rem;
+    bottom: 5.1rem;
+    width: 14rem;
+  }
+
+  .kinetic-statement-note {
+    right: 11.5rem;
+    bottom: 1.5rem;
+    left: 1.25rem;
+    font-size: 0.82rem;
+  }
+
+  .workstream-card {
+    min-height: calc(100dvh - 4.75rem);
+  }
+
+  .workstream-image {
+    object-fit: cover;
+    object-position: 67% center;
+    opacity: 0.88;
+  }
+
+  .workstream-card::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgb(249 246 237 / 0.98) 0%,
+      rgb(249 246 237 / 0.88) 31%,
+      transparent 62%
+    );
+  }
+
+  .workstream-copy {
+    top: 12%;
+    right: 1.25rem;
+    left: 1.25rem;
+    width: auto;
+    transform: none;
+  }
+
+  .workstream-copy h3 {
+    font-size: clamp(4rem, 21vw, 5.25rem);
+  }
+
+  .workstream-copy p {
+    max-width: 23ch;
+    margin-top: 1rem;
+    font-size: 0.92rem;
+  }
+
+  .workstream-chrome {
+    grid-template-columns: auto minmax(3rem, 1fr);
+  }
+
+  .workstream-chrome > span:last-child {
+    display: none;
+  }
 }
 
 html {
@@ -849,6 +1201,27 @@ html {
     opacity: 1;
     visibility: visible;
   }
+
+  html.js .workstream-stage {
+    height: calc(100dvh - 3.9rem);
+    overflow: hidden;
+  }
+
+  html.js .workstream-card {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+  }
+
+  html.js .workstream-card:not(:first-child) {
+    clip-path: inset(100% 0 0 0);
+  }
+}
+
+@media (max-width: 639px) and (prefers-reduced-motion: no-preference) {
+  html.js .workstream-stage {
+    height: calc(100dvh - 4.75rem);
+  }
 }
 
 /* Respect users who prefer reduced motion (§23). */
@@ -864,6 +1237,17 @@ html {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .kinetic-statement {
+    min-height: auto;
+  }
+
+  .kinetic-statement-sticky {
+    position: relative;
+    top: auto;
+    height: auto;
+    min-height: 46rem;
   }
 }
 

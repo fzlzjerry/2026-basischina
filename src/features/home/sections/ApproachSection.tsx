@@ -134,6 +134,32 @@ export function ApproachSection() {
             },
           });
         }
+
+        // Each illustrated step settles into register as its part of the paw
+        // trail reaches the reading line. The motion is scroll-linked and
+        // stays on the decorative image wrapper, never the step copy.
+        gsap.utils
+          .toArray<HTMLElement>(".js-approach-spot")
+          .forEach((spot, index) => {
+            gsap.fromTo(
+              spot,
+              {
+                scale: 0.82,
+                rotation: index % 2 === 0 ? -7 : 7,
+              },
+              {
+                scale: 1,
+                rotation: 0,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: spot,
+                  start: "top 92%",
+                  end: "top 48%",
+                  scrub: 0.65,
+                },
+              },
+            );
+          });
       });
       return () => mm.revert();
     },
@@ -206,7 +232,7 @@ export function ApproachSection() {
                     className="-mt-6 mb-6 h-12 border-l-4 border-dotted border-app-teal sm:hidden"
                   />
                 ) : null}
-                <span className="h-28 w-28">
+                <span className="js-approach-spot h-28 w-28">
                   <step.Spot />
                 </span>
                 <span

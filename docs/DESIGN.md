@@ -138,6 +138,13 @@ clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
   viewport-heights of scroll; mobile uses about 3.4. The 300%-wide track stays
   clipped inside the pinned section, never creates a nested scroller, and the
   entire pin timeline is absent under `prefers-reduced-motion`.
+- **The homepage continues its motion language below the Hero.** A 190vh dark
+  kinetic statement scrubs three oversized lines, a colour fill, and a circular
+  HEAL seal. It is followed by a second pinned sequence: four full-screen
+  notebook leaves for Project, Wet lab, Dry lab, and Engagement wipe upward
+  over about 3.8 viewport-heights on desktop and 2.8 on mobile. Under reduced
+  motion those leaves become a normal vertical stack and the statement remains
+  still.
 
 ## Components
 

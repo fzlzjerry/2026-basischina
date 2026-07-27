@@ -33,6 +33,37 @@ export function ClosingCtaSection() {
           trigger: root.current,
           stagger: 0.12,
         });
+
+        // The final illustration rises slowly into its authored resting frame
+        // while the grid drifts in the opposite direction. Both movements are
+        // tied to scroll and stop completely under reduced motion.
+        gsap.set(".js-closing-scene", {
+          scale: 1.08,
+          yPercent: 7,
+          transformOrigin: "50% 100%",
+        });
+        gsap.set(".js-closing-grid", { yPercent: -4 });
+        gsap.to(".js-closing-scene", {
+          scale: 1,
+          yPercent: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top bottom",
+            end: "bottom bottom",
+            scrub: 0.8,
+          },
+        });
+        gsap.to(".js-closing-grid", {
+          yPercent: 4,
+          ease: "none",
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8,
+          },
+        });
       });
       return () => mm.revert();
     },
@@ -56,7 +87,7 @@ export function ClosingCtaSection() {
           are positioned above it, pasted onto the page. */}
       <div
         aria-hidden="true"
-        className="heal-grid pointer-events-none absolute inset-0 mix-blend-multiply"
+        className="js-closing-grid heal-grid pointer-events-none absolute -inset-y-12 inset-x-0 mix-blend-multiply"
       />
       <div className="relative mx-auto max-w-3xl px-4 pt-20 text-center sm:px-6 sm:pt-24">
         <h2 className="js-closing pb-1 font-script text-[clamp(2.8rem,1.8rem+3.2vw,4.5rem)] font-bold leading-[1.04] text-ink">
@@ -92,7 +123,7 @@ export function ClosingCtaSection() {
         </div>
       </div>
 
-      <SunsetDuo className="js-closing relative mt-6 block h-56 w-full object-cover sm:h-72 lg:h-auto lg:object-contain" />
+      <SunsetDuo className="js-closing js-closing-scene relative z-10 mt-6 block h-56 w-full object-cover sm:h-72 lg:h-auto lg:object-contain" />
     </section>
   );
 }

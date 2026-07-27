@@ -48,6 +48,12 @@ abstract "DNA / code of life" science site.
   nav, unfold Understand → Engineer → Care, then release cleanly into the page.
   Never create a nested scrollbar, trap keyboard focus, or pin under reduced
   motion.
+- The homepage is a long-form project tour rather than a short landing page:
+  Hero cinema → three-step approach → kinetic mission statement → four
+  full-screen workstream leaves → route index → team send-off. The cinematic
+  workstream preview stays outside the accessibility tree because the
+  immediately following route index carries the same destinations as real
+  links.
 - Mascot IP must survive below the fold (cameos, not just the hero).
 - Per iGEM rules: no external CDNs/fonts at runtime. Fonts + favicon and all
   illustration assets are bundled locally in the repo (`src/assets/fonts/`,
