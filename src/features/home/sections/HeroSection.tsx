@@ -5,12 +5,7 @@ import { Icon } from "@/shared/components/Icon";
 import { SectionDivider } from "@/shared/components/SectionDivider";
 import { WashiTape } from "@/shared/components/WashiTape";
 import { ctaClasses, stickerStyleRaw } from "@/shared/styles/heal";
-import {
-  gsap,
-  ScrollTrigger,
-  registerGsap,
-  useGSAP,
-} from "@/shared/motion/gsap";
+import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
 import { HeroSketch } from "../scene/HeroDoodles";
 import bannerUrl from "@/assets/brand/heal-banner.webp";
 
@@ -31,14 +26,12 @@ import bannerUrl from "@/assets/brand/heal-banner.webp";
  * before hydration, so any client-set from-state would visibly jump). The only
  * entrance is the aria-hidden annotation layer "pasting in" — the notebook page
  * annotating itself: the tape presses on, the note fades in, the arrow and the
- * marker swash under the motto draw themselves, the corner sketch pastes on and
- * its caption underline draws. Every hidden start state is markup-baked via
+ * marker swash under the motto draw themselves, and the corner sketch pastes
+ * on. Every hidden start state is markup-baked via
  * `.heal-paste-in` (html.js + no-preference media query in main.css), so
- * hydration never hides something already painted. Afterwards the hero keeps one
- * quiet life beat — the flask's culture bubbles bob (a `.to()` idle, paused when
- * the hero scrolls off-screen). All of it is gated behind prefers-reduced-motion
- * and reverted on unmount; reduced-motion / no-JS visitors get the complete,
- * still page from the first frame.
+ * hydration never hides something already painted. All of it is gated behind
+ * prefers-reduced-motion and reverted on unmount; reduced-motion / no-JS
+ * visitors get the complete, still page from the first frame.
  */
 export function HeroSection() {
   const root = useRef<HTMLElement>(null);
@@ -99,8 +92,8 @@ export function HeroSection() {
             0.55,
           )
           // The corner lab sketch pastes on (fade + sub-100% scale settle,
-          // clearProps restores its Tailwind tilt); its caption underline then
-          // draws itself. Desktop-only node; a no-op on mobile.
+          // clearProps restores its Tailwind tilt). Its colored-pencil
+          // underline is authored directly into the raster vignette.
           .fromTo(
             ".js-hero-sketch",
             { autoAlpha: 0, scale: 0.94 },
@@ -112,38 +105,7 @@ export function HeroSection() {
               clearProps: "transform",
             },
             0.6,
-          )
-          .from(
-            ".js-hero-underline",
-            { drawSVG: 0, duration: 0.5, ease: "power2.inOut" },
-            0.85,
           );
-
-        // The one quiet life beat: the flask's culture bubbles bob. A `.to()`
-        // loop (content never translates via from/fromTo; idle .to() is the
-        // legal way to move a node), paused unless the hero is on screen, and
-        // never created under reduced motion. Its resting state is the static
-        // bubble positions, so no-JS / reduced-motion see a settled flask.
-        const idle = gsap.timeline({ paused: true });
-        idle.to(".js-hero-bubble", {
-          y: -6,
-          duration: 1.6,
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-          stagger: { each: 0.4, from: "start" },
-        });
-        const idleVis = ScrollTrigger.create({
-          trigger: root.current,
-          start: "top bottom",
-          end: "bottom top",
-          onToggle: (self) => (self.isActive ? idle.play() : idle.pause()),
-        });
-
-        return () => {
-          idle.kill();
-          idleVis.kill();
-        };
       });
       return () => mm.revert();
     },
@@ -292,8 +254,7 @@ export function HeroSection() {
 
       {/* corner lab sketch: bubbling flask + paw, pasted into the lower-right of
           the notebook page (desktop). aria-hidden decoration; pastes in on load
-          via .heal-paste-in and keeps a quiet bubble idle after. Sits above the
-          section divider seam. */}
+          via .heal-paste-in. Sits above the section divider seam. */}
       <div
         aria-hidden="true"
         className="js-hero-sketch heal-paste-in pointer-events-none absolute bottom-24 right-6 z-10 hidden h-28 w-36 -rotate-3 lg:block xl:right-12"

@@ -131,35 +131,16 @@ export function HighlightsSection() {
           });
         }
 
-        // PeekingCat over the Project tile gets a slow bob plus an occasional
-        // blink: this section's one quiet below-fold beat. GSAP touches only the
-        // inner js- groups, never the Tailwind-placed <svg>. Paused off screen.
-        const idle = gsap.timeline({ paused: true });
-        idle
-          .to(
-            ".js-peek-cat",
-            {
-              y: 3,
-              duration: 3,
-              ease: "sine.inOut",
-              repeat: -1,
-              yoyo: true,
-            },
-            0,
-          )
-          .to(
-            ".js-peek-cat-eyes",
-            {
-              scaleY: 0.1,
-              transformOrigin: "50% 50%",
-              duration: 0.09,
-              ease: "power1.inOut",
-              repeat: -1,
-              repeatDelay: 4.2,
-              yoyo: true,
-            },
-            1.2,
-          );
+        // The raster PeekingCat over the Project tile gets one slow bob: this
+        // section's quiet below-fold life beat. Paused while off screen.
+        const idle = gsap.to(".js-peek-cat", {
+          y: 3,
+          duration: 3,
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true,
+          paused: true,
+        });
         const idleVis = ScrollTrigger.create({
           trigger: root.current,
           start: "top bottom",

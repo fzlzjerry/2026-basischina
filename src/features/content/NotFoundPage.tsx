@@ -30,7 +30,7 @@ const TRAIL_STAMPS: { x: number; y: number; r: number }[] = [
  * poster settles transform-only (above the fold), the tape presses on, the cat
  * rises from behind the poster into its resting peek, paw stamps appear along
  * the trail, and the suggestion stickers rise in last. The cat then keeps the
- * same quiet idle (slow bob + occasional blink) it has on the homepage.
+ * same quiet slow bob it has on the homepage.
  */
 export function NotFoundPage() {
   const root = useRef<HTMLElement>(null);
@@ -52,13 +52,9 @@ export function NotFoundPage() {
             },
             0.05,
           )
-          // The cat emerges from behind the poster edge into its resting peek.
-          // The tween moves the INNER js-peek-cat group (GSAP owns inner-group
-          // transforms; the outer <svg> keeps its Tailwind placement), and the
-          // svg viewport clips the group, so sliding it down hides the cat
-          // "behind" the paper edge — rising out reads as coming out of hiding.
-          // y is in SVG user units; 100 pushes even the ear tips (y=14 in the
-          // 112-tall viewBox) below the viewport, so the cat starts fully hidden.
+          // The raster cat emerges from behind the poster edge into its resting
+          // peek. One hundred CSS pixels pushes the 96–112px-wide illustration
+          // beneath the paper edge before it rises into place.
           .from(".js-peek-cat", { y: 100, duration: 0.8 }, 0.35)
           // NO clearProps here: these are SVG <g>s whose placement lives in the
           // transform ATTRIBUTE (and fill in inline style) — GSAP's clearProps
@@ -91,26 +87,14 @@ export function NotFoundPage() {
 
         // Same quiet idle the cat carries on the homepage tile. Paused until
         // the entrance rise finishes so the two never fight over the group's y.
-        const idle = gsap.timeline({ paused: true });
-        idle
-          .to(
-            ".js-peek-cat",
-            { y: 3, duration: 3, ease: "sine.inOut", repeat: -1, yoyo: true },
-            0,
-          )
-          .to(
-            ".js-peek-cat-eyes",
-            {
-              scaleY: 0.1,
-              transformOrigin: "50% 50%",
-              duration: 0.09,
-              ease: "power1.inOut",
-              repeat: -1,
-              repeatDelay: 4.2,
-              yoyo: true,
-            },
-            1.4,
-          );
+        const idle = gsap.to(".js-peek-cat", {
+          y: 3,
+          duration: 3,
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true,
+          paused: true,
+        });
         tl.call(() => idle.play(), [], 1.2);
         return () => {
           idle.kill();
@@ -137,7 +121,7 @@ export function NotFoundPage() {
         <div className="mx-auto max-w-2xl px-4 pb-24 pt-28 text-center sm:pt-32">
           {/* The MISSING poster. The cat lives INSIDE the tilted card so it
               shares the card's rotation and its paws grip the actual paper
-              edge; its own svg viewport clips the rise-from-behind entrance. */}
+              edge; its wrapper clips the rise-from-behind entrance. */}
           <div className="mx-auto max-w-md">
             <div
               className="js-nf-poster heal-cutout relative bg-surface px-6 pb-7 pt-9 sm:px-10"

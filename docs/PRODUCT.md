@@ -43,7 +43,7 @@ abstract "DNA / code of life" science site.
 
 - Generative fixes over subtractive: add depth, environment, committed color.
 - Mascot IP must survive below the fold (cameos, not just the hero).
-- Per iGEM rules: no external CDNs/fonts at runtime. Fonts + favicon are
-  bundled locally in the repo (src/assets/fonts/, public/); mascots/scenes are
-  inline SVG.
+- Per iGEM rules: no external CDNs/fonts at runtime. Fonts + favicon and all
+  illustration assets are bundled locally in the repo (`src/assets/fonts/`,
+  `src/assets/brand/illustrations/`, `public/`).
 - Accessibility is non-negotiable: WCAG AA, reduced-motion gates on all motion.

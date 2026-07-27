@@ -5,7 +5,6 @@ import { Icon } from "@/shared/components/Icon";
 import { ctaClasses, stickerStyleRaw } from "@/shared/styles/heal";
 import {
   gsap,
-  ScrollTrigger,
   registerGsap,
   scrollFadeIn,
   useGSAP,
@@ -16,8 +15,8 @@ import { SunsetDuo } from "../scene/SunsetDuo";
  * Closing band (§20): a drenched sunset send-off — the duo sits on a hill
  * watching the sun go down, bookending the golden-hour hero. CTA labels match
  * the hero (one label per intent). Text only sits on the upper, text-safe
- * gradient stops; the deep gold is decoration. Reveal + tail wag are gated
- * for reduced motion.
+ * gradient stops; the deep gold is decoration. The raster scene fades in as
+ * one authored illustration under reduced-motion-aware orchestration.
  */
 export function ClosingCtaSection() {
   const root = useRef<HTMLElement>(null);
@@ -34,27 +33,6 @@ export function ClosingCtaSection() {
           trigger: root.current,
           stagger: 0.12,
         });
-
-        // The dog can't help it. Paused off-screen like the hero idle.
-        const wag = gsap.to(".js-duo-tail", {
-          rotation: 16,
-          transformOrigin: "20% 85%",
-          duration: 0.9,
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-          paused: true,
-        });
-        const wagVisibility = ScrollTrigger.create({
-          trigger: root.current,
-          start: "top bottom",
-          end: "bottom top",
-          onToggle: (self) => (self.isActive ? wag.play() : wag.pause()),
-        });
-        return () => {
-          wag.kill();
-          wagVisibility.kill();
-        };
       });
       return () => mm.revert();
     },
@@ -114,7 +92,7 @@ export function ClosingCtaSection() {
         </div>
       </div>
 
-      <SunsetDuo className="js-closing relative mt-6 block h-56 w-full sm:h-72 lg:h-80" />
+      <SunsetDuo className="js-closing relative mt-6 block h-56 w-full object-cover sm:h-72 lg:h-auto lg:object-contain" />
     </section>
   );
 }

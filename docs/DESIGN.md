@@ -73,14 +73,19 @@ background images — always pair it with a `bg-*` utility on the same element.
 
 ## Illustration register
 
-- Inline SVG only (iGEM forbids binary media). Warm outlines (`#7a5230` cat,
-  `#27695a` dog), round chibi shapes, big readable faces.
-- Scenes are EDGELESS on content surfaces: transparent SVG over CSS-painted
-  architecture, gradients fade to transparent. (The old hero room scene and its
+- Concrete homepage illustrations are GPT Image redraws committed as local,
+  transparent WebP assets in `src/assets/brand/illustrations/`. Their visual
+  reference is `heal-banner.webp`: colored-pencil and wax-crayon fill, dry
+  charcoal texture, irregular doubled outlines, and visible hand pressure.
+  Functional strokes that must scale or draw in (section dividers, arrows,
+  swashes, paw trails) stay inline SVG.
+- Scenes are EDGELESS on content surfaces: transparent raster art over
+  CSS-painted architecture and gradients. (The old hero room scene and its
   `HeroRoom`/`Mascots` components were deleted 2026-07-02; the homepage hero is
   the washi-taped HEAL banner image on the notebook page.)
 - Mascot cameos: `Peekers.tsx` (PeekingCat, PawCorner), `SunsetDuo.tsx`
-  (back-view duo), `StepSpots.tsx` (step illustrations).
+  (back-view duo), `StepSpots.tsx` (step illustrations), and `HeroDoodles.tsx`
+  (flask/paw margin vignette).
 
 ## Motion (GSAP, see `src/shared/motion/gsap.ts`)
 
@@ -115,9 +120,9 @@ background images — always pair it with a `bg-*` utility on the same element.
   end with `clearProps:"transform"` (restores the `--rot` tilt + hover lift);
   SVG groups placed via the transform ATTRIBUTE never use clearProps (it wipes
   the attribute and collapses the art).
-- Idle life: nap-cat breathe, peek-cat bob + blink (`js-*-eyes` scaleY), duo
-  tail wag — bbox-percentage transformOrigin, never svgOrigin in nested scaled
-  groups; each paused off-screen via a ScrollTrigger visibility toggle.
+- Idle life: the nap-cat breathes and the peeking cat bobs. The generated
+  raster artwork remains otherwise intact; each loop is paused off-screen via
+  a ScrollTrigger visibility toggle.
 - NO scroll pinning/hijack.
 
 ## Components
