@@ -47,6 +47,7 @@ export function EngineerSpot() {
     <SpotImage
       src={engineerUrl}
       alt="A hand-drawn round flask with gently bubbling mint-green culture"
+      className="engineer-spot-image"
     />
   );
 }
@@ -57,7 +58,6 @@ export function CareSpot() {
     <SpotImage
       src={careUrl}
       alt="A hand-drawn cat sleeping peacefully under a teal blanket"
-      className="js-nap-cat"
     />
   );
 }

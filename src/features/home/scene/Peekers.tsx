@@ -3,8 +3,9 @@ import pawCornerUrl from "@/assets/brand/illustrations/paw-corner.webp";
 
 /**
  * GPT Image mascot cameos that carry the HEAL banner's real pencil/crayon
- * texture below the fold. Both are decorative; layout and the peeking cat's
- * quiet bob are owned by the consuming section.
+ * texture below the fold. Both are decorative and intentionally static: the
+ * page spends its motion budget on the hero and scroll narrative, not idle
+ * mascot bobbing.
  */
 export function PeekingCat({ className = "" }: { className?: string }) {
   return (
@@ -16,7 +17,7 @@ export function PeekingCat({ className = "" }: { className?: string }) {
         height={477}
         decoding="async"
         draggable={false}
-        className="js-peek-cat block h-auto w-full object-contain"
+        className="block h-auto w-full object-contain"
       />
     </span>
   );

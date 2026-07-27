@@ -427,6 +427,389 @@
     border-radius: inherit;
     pointer-events: none;
   }
+
+  /* The static first-fold art never grows beyond its authored composition.
+     Scroll opens a separate full-viewport cinema layer below rather than
+     stretching decorative shapes through the transparent banner. */
+  .hero-art {
+    max-width: 72rem;
+  }
+
+  /* Decorative load shutters. Default-hidden is the accessible/no-JS state;
+     the JS + motion media rule below opts them into the signature reveal. */
+  .hero-shutter {
+    position: absolute;
+    z-index: 20;
+    top: 8%;
+    bottom: 8%;
+    width: 51%;
+    opacity: 0;
+    visibility: hidden;
+    border-block: 3px solid var(--color-sticker-ink);
+    will-change: transform;
+  }
+
+  /* Full-screen horizontal story. This layer is decorative repetition of the
+     semantic Approach section, and is only exposed when JS + motion are live.
+     Its own overflow boundary guarantees the 300%-wide track never creates a
+     horizontal document scrollbar. */
+  .hero-cinema-deck {
+    position: absolute;
+    z-index: 30;
+    inset: 0;
+    overflow: hidden;
+    color: var(--color-sticker-ink);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    will-change: clip-path, opacity;
+  }
+
+  .hero-cinema-masthead {
+    position: absolute;
+    z-index: 8;
+    top: clamp(1rem, 2.4vw, 2rem);
+    right: clamp(1rem, 3.2vw, 3rem);
+    left: clamp(1rem, 3.2vw, 3rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: var(--font-body);
+    font-size: clamp(0.62rem, 0.54rem + 0.22vw, 0.78rem);
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    color: var(--color-page);
+    mix-blend-mode: difference;
+  }
+
+  .hero-chapter-viewport,
+  .hero-chapter-track {
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-chapter-viewport {
+    overflow: hidden;
+  }
+
+  .hero-chapter-track {
+    display: flex;
+    width: 300%;
+    will-change: transform;
+  }
+
+  .hero-chapter {
+    position: relative;
+    flex: 0 0 33.3333%;
+    width: 33.3333%;
+    height: 100%;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero-chapter::after {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    opacity: 0.36;
+    background-image:
+      linear-gradient(rgb(47 36 23 / 0.17) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(47 36 23 / 0.17) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      #000 14%,
+      #000 86%,
+      transparent
+    );
+  }
+
+  .hero-chapter-understand {
+    background: var(--color-app-orange-soft);
+  }
+
+  .hero-chapter-engineer {
+    color: var(--color-page);
+    background: var(--color-sticker-ink);
+  }
+
+  .hero-chapter-engineer::after {
+    opacity: 0.14;
+    background-image:
+      linear-gradient(rgb(231 249 245 / 0.38) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(231 249 245 / 0.38) 1px, transparent 1px);
+  }
+
+  .hero-chapter-care {
+    background: var(--color-primary-soft);
+  }
+
+  .hero-chapter-word {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 2.5vw;
+    color: rgb(47 36 23 / 0.1);
+    font-family: var(--font-body);
+    font-size: clamp(7.5rem, 19vw, 19rem);
+    font-weight: 900;
+    letter-spacing: -0.095em;
+    line-height: 0.72;
+    text-transform: uppercase;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    will-change: transform;
+  }
+
+  .hero-chapter-engineer .hero-chapter-word {
+    color: rgb(231 249 245 / 0.09);
+  }
+
+  .hero-chapter-copy {
+    position: absolute;
+    z-index: 4;
+    top: 17%;
+    left: clamp(1.25rem, 7.5vw, 7.5rem);
+    display: flex;
+    max-width: min(38vw, 34rem);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-chapter-kicker {
+    margin-bottom: clamp(1rem, 2.4vh, 1.6rem);
+    padding-bottom: 0.65rem;
+    border-bottom: 2px solid currentColor;
+    font-family: var(--font-body);
+    font-size: clamp(0.68rem, 0.58rem + 0.3vw, 0.92rem);
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    line-height: 1;
+  }
+
+  .hero-chapter-copy strong {
+    font-family: var(--font-script);
+    font-size: clamp(4.5rem, 8.5vw, 8.5rem);
+    line-height: 0.75;
+    letter-spacing: -0.055em;
+  }
+
+  .hero-chapter-copy p {
+    max-width: 24ch;
+    margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 0.84rem + 0.5vw, 1.35rem);
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .hero-chapter-visual {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    right: clamp(4rem, 11vw, 11rem);
+    width: clamp(17rem, 35vw, 37rem);
+    height: clamp(17rem, 35vw, 37rem);
+    transform: translateY(-50%);
+    filter: drop-shadow(1.1rem 1.2rem 0 rgb(47 36 23 / 0.13));
+    will-change: transform;
+  }
+
+  .hero-chapter-engineer .hero-chapter-visual {
+    filter: drop-shadow(1.1rem 1.2rem 0 rgb(105 205 185 / 0.16));
+  }
+
+  /* The source flask redraw contains a transparent-canvas scan remnant at the
+     far-right edge. Crop only that empty edge so it cannot flash between
+     horizontal chapters or appear beside the small Approach illustration. */
+  .engineer-spot-image {
+    clip-path: inset(0 24% 0 0);
+  }
+
+  .hero-chapter-index {
+    position: absolute;
+    right: clamp(1.25rem, 3vw, 3rem);
+    bottom: clamp(4.5rem, 10vh, 7rem);
+    color: rgb(47 36 23 / 0.72);
+    font-family: var(--font-body);
+    font-size: clamp(3.5rem, 7vw, 7rem);
+    font-weight: 900;
+    letter-spacing: -0.08em;
+    line-height: 1;
+  }
+
+  .hero-chapter-engineer .hero-chapter-index {
+    color: rgb(231 249 245 / 0.66);
+  }
+
+  .hero-cinema-footer {
+    position: absolute;
+    z-index: 8;
+    right: clamp(1rem, 3.2vw, 3rem);
+    bottom: clamp(1.25rem, 3vw, 2.5rem);
+    left: clamp(1rem, 3.2vw, 3rem);
+    display: grid;
+    grid-template-columns: auto minmax(5rem, 1fr) auto;
+    align-items: center;
+    gap: clamp(1rem, 2.6vw, 2.5rem);
+    font-family: var(--font-body);
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    color: var(--color-page);
+    mix-blend-mode: difference;
+  }
+
+  .hero-cinema-counter {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    min-width: 5.5rem;
+    font-size: 1rem;
+  }
+
+  .hero-cinema-counter-window {
+    display: block;
+    width: 1.65rem;
+    height: 1.1rem;
+    overflow: hidden;
+    line-height: 1.1rem;
+  }
+
+  .hero-cinema-counter-track {
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+  }
+
+  .hero-cinema-counter-track > span {
+    display: block;
+    height: 1.1rem;
+  }
+
+  .hero-cinema-counter-total {
+    opacity: 0.54;
+  }
+
+  .hero-cinema-progress-track {
+    position: relative;
+    display: block;
+    height: 3px;
+    overflow: hidden;
+    background: rgb(47 36 23 / 0.22);
+  }
+
+  .hero-cinema-progress {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background: currentColor;
+    will-change: transform;
+  }
+
+  .hero-cinema-scroll-cue {
+    font-size: 0.7rem;
+  }
+
+  .hero-cinema-endline {
+    position: absolute;
+    z-index: 9;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 0.7rem;
+    background: var(--color-primary);
+    transform: scaleX(0);
+    will-change: transform;
+  }
+}
+
+/* Compact-height laptops should still see the proposition and actions in the
+   first viewport. This unlayered override intentionally wins over Tailwind's
+   responsive padding utilities; only height-constrained desktop gets it. */
+@media (min-width: 1024px) and (max-height: 820px) {
+  .hero-layout {
+    padding-top: 1.25rem;
+    padding-bottom: 3.5rem;
+  }
+  .hero-art {
+    max-width: 60rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .hero-cinema-masthead {
+    top: 1rem;
+  }
+
+  .hero-cinema-masthead span:last-child {
+    display: none;
+  }
+
+  .hero-chapter::after {
+    background-size: 30px 30px;
+  }
+
+  .hero-chapter-copy {
+    top: 14%;
+    right: 1.2rem;
+    left: 1.2rem;
+    max-width: none;
+  }
+
+  .hero-chapter-kicker {
+    margin-bottom: 1.1rem;
+    font-size: 0.62rem;
+  }
+
+  .hero-chapter-copy strong {
+    font-size: clamp(4rem, 21vw, 5.3rem);
+  }
+
+  .hero-chapter-copy p {
+    max-width: 22ch;
+    margin-top: 1rem;
+    font-size: 0.92rem;
+  }
+
+  .hero-chapter-word {
+    top: 55%;
+    left: -0.15em;
+    font-size: clamp(6.5rem, 37vw, 9rem);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  .hero-chapter-visual {
+    top: auto;
+    right: -0.5rem;
+    bottom: 10%;
+    width: min(75vw, 19rem);
+    height: min(75vw, 19rem);
+    transform: none;
+  }
+
+  .hero-chapter-index {
+    right: auto;
+    bottom: 4.7rem;
+    left: 1.25rem;
+    font-size: 3.75rem;
+  }
+
+  .hero-cinema-footer {
+    right: 1rem;
+    bottom: 1.25rem;
+    left: 1rem;
+    grid-template-columns: auto minmax(3rem, 1fr);
+    gap: 1rem;
+  }
+
+  .hero-cinema-scroll-cue {
+    display: none;
+  }
 }
 
 html {
@@ -460,6 +843,11 @@ html {
   html.js .heal-paste-in {
     opacity: 0;
     visibility: hidden;
+  }
+
+  html.js .hero-shutter {
+    opacity: 1;
+    visibility: visible;
   }
 }
 

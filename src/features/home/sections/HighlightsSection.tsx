@@ -130,28 +130,6 @@ export function HighlightsSection() {
               }),
           });
         }
-
-        // The raster PeekingCat over the Project tile gets one slow bob: this
-        // section's quiet below-fold life beat. Paused while off screen.
-        const idle = gsap.to(".js-peek-cat", {
-          y: 3,
-          duration: 3,
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-          paused: true,
-        });
-        const idleVis = ScrollTrigger.create({
-          trigger: root.current,
-          start: "top bottom",
-          end: "bottom top",
-          onToggle: (self) => (self.isActive ? idle.play() : idle.pause()),
-        });
-
-        return () => {
-          idle.kill();
-          idleVis.kill();
-        };
       });
       return () => mm.revert();
     },

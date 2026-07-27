@@ -27,10 +27,10 @@ const TRAIL_STAMPS: { x: number; y: number; r: number }[] = [
  * search engines do not surface it.
  *
  * Motion (gated behind prefers-reduced-motion, reverted on unmount): the
- * poster settles transform-only (above the fold), the tape presses on, the cat
- * rises from behind the poster into its resting peek, paw stamps appear along
- * the trail, and the suggestion stickers rise in last. The cat then keeps the
- * same quiet slow bob it has on the homepage.
+ * poster settles transform-only (above the fold), the tape presses on, paw
+ * stamps appear along the trail, and the suggestion stickers rise in last.
+ * The peeking cat is intentionally static: mascot idle bobbing competes with
+ * the page's actual hierarchy.
  */
 export function NotFoundPage() {
   const root = useRef<HTMLElement>(null);
@@ -52,10 +52,6 @@ export function NotFoundPage() {
             },
             0.05,
           )
-          // The raster cat emerges from behind the poster edge into its resting
-          // peek. One hundred CSS pixels pushes the 96–112px-wide illustration
-          // beneath the paper edge before it rises into place.
-          .from(".js-peek-cat", { y: 100, duration: 0.8 }, 0.35)
           // NO clearProps here: these are SVG <g>s whose placement lives in the
           // transform ATTRIBUTE (and fill in inline style) — GSAP's clearProps
           // on SVG removes the transform attribute and wipes style.cssText,
@@ -84,21 +80,6 @@ export function NotFoundPage() {
             },
             0.65,
           );
-
-        // Same quiet idle the cat carries on the homepage tile. Paused until
-        // the entrance rise finishes so the two never fight over the group's y.
-        const idle = gsap.to(".js-peek-cat", {
-          y: 3,
-          duration: 3,
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-          paused: true,
-        });
-        tl.call(() => idle.play(), [], 1.2);
-        return () => {
-          idle.kill();
-        };
       });
       return () => mm.revert();
     },

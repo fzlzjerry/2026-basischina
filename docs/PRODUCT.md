@@ -36,12 +36,18 @@ abstract "DNA / code of life" science site.
 - DNA double-helix motifs anywhere. Reads gimmicky and is not the product.
 - Prominent product shots/tubes in the hero (tacky; this is a platform).
 - Floating sparkles/hearts decorations; scattered paw confetti.
-- Pinned scroll-hijack "cinema" heroes; abstract clinical scroll theatre.
+- Generic abstract scroll theatre that could belong to any biotech site. The
+  homepage may use a pinned sequence only when it stays inside the HEAL
+  notebook/pasted-paper language and advances the real project verbs.
 - Flat clip-art-in-a-void minimalism ("taming" decorations away made it worse).
 
 ## Strategic principles
 
 - Generative fixes over subtractive: add depth, environment, committed color.
+- The homepage Hero is intentionally scroll-directed: pin beneath the sticky
+  nav, unfold Understand → Engineer → Care, then release cleanly into the page.
+  Never create a nested scrollbar, trap keyboard focus, or pin under reduced
+  motion.
 - Mascot IP must survive below the fold (cameos, not just the hero).
 - Per iGEM rules: no external CDNs/fonts at runtime. Fonts + favicon and all
   illustration assets are bundled locally in the repo (`src/assets/fonts/`,

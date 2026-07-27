@@ -68,7 +68,7 @@ background images — always pair it with a `bg-*` utility on the same element.
   Markdown PROSE body never adopts the hand faces: it stays on the readable
   `markdown.css` register (Nunito/system) so dense technical copy stays legible.
 - Hero h1 `font-script clamp(3rem → 5.75rem)`; section h2 `font-script
-  clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
+clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
   descender clearance.
 
 ## Illustration register
@@ -100,11 +100,11 @@ background images — always pair it with a `bg-*` utility on the same element.
   user-rejected twice as gimmicky ("突然往上拱一下"). Content either paints in
   place or fades in place. Mascot idle loops and the scroll-progress scrub are
   life, not entrances, and are exempt.
-- **First load animates the annotation layer only.** Navbar, banner, tagline,
+- **First load animates the decoration layer only.** Navbar, banner, tagline,
   and CTAs paint static from the very first frame and are never animation
-  targets. Only the hero's aria-hidden decorations (`.heal-paste-in`: washi
-  tape, handwritten note, arrow) paste in (~0.9s: autoAlpha + sub-100% scale
-  press + DrawSVG stroke).
+  targets. The hero's signature beat is a pair of aria-hidden paper shutters
+  pulling apart over the already-rendered banner, followed by the
+  `.heal-paste-in` washi, handwritten note, arrow, swash, and lab sketch.
 - **Markup-baked hidden states** are allowed ONLY for aria-hidden decoration,
   ONLY via the `html.js .heal-paste-in` rule wrapped in
   `@media (prefers-reduced-motion: no-preference)` (the `js` class comes from
@@ -114,7 +114,9 @@ background images — always pair it with a `bg-*` utility on the same element.
 - **Below-fold reveals are opacity-only fades (`scrollFadeIn`) or hand-drawn
   strokes (`drawIn`)**, both `once: true` with shared timings from `MOTION`;
   both skip entirely when the section already intersects the viewport at init
-  (`inViewAtInit`) — a refresh never hides or moves anything on screen.
+  (`inViewAtInit`) — a refresh never hides or moves anything on screen. The
+  Approach paw trail is the one scroll-scrubbed stroke: it maps page progress
+  to the three-step story without pinning.
 - ALL motion inside `gsap.matchMedia("(prefers-reduced-motion: no-preference)")`
   with `mm.revert()` cleanup; `js-*` class sentinels are the targets.
 - **No overshoot eases, ever (user-rejected 2026-07-02 as gimmicky).** No
@@ -126,10 +128,16 @@ background images — always pair it with a `bg-*` utility on the same element.
   end with `clearProps:"transform"` (restores the `--rot` tilt + hover lift);
   SVG groups placed via the transform ATTRIBUTE never use clearProps (it wipes
   the attribute and collapses the art).
-- Idle life: the nap-cat breathes and the peeking cat bobs. The generated
-  raster artwork remains otherwise intact; each loop is paused off-screen via
-  a ScrollTrigger visibility toggle.
-- NO scroll pinning/hijack.
+- There are no autonomous mascot idle loops. The nap-cat and peeking cat stay
+  still; motion is reserved for the hero's single entrance, scroll cinema, the
+  Approach trail, and direct interaction feedback.
+- **Hero scroll cinema is deliberately pinned.** The section pins immediately
+  below the live sticky-nav height. The static cover folds away into a
+  three-screen horizontal field-notebook track for Understand, Engineer, and
+  Care, then releases with normal pin spacing. Desktop uses about 4.6
+  viewport-heights of scroll; mobile uses about 3.4. The 300%-wide track stays
+  clipped inside the pinned section, never creates a nested scroller, and the
+  entire pin timeline is absent under `prefers-reduced-motion`.
 
 ## Components
 

@@ -2,7 +2,6 @@ import { useRef } from "react";
 import { stickerStyle } from "@/shared/styles/heal";
 import {
   gsap,
-  ScrollTrigger,
   drawIn,
   inViewAtInit,
   registerGsap,
@@ -93,11 +92,26 @@ export function ApproachSection() {
           delay: 0.25,
           duration: 0.45,
         });
-        drawIn(".js-paw-trail", {
-          trigger: root.current,
-          start: "top 70%",
-          duration: 1.6,
-        });
+        // The trail is the section's scroll narrative: it draws in direct
+        // response to progress through the three steps instead of playing a
+        // canned entrance and stopping. It remains decorative, non-pinned, and
+        // complete from first paint for reduced-motion/no-JS visitors.
+        if (!inViewAtInit(root.current)) {
+          gsap.fromTo(
+            ".js-paw-trail",
+            { drawSVG: 0 },
+            {
+              drawSVG: "100%",
+              ease: "none",
+              scrollTrigger: {
+                trigger: root.current,
+                start: "top 82%",
+                end: "bottom 48%",
+                scrub: 0.55,
+              },
+            },
+          );
+        }
         // NO clearProps: the stamps are SVG <g>s placed via the transform
         // ATTRIBUTE with an inline-style fill — GSAP's clearProps on SVG
         // removes the transform attribute and wipes style.cssText, collapsing
@@ -120,30 +134,6 @@ export function ApproachSection() {
             },
           });
         }
-
-        // The sleeping cat in step 3 breathes: the one quiet idle beat in this
-        // section. Paused unless the section is on screen; reduced motion skips it.
-        const idle = gsap.timeline({ paused: true });
-        idle.to(".js-nap-cat", {
-          scaleY: 1.04,
-          scaleX: 1.015,
-          transformOrigin: "50% 100%",
-          duration: 3.4,
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-        });
-        const idleVis = ScrollTrigger.create({
-          trigger: root.current,
-          start: "top bottom",
-          end: "bottom top",
-          onToggle: (self) => (self.isActive ? idle.play() : idle.pause()),
-        });
-
-        return () => {
-          idle.kill();
-          idleVis.kill();
-        };
       });
       return () => mm.revert();
     },

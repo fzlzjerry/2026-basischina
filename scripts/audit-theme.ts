@@ -37,9 +37,9 @@ const phosphorBadImport =
 const overshootEase = /\bease:\s*["'](?:back|elastic|bounce)\b/;
 // (g) Content never translates (user rule, 2026-07-02): entrance tweens must
 // not displace content — no x/y/xPercent/yPercent inside .from()/.fromTo()
-// bodies on the homepage or shell. Idle `.to()` loops (peek-cat bob) and the
-// PageTransition curtain (.to) are exempt by construction; `(?<!Array)` keeps
-// Array.from() out of the match.
+// bodies on the homepage or shell. Scroll-linked decorative `.to()` tweens and
+// the PageTransition curtain (.to) are exempt by construction; `(?<!Array)`
+// keeps Array.from() out of the match.
 const displacementScopes = ["src/features/home", "src/app/shell"];
 const fromCall = /(?<!Array)\.from(?:To)?\(/g;
 const displacementProp = /\b(?:x|y|xPercent|yPercent)\s*:\s*[-\d"']/;
