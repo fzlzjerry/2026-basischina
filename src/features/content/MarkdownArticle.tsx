@@ -1,76 +1,53 @@
 import { useState } from "react";
-import { pageCategoryMeta } from "@/config/pageCategoryMeta";
-import type { CategoryAccent } from "@/config/pageCategoryMeta";
 import type { PageCategory } from "@/config/pageData";
-import { stickerStyle, stickerStyleRaw } from "@/shared/styles/heal";
-import { resolveAssetUrl } from "@/shared/utils/assetUrl";
+import {
+  CategoryCover,
+  CategoryLabel,
+} from "@/shared/components/CategoryCover";
+import { stickerStyleRaw } from "@/shared/styles/heal";
 import { PawCorner } from "@/features/home/scene/Peekers";
 import { ArticleTableOfContents } from "./ArticleTableOfContents";
 import { useMarkdownEnhancements } from "./useMarkdownEnhancements";
 import type { ProcessedMarkdown } from "./markdownService";
 
-// Category-tinted chip surfaces. Literal class strings because Tailwind v4 only
-// generates classes it can statically see (mirrors HighlightsSection's ACCENT).
-const CHIP_FILL: Record<CategoryAccent, string> = {
-  teal: "bg-app-teal-soft",
-  blue: "bg-app-blue-soft",
-  purple: "bg-app-purple-soft",
-  green: "bg-app-green-soft",
-  peach: "bg-app-peach-soft",
-  pink: "bg-app-pink-soft",
-};
-const CHIP_ICON: Record<CategoryAccent, string> = {
-  teal: "text-app-teal-ink",
-  blue: "text-app-blue-ink",
-  purple: "text-app-purple-ink",
-  green: "text-app-green-ink",
-  peach: "text-app-peach-ink",
-  pink: "text-app-pink-ink",
-};
-
-// Section cover illustrations keyed by category. A cover REPLACES the category
-// chip in the article header: the art already names its section (a baked-in
-// wordmark), so a chip would just stack a redundant label. Two layouts, chosen
-// per art by `variant`:
-//   • "overlay" — the art carries a compact wordmark in one corner and has open
-//     space elsewhere (dry-lab's retro window). We crop it to a 2:1 letterbox
-//     and paste the page <h1> as a cream sticker in the OPEN corner, so type and
-//     image read as one masthead.
-//   • "cutout" — the art is a dense, self-titled, edge-to-edge panel that leaves
-//     no clean corner for an overlay (engagement's notebook collage, "ENGAGEMENT"
-//     hand-lettered across its base). Its exterior is die-cut to transparency, so
-//     it sits whole on the page grid like a pasted sticker, and the page <h1>
-//     follows BELOW it in normal flow (no collision with the baked-in wordmark).
-// `path` is a PUBLIC asset (resolved through the deploy base path at render), not
-// a bundled `import`: MarkdownArticle is loaded eagerly by every route, so a
-// static import would make vite-react-ssg emit a `<link rel=preload as=image>`
-// for the cover on ALL pages, not just the section's own. width/height are the
-// asset's intrinsic size, set on the <img> to reserve layout height (no CLS).
-// Extend to another section by adding a sibling entry.
+// Section cover illustrations keyed by category. Every image is a native 2:1
+// member of the same hand-drawn series, composed with a quiet left title zone.
+// The category label and real page h1 remain live HTML via CategoryCover: art
+// stays reusable and accessible, while long mobile titles can flow below it.
+//
+// `path` is a PUBLIC asset (resolved through the deploy base path at render),
+// not a bundled import: MarkdownArticle is loaded eagerly by every route, so a
+// static import would make vite-react-ssg preload every cover on every route.
 type CoverConfig = {
-  variant: "overlay" | "cutout";
   path: string;
-  // Accessible name lives WITH the asset (not the category label) so a cover
-  // whose baked-in wording differs from its category label can't silently
-  // misdescribe itself.
   alt: string;
   width: number;
   height: number;
 };
 const CATEGORY_COVER: Partial<Record<PageCategory, CoverConfig>> = {
-  "dry-lab": {
-    variant: "overlay",
-    path: "assets/dry-lab-cover.webp",
-    alt: "Dry Lab",
+  project: {
+    path: "assets/project-cover.webp",
+    alt: "A cat and dog mapping a pet-care project from need to testing",
     width: 1600,
-    height: 1132,
+    height: 800,
+  },
+  "wet-lab": {
+    path: "assets/wet-lab-cover.webp",
+    alt: "A cat and dog carrying out a careful wet-lab experiment",
+    width: 1600,
+    height: 800,
+  },
+  "dry-lab": {
+    path: "assets/dry-lab-cover-v2.webp",
+    alt: "A cat and dog collaborating on modeling, software, and hardware",
+    width: 1600,
+    height: 800,
   },
   "human-practices": {
-    variant: "cutout",
-    path: "assets/engagement-cover.webp",
-    alt: "Engagement",
-    width: 1800,
-    height: 1193,
+    path: "assets/engagement-cover-v2.webp",
+    alt: "A cat and dog building a community engagement board",
+    width: 1600,
+    height: 800,
   },
 };
 
@@ -102,73 +79,27 @@ export function MarkdownArticle({
   useMarkdownEnhancements(container, processed.hasMermaid, contentKey);
 
   const description = processed.meta.description ?? summary;
-  const { Icon: CategoryIcon, accent, label } = pageCategoryMeta[category];
   const cover = CATEGORY_COVER[category];
+  const heading = processed.meta.title ?? title;
 
   return (
     <div className="min-h-screen bg-page heal-grid">
       <article className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         <header className="mb-8">
-          {cover?.variant === "overlay" ? (
-            // Masthead: the cover is a full-width banner cropped to a clean 2:1
-            // letterbox (object-cover keeps the "DRY LAB" wordmark and both cats
-            // in frame), and the page title rides on it as a cream sticker label
-            // overlapping the lower-left, so type and image read as one designed
-            // header instead of a stacked image + title. cover.alt names the
-            // section for screen readers; the overlapping <h1> is the real page
-            // heading (not a duplicate). The aspect box reserves height (no CLS).
-            <div className="relative mb-5">
-              <div className="aspect-[2/1] overflow-hidden rounded-2xl ring-1 ring-sticker-ink/10">
-                <img
-                  src={resolveAssetUrl(cover.path)}
-                  alt={cover.alt}
-                  width={cover.width}
-                  height={cover.height}
-                  className="h-full w-full object-cover object-[50%_30%]"
-                />
-              </div>
-              <h1
-                className="heal-cutout absolute bottom-4 left-4 max-w-[85%] text-balance bg-surface px-5 py-1.5 font-script text-[clamp(1.9rem,1.5rem+1.8vw,3rem)] leading-none text-ink sm:bottom-6 sm:left-6"
-                style={stickerStyleRaw(
-                  "-1deg",
-                  "14px 9px 16px 8px / 8px 16px 9px 14px",
-                )}
-              >
-                {processed.meta.title ?? title}
-              </h1>
-            </div>
+          {cover ? (
+            <CategoryCover
+              category={category}
+              imagePath={cover.path}
+              imageAlt={cover.alt}
+              imageWidth={cover.width}
+              imageHeight={cover.height}
+              title={heading}
+            />
           ) : (
             <>
-              {cover ? (
-                // Cutout cover: the die-cut illustration sits whole on the page
-                // grid (its transparent exterior lets the graph paper show
-                // through, like a sticker pasted on the notebook), naming the
-                // section in place of the chip. The page <h1> follows below.
-                <div className="mb-6 w-full max-w-3xl">
-                  <img
-                    src={resolveAssetUrl(cover.path)}
-                    alt={cover.alt}
-                    width={cover.width}
-                    height={cover.height}
-                    className="h-auto w-full"
-                  />
-                </div>
-              ) : (
-                <span
-                  className={`heal-cutout mb-4 inline-flex items-center gap-1.5 px-3 py-1 font-hand text-sm leading-none text-sticker-ink ${CHIP_FILL[accent]}`}
-                  style={stickerStyle(1)}
-                >
-                  <CategoryIcon
-                    size={15}
-                    weight="duotone"
-                    className={CHIP_ICON[accent]}
-                    aria-hidden="true"
-                  />
-                  {label}
-                </span>
-              )}
+              <CategoryLabel category={category} className="mb-4" />
               <h1 className="pb-1 font-script text-[clamp(2.4rem,1.8rem+2.4vw,3.5rem)] font-bold leading-[1.05] text-balance text-ink">
-                {processed.meta.title ?? title}
+                {heading}
               </h1>
             </>
           )}
