@@ -79,6 +79,12 @@ background images — always pair it with a `bg-*` utility on the same element.
   charcoal texture, irregular doubled outlines, and visible hand pressure.
   Functional strokes that must scale or draw in (section dividers, arrows,
   swashes, paw trails) stay inline SVG.
+- Project, Wet Lab, Dry Lab, Engagement, and Team share a native 2:1 cover
+  series in `public/assets/`: the peach cat and teal dog interact with each
+  category's real tools on layered graph paper. The artwork reserves a quiet
+  left zone; `CategoryCover` supplies the live category label and real page h1
+  so wording stays exact, accessible, reusable across routes, and collision-free
+  on mobile.
 - Scenes are EDGELESS on content surfaces: transparent raster art over
   CSS-painted architecture and gradients. (The old hero room scene and its
   `HeroRoom`/`Mascots` components were deleted 2026-07-02; the homepage hero is

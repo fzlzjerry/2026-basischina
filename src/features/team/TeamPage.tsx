@@ -1,5 +1,6 @@
 import { Cat, Dog, User } from "@phosphor-icons/react";
 import { requirePage } from "@/config/pageData";
+import { CategoryCover } from "@/shared/components/CategoryCover";
 import { Icon } from "@/shared/components/Icon";
 import { PageHead } from "@/shared/components/PageHead";
 import { Tag } from "@/shared/components/Tag";
@@ -79,9 +80,14 @@ export function TeamPage() {
       <div className="min-h-screen bg-page heal-grid">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <header className="mb-10">
-            <h1 className="pb-1 font-script text-[clamp(2.6rem,2rem+2.5vw,3.9rem)] font-bold leading-[1.04] text-balance text-ink">
-              {page.title}
-            </h1>
+            <CategoryCover
+              category="team"
+              imagePath="assets/team-cover.webp"
+              imageAlt="A cat and dog assembling a team roster board"
+              imageWidth={1600}
+              imageHeight={800}
+              title={page.title}
+            />
             {page.summary ? (
               <p className="mt-4 max-w-3xl text-lg text-ink-soft">
                 {page.summary}
