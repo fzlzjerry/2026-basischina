@@ -6,7 +6,7 @@
  */
 
 .markdown-body {
-  color: #725d42; /* --color-ink-soft, 5.61:1 on cream */
+  color: var(--color-ink-soft); /* 5.61:1 on cream */
   line-height: 1.75;
   font-size: 1rem;
 }
@@ -20,7 +20,7 @@
   margin-bottom: 1rem;
   font-size: 1.6rem;
   font-weight: 700;
-  color: #794f27; /* --color-ink */
+  color: var(--color-ink);
   padding-bottom: 0.55rem;
   /* Hand-ruled underline (HEAL register): a wobbly ink stroke instead of a
      machine-straight border. Stroke colour is --color-border (#8a7b66). The
@@ -37,7 +37,7 @@
   margin-bottom: 0.75rem;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #794f27; /* --color-ink */
+  color: var(--color-ink);
 }
 
 .markdown-body h4 {
@@ -45,7 +45,7 @@
   margin-bottom: 0.5rem;
   font-size: 1.05rem;
   font-weight: 600;
-  color: #794f27; /* --color-ink */
+  color: var(--color-ink);
 }
 
 .markdown-body p,
@@ -83,17 +83,17 @@
 }
 
 .markdown-body a {
-  color: #0d6f63; /* --color-primary-deep, 5.43:1 on cream */
+  color: var(--color-primary-deep); /* 5.43:1 on cream */
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .markdown-body a:hover {
-  color: #0a5249; /* --color-primary-rail */
+  color: var(--color-primary-rail);
 }
 
 .markdown-body a:focus-visible {
-  outline: 2px solid #794f27; /* --color-focus-ring, same ring as site chrome */
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -124,10 +124,11 @@
 .markdown-body blockquote {
   /* Full soft ink outline + slightly wonky corners (HEAL register) — never a
      side-stripe rail. Tint stays --color-primary-soft. */
-  border: 2px solid rgb(47 36 23 / 0.3); /* --color-sticker-ink @ 30% */
-  background: #e6f9f6; /* --color-primary-soft */
+  border: 2px solid
+    color-mix(in srgb, var(--color-sticker-ink) 30%, transparent);
+  background: var(--color-primary-soft);
   padding: 0.75rem 1rem;
-  color: #725d42; /* --color-ink-soft */
+  color: var(--color-ink-soft);
   border-radius: 14px 10px 15px 9px / 10px 15px 9px 14px;
 }
 
@@ -136,11 +137,11 @@
 }
 
 .markdown-body :not(pre) > code {
-  background: #f9f7f0; /* --color-surface-2 */
+  background: var(--color-surface-2);
   border-radius: 8px;
   padding: 0.15em 0.35em;
   font-size: 0.875em;
-  color: #794f27; /* --color-ink, 6.36:1 on surface-2 */
+  color: var(--color-ink); /* 6.36:1 on surface-2 */
 }
 
 .markdown-body pre {
@@ -177,21 +178,37 @@
 .markdown-body table {
   width: 100%;
   border-collapse: collapse;
-  display: block;
+}
+
+/* Keep the table itself a native table. JavaScript supplies the scrolling
+   wrapper so it becomes a labelled keyboard stop only when it truly overflows.
+   Without JavaScript, cells wrap in the normal table layout instead of changing
+   the table's display semantics. */
+.markdown-body .markdown-table-scroll {
+  max-width: 100%;
+  margin-bottom: 1.25rem;
   overflow-x: auto;
+  border-radius: 0.5rem;
+}
+
+.markdown-body .markdown-table-scroll > table {
+  display: table;
+  width: max-content;
+  min-width: 100%;
+  margin-bottom: 0;
 }
 
 .markdown-body th,
 .markdown-body td {
-  border: 1px solid #8a7b66; /* --color-border */
+  border: 1px solid var(--color-border);
   padding: 0.5rem 0.75rem;
   text-align: left;
 }
 
 .markdown-body th {
-  background: #f7f3df; /* --color-surface */
+  background: var(--color-surface);
   font-weight: 600;
-  color: #794f27; /* --color-ink */
+  color: var(--color-ink);
 }
 
 .markdown-body hr {
@@ -207,7 +224,7 @@
 
 /* KaTeX inherits color (no hardcoded #000); pin to ink defensively (§9). */
 .markdown-body .katex {
-  color: #794f27; /* --color-ink */
+  color: var(--color-ink);
 }
 
 /* Wide display equations scroll inside their own box (the same overflow-x
@@ -220,65 +237,65 @@
 }
 
 .markdown-body .katex-error {
-  color: #c0392b; /* --color-error */
+  color: var(--color-error);
 }
 
 /* ── Code blocks: warm pale surface overriding prism-tomorrow's dark theme ──
    Imported AFTER markdown.css, so every rule is scoped under .markdown-body to
-   win specificity. Each token color re-verified ≥4.5:1 on #fffaf5. */
+   win specificity. Each token color is ≥4.5:1 on --color-surface-2. */
 .markdown-body pre[class*="language-"],
 .markdown-body code[class*="language-"] {
-  color: #725d42; /* base token, 5.46:1 on #fffaf5 */
+  color: var(--color-ink-soft); /* 5.83:1 on surface-2 */
   background: none;
   text-shadow: none;
 }
 
 .markdown-body pre[class*="language-"] {
-  background: #fffaf5; /* warm pale cream */
-  border: 1px solid #c4b89e; /* --color-border-soft (non-text) */
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-soft);
 }
 
 .markdown-body :not(pre) > code[class*="language-"] {
-  background: #f9f7f0; /* --color-surface-2 */
-  color: #794f27;
+  background: var(--color-surface-2);
+  color: var(--color-ink);
 }
 
-/* Token recolors — warm hues, all ≥4.5:1 on #fffaf5 */
+/* Token recolors — warm hues, all ≥4.5:1 on --color-surface-2. */
 .markdown-body .token.comment,
 .markdown-body .token.block-comment,
 .markdown-body .token.prolog,
 .markdown-body .token.doctype,
 .markdown-body .token.cdata {
-  color: #6b5e50; /* 5.40:1 */
+  color: var(--color-placeholder); /* 5.40:1 */
   font-style: italic;
 }
 
 .markdown-body .token.punctuation {
-  color: #725d42; /* 5.46:1 */
+  color: var(--color-ink-soft); /* 5.46:1 */
 }
 
 .markdown-body .token.tag,
 .markdown-body .token.attr-name,
 .markdown-body .token.namespace,
 .markdown-body .token.deleted {
-  color: #a84523; /* peach-ink, 5.7:1 */
+  color: var(--color-app-peach-ink); /* 5.7:1 */
 }
 
 .markdown-body .token.function-name,
 .markdown-body .token.function {
-  color: #2f4fa8; /* blue-ink, 5.93:1 */
+  color: var(--color-app-blue-ink); /* 5.93:1 */
 }
 
 .markdown-body .token.boolean,
 .markdown-body .token.number {
-  color: #946011; /* warning, 4.78:1 */
+  color: var(--color-warning); /* 4.78:1 */
 }
 
 .markdown-body .token.property,
 .markdown-body .token.class-name,
 .markdown-body .token.constant,
 .markdown-body .token.symbol {
-  color: #6a3fa0; /* purple-ink, 6.85:1 */
+  color: var(--color-app-purple-ink); /* 6.85:1 */
 }
 
 .markdown-body .token.selector,
@@ -286,7 +303,7 @@
 .markdown-body .token.atrule,
 .markdown-body .token.keyword,
 .markdown-body .token.builtin {
-  color: #b03a52; /* pink-ink, 5.27:1 */
+  color: var(--color-app-pink-ink); /* 5.27:1 */
 }
 
 .markdown-body .token.string,
@@ -294,17 +311,17 @@
 .markdown-body .token.attr-value,
 .markdown-body .token.regex,
 .markdown-body .token.variable {
-  color: #2b7031; /* green-ink, 5.5:1 */
+  color: var(--color-app-green-ink); /* 5.5:1 */
 }
 
 .markdown-body .token.operator,
 .markdown-body .token.entity,
 .markdown-body .token.url {
-  color: #1c6f55; /* teal-ink, 5.5:1 */
+  color: var(--color-app-teal-ink); /* 5.5:1 */
 }
 
 .markdown-body .token.inserted {
-  color: #2f7a36; /* success */
+  color: var(--color-success);
 }
 
 .markdown-body .token.important,
@@ -318,29 +335,44 @@
 
 /* Code copy button injected by useMarkdownEnhancements. */
 .markdown-body pre.code-block {
-  padding-top: 2.25rem;
+  padding-top: 3.75rem;
 }
 
 .markdown-body .code-copy-button {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
+  display: inline-flex;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
   font-size: 0.75rem;
   line-height: 1;
   padding: 0.3rem 0.55rem;
-  border-radius: 12px; /* --radius-min */
-  background: #e6f9f6; /* --color-primary-soft */
-  color: #794f27; /* --color-ink, 6.50:1 on primary-soft */
-  border: 1px solid #8a7b66; /* --color-border */
+  border-radius: var(--radius-min);
+  background: var(--color-primary-soft);
+  color: var(--color-ink); /* 6.50:1 on primary-soft */
+  border: 1px solid var(--color-border);
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .markdown-body .code-copy-button:hover {
-  background: #d6f3ee; /* slightly deeper soft teal */
+  background: var(--color-app-teal-soft);
 }
 
 .markdown-body .code-copy-button:focus-visible {
-  outline: 2px solid #794f27; /* brown focus ring on light (§11) */
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Code and math keep their native scrollers; tables use the wrapper above.
+   The enhancement hook adds .is-overflowing, tabindex, role and aria-label in
+   one operation, so a non-overflowing block never becomes an extra tab stop. */
+.markdown-body pre.is-overflowing:focus-visible,
+.markdown-body .katex-display.is-overflowing:focus-visible,
+.markdown-body .markdown-table-scroll.is-overflowing:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }

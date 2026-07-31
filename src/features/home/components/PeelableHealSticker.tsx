@@ -43,6 +43,67 @@ function loadStickerForge() {
   return stickerForgeModule;
 }
 
+interface NavigatorPerformanceHints extends Navigator {
+  connection?: {
+    saveData?: boolean;
+    effectiveType?: string;
+  };
+  deviceMemory?: number;
+}
+
+function canRunInteractiveSticker(): boolean {
+  const navigatorWithHints = navigator as NavigatorPerformanceHints;
+  const connection = navigatorWithHints.connection;
+  const constrainedNetwork =
+    connection?.saveData === true ||
+    connection?.effectiveType === "slow-2g" ||
+    connection?.effectiveType === "2g";
+  const constrainedMemory =
+    typeof navigatorWithHints.deviceMemory === "number" &&
+    navigatorWithHints.deviceMemory <= 4;
+  const constrainedCpu =
+    navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4;
+
+  return !constrainedNetwork && !constrainedMemory && !constrainedCpu;
+}
+
+function hasHardwareWebGl(): boolean {
+  const canvas = document.createElement("canvas");
+  const context =
+    canvas.getContext("webgl2", {
+      antialias: false,
+      powerPreference: "low-power",
+    }) ??
+    canvas.getContext("webgl", {
+      antialias: false,
+      powerPreference: "low-power",
+    });
+
+  if (!context) return false;
+
+  const debugRendererInfo = context.getExtension("WEBGL_debug_renderer_info");
+  const renderer = [
+    context.getParameter(context.RENDERER),
+    debugRendererInfo
+      ? context.getParameter(debugRendererInfo.UNMASKED_RENDERER_WEBGL)
+      : "",
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  context.getExtension("WEBGL_lose_context")?.loseContext();
+
+  return ![
+    "swiftshader",
+    "llvmpipe",
+    "softpipe",
+    "lavapipe",
+    "software rasterizer",
+    "software renderer",
+    "microsoft basic render",
+  ].some((marker) => renderer.includes(marker));
+}
+
 const stickerOptions = {
   outline: { width: 18, color: "#ffffff" },
   edge: { width: 2.4, strength: 0.7 },
@@ -91,12 +152,16 @@ export function PeelableHealSticker({ onReady }: PeelableHealStickerProps) {
     const host = root.current;
     if (
       !host ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !canRunInteractiveSticker() ||
+      !hasHardwareWebGl()
     ) {
       return;
     }
 
     let cancelled = false;
+    let idleHandle: number | null = null;
+    let fallbackHandle: number | null = null;
 
     const mount = async () => {
       try {
@@ -113,6 +178,12 @@ export function PeelableHealSticker({ onReady }: PeelableHealStickerProps) {
             padding: 48,
           },
         });
+        target
+          .querySelector<HTMLElement>('[role="slider"]')
+          ?.setAttribute(
+            "aria-label",
+            "HEAL interactive sticker. Drag a visible edge, or use arrow keys to preview the peel.",
+          );
 
         if (cancelled) {
           controller.destroy();
@@ -127,13 +198,31 @@ export function PeelableHealSticker({ onReady }: PeelableHealStickerProps) {
       }
     };
 
+    const scheduleMount = () => {
+      // Module evaluation is the expensive part of this optional enhancement.
+      // Run it only when the main thread is idle; the prerendered sticker remains
+      // fully visible if the browser stays busy or lacks the required capacity.
+      if (typeof window.requestIdleCallback === "function") {
+        idleHandle = window.requestIdleCallback(() => {
+          idleHandle = null;
+          void mount();
+        });
+        return;
+      }
+
+      fallbackHandle = window.setTimeout(() => {
+        fallbackHandle = null;
+        void mount();
+      }, 1200);
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;
         observer.disconnect();
-        void mount();
+        scheduleMount();
       },
-      { rootMargin: "100% 0px" },
+      { rootMargin: "50% 0px" },
     );
 
     observer.observe(host);
@@ -141,6 +230,8 @@ export function PeelableHealSticker({ onReady }: PeelableHealStickerProps) {
     return () => {
       cancelled = true;
       observer.disconnect();
+      if (idleHandle !== null) window.cancelIdleCallback?.(idleHandle);
+      if (fallbackHandle !== null) window.clearTimeout(fallbackHandle);
       sticker.current?.destroy();
       sticker.current = null;
       onReady(null);

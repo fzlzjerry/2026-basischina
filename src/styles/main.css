@@ -555,9 +555,9 @@
     left: 2.5vw;
     color: rgb(47 36 23 / 0.1);
     font-family: var(--font-body);
-    font-size: clamp(7.5rem, 19vw, 19rem);
+    font-size: clamp(4.5rem, 10vw, 6rem);
     font-weight: 900;
-    letter-spacing: -0.095em;
+    letter-spacing: -0.04em;
     line-height: 0.72;
     text-transform: uppercase;
     transform: translateY(-50%);
@@ -593,9 +593,9 @@
 
   .hero-chapter-copy strong {
     font-family: var(--font-script);
-    font-size: clamp(4.5rem, 8.5vw, 8.5rem);
+    font-size: clamp(4.5rem, 8.5vw, 6rem);
     line-height: 0.75;
-    letter-spacing: -0.055em;
+    letter-spacing: -0.04em;
   }
 
   .hero-chapter-copy p {
@@ -636,9 +636,9 @@
     bottom: clamp(4.5rem, 10vh, 7rem);
     color: rgb(47 36 23 / 0.72);
     font-family: var(--font-body);
-    font-size: clamp(3.5rem, 7vw, 7rem);
+    font-size: clamp(3.5rem, 7vw, 6rem);
     font-weight: 900;
-    letter-spacing: -0.08em;
+    letter-spacing: -0.04em;
     line-height: 1;
   }
 
@@ -743,9 +743,9 @@
 
   .kinetic-statement-sticky {
     position: sticky;
-    top: 3.9rem;
+    top: 4.75rem;
     display: flex;
-    height: calc(100dvh - 3.9rem);
+    height: calc(100dvh - 4.75rem);
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
@@ -772,10 +772,12 @@
     gap: clamp(0.2rem, 1vh, 0.8rem);
     width: max-content;
     min-width: 100%;
+    padding-inline: clamp(1.25rem, 4vw, 4rem);
+    box-sizing: border-box;
     font-family: var(--font-body);
-    font-size: clamp(4.2rem, 9.65vw, 10.5rem);
+    font-size: clamp(4.2rem, 9.65vw, 6rem);
     font-weight: 900;
-    letter-spacing: -0.075em;
+    letter-spacing: -0.04em;
     line-height: 0.78;
     white-space: nowrap;
   }
@@ -946,9 +948,9 @@
   .workstream-copy h3 {
     margin-top: 0.25rem;
     font-family: var(--font-script);
-    font-size: clamp(4.5rem, 8vw, 8rem);
+    font-size: clamp(4.5rem, 8vw, 6rem);
     font-weight: 700;
-    letter-spacing: -0.055em;
+    letter-spacing: -0.04em;
     line-height: 0.86;
   }
 
@@ -1006,6 +1008,13 @@
   }
 }
 
+@media (min-width: 1280px) {
+  .kinetic-statement-sticky {
+    top: 4.5rem;
+    height: calc(100dvh - 4.5rem);
+  }
+}
+
 @media (max-width: 639px) {
   .hero-cinema-masthead {
     top: 1rem;
@@ -1021,8 +1030,8 @@
 
   .hero-chapter-copy {
     top: 14%;
-    right: 1.2rem;
-    left: 1.2rem;
+    right: 5vw;
+    left: 5vw;
     max-width: none;
   }
 
@@ -1032,7 +1041,7 @@
   }
 
   .hero-chapter-copy strong {
-    font-size: clamp(4rem, 21vw, 5.3rem);
+    font-size: clamp(2rem, 21vw, 5.3rem);
   }
 
   .hero-chapter-copy p {
@@ -1044,7 +1053,7 @@
   .hero-chapter-word {
     top: 55%;
     left: -0.15em;
-    font-size: clamp(6.5rem, 37vw, 9rem);
+    font-size: clamp(2.5rem, 24vw, 6rem);
     writing-mode: vertical-rl;
     text-orientation: mixed;
   }
@@ -1062,7 +1071,7 @@
     right: auto;
     bottom: 4.7rem;
     left: 1.25rem;
-    font-size: 3.75rem;
+    font-size: clamp(1.75rem, 18vw, 3.75rem);
   }
 
   .hero-cinema-footer {
@@ -1078,13 +1087,15 @@
   }
 
   .kinetic-statement {
-    min-height: 165vh;
+    min-height: auto;
     background-size: 32px 32px;
   }
 
   .kinetic-statement-sticky {
-    top: 4.75rem;
-    height: calc(100dvh - 4.75rem);
+    position: relative;
+    top: auto;
+    height: auto;
+    min-height: max(46rem, 120svh);
   }
 
   .kinetic-statement-meta span:last-child {
@@ -1093,7 +1104,8 @@
 
   .kinetic-statement-lines {
     gap: 0.45rem;
-    font-size: clamp(3rem, 15.5vw, 3.8rem);
+    padding-inline: 5vw;
+    font-size: clamp(1.5rem, 15.5vw, 3.8rem);
     line-height: 0.78;
   }
 
@@ -1102,20 +1114,21 @@
   }
 
   .kinetic-badge {
-    right: 1rem;
-    bottom: 5.1rem;
-    width: 14rem;
+    right: 5vw;
+    bottom: 8rem;
+    width: min(14rem, 52vw);
   }
 
   .kinetic-statement-note {
-    right: 11.5rem;
+    right: auto;
     bottom: 1.5rem;
-    left: 1.25rem;
-    font-size: 0.82rem;
+    left: 5vw;
+    max-width: 46vw;
+    font-size: clamp(13px, calc(3.4vw + 0.125rem), 20px);
   }
 
   .workstream-card {
-    min-height: calc(100dvh - 4.75rem);
+    min-height: max(calc(100dvh - 4.75rem), 42rem);
   }
 
   .workstream-image {
@@ -1139,14 +1152,14 @@
 
   .workstream-copy {
     top: 12%;
-    right: 1.25rem;
-    left: 1.25rem;
+    right: 5vw;
+    left: 5vw;
     width: auto;
     transform: none;
   }
 
   .workstream-copy h3 {
-    font-size: clamp(4rem, 21vw, 5.25rem);
+    font-size: clamp(2rem, 21vw, 5.25rem);
   }
 
   .workstream-copy p {
@@ -1201,9 +1214,11 @@ html {
     opacity: 1;
     visibility: visible;
   }
+}
 
+@media (min-width: 640px) and (prefers-reduced-motion: no-preference) {
   html.js .workstream-stage {
-    height: calc(100dvh - 3.9rem);
+    height: calc(100dvh - 4.75rem);
     overflow: hidden;
   }
 
@@ -1218,9 +1233,9 @@ html {
   }
 }
 
-@media (max-width: 639px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 1280px) and (prefers-reduced-motion: no-preference) {
   html.js .workstream-stage {
-    height: calc(100dvh - 4.75rem);
+    height: calc(100dvh - 4.5rem);
   }
 }
 
@@ -1256,9 +1271,7 @@ html {
    expand collapsibles/TOC, show link URLs, avoid breaking inside cards/figures.
    =========================================================================== */
 @media print {
-  nav,
-  header,
-  footer,
+  [data-site-chrome],
   [data-print-hide] {
     display: none !important;
   }

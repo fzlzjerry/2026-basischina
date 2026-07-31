@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light" />
+    <link rel="icon" href="/favicon-heal.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/favicon-heal.png" />
     <!-- JS sentinel, set synchronously before first paint: decorations hidden
          by CSS (html.js .heal-paste-in) for the first-load paste-in entrance
          never flash. No-JS visitors never get the class, so for them the page
@@ -11,13 +13,12 @@
     <script>
       document.documentElement.classList.add("js");
     </script>
-    <!-- Favicon + font preloads are injected by the head manager from
-         AppShell (base-path-aware, hashed Vite asset URLs). Per-route page
-         title, meta, canonical, and JSON-LD are injected at build time by
-         src/shared/components/PageHead.tsx. No static page title is set here,
-         to avoid duplicating it. -->
+    <!-- Vite rewrites public-asset URLs above under the configured base path.
+         Per-route page title, meta, canonical, and JSON-LD are injected at
+         build time by src/shared/components/PageHead.tsx. No static page title
+         is set here, to avoid duplicating it. -->
   </head>
-  <body style="background:#f8f8f0">
+  <body style="background: #f8f8f0">
     <div id="root"></div>
     <script type="module" src="/src/app/main.tsx"></script>
   </body>

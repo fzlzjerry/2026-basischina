@@ -146,6 +146,8 @@ Fenced `mermaid` blocks are rendered to SVG on the client. A flowchart:
 
 ```mermaid
 flowchart LR
+  accTitle: Signal-to-reporter decision flow
+  accDescr: An input signal enters an engineered circuit. If the threshold is met, the reporter turns on; otherwise it remains off.
   A[Input signal] --> B[Engineered circuit]
   B --> C{Threshold?}
   C -- yes --> D[Reporter ON]
@@ -156,6 +158,8 @@ And a sequence diagram:
 
 ```mermaid
 sequenceDiagram
+  accTitle: Ligand-to-reporter signaling sequence
+  accDescr: A ligand binds the receptor, the receptor activates reporter-gene transcription, and the reporter produces a fluorescent readout.
   participant L as Ligand
   participant R as Receptor
   participant G as Reporter gene

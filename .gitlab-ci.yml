@@ -50,13 +50,13 @@ build:
 # GitLab Pages must publish a `public/` directory. The prerendered output lives
 # in `dist/`; `dist/` already contains everything from the source `public/`
 # (Vite copies it during build), so we replace `public/` with the built output.
-# `404.html` falls back to the SPA shell so unknown deep links still resolve to
-# the in-app 404 page.
+# The build prerenders `404.html` through the wildcard route, so unknown URLs
+# hydrate against the same not-found markup that GitLab Pages serves.
 pages:
   stage: deploy
   needs: ["build"]
   script:
-    - cp dist/index.html dist/404.html
+    - test -f dist/404.html
     - rm -rf public
     - mv dist public
   artifacts:

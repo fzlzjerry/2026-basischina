@@ -1,28 +1,24 @@
 /**
  * Markdown loader (§15.3).
  *
- * Markdown is imported eagerly as raw strings. Eager (synchronous) loading is
- * deliberate: it lets MarkdownPage render fully during the build-time prerender,
- * so the article HTML — not a loading spinner — ends up in the static output.
+ * Sources are separate lazy modules. The route loader imports only the requested
+ * article during SSG, then vite-react-ssg serializes the processed result for
+ * hydration and client navigation. This keeps all article sources out of the
+ * global browser entry while preserving complete prerendered HTML.
  */
 const markdownModules = import.meta.glob("/src/content/**/*.md", {
   query: "?raw",
   import: "default",
-  eager: true,
-}) as Record<string, string>;
+}) as Record<string, () => Promise<string>>;
 
 function modulePathFor(contentPath: string): string {
   return `/src/content/${contentPath}.md`;
 }
 
-export function hasMarkdown(contentPath: string): boolean {
-  return modulePathFor(contentPath) in markdownModules;
-}
-
-export function getMarkdown(contentPath: string): string {
-  const raw = markdownModules[modulePathFor(contentPath)];
-  if (typeof raw !== "string") {
+export async function loadMarkdown(contentPath: string): Promise<string> {
+  const load = markdownModules[modulePathFor(contentPath)];
+  if (!load) {
     throw new Error(`Markdown file not found: ${modulePathFor(contentPath)}`);
   }
-  return raw;
+  return load();
 }

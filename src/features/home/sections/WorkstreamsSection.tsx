@@ -54,106 +54,111 @@ export function WorkstreamsSection() {
       registerGsap();
       const mm = gsap.matchMedia();
 
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const cards = gsap.utils.toArray<HTMLElement>(".js-workstream-card");
-        const navHeight = () =>
-          document.querySelector("header")?.getBoundingClientRect().height ??
-          64;
-        const pinDistance = () =>
-          Math.round(
-            window.innerHeight * (window.innerWidth >= 768 ? 3.8 : 2.8),
-          );
-
-        cards.slice(1).forEach((card) => {
-          gsap.set(card, { clipPath: "inset(100% 0 0 0)" });
-          gsap.set(card.querySelector(".workstream-copy"), { autoAlpha: 0 });
-        });
-        gsap.set(".js-workstream-progress", {
-          scaleX: 0.25,
-          transformOrigin: "left center",
-        });
-
-        const timeline = gsap.timeline({
-          defaults: { ease: "none" },
-          scrollTrigger: {
-            trigger: root.current,
-            start: () => `top top+=${navHeight()}`,
-            end: () => `+=${pinDistance()}`,
-            pin: true,
-            pinSpacing: true,
-            scrub: 0.95,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        cards.slice(1).forEach((card, index) => {
-          const position = index * 0.3;
-          const previous = cards[index];
-          const currentImage = card.querySelector(".js-workstream-image");
-          const previousImage = previous.querySelector(".js-workstream-image");
-          const previousCopy = previous.querySelector(".workstream-copy");
-          const currentCopy = card.querySelector(".workstream-copy");
-
-          timeline
-            .to(
-              previousCopy,
-              {
-                autoAlpha: 0,
-                duration: 0.07,
-                ease: "power2.in",
-              },
-              position + 0.04,
-            )
-            .to(
-              previousImage,
-              {
-                scale: 0.94,
-                rotation: index % 2 === 0 ? -1.5 : 1.5,
-                duration: 0.24,
-                ease: "power2.inOut",
-              },
-              position,
-            )
-            .to(
-              card,
-              {
-                clipPath: "inset(0% 0 0 0)",
-                duration: 0.3,
-                ease: "power4.inOut",
-              },
-              position,
-            )
-            .fromTo(
-              currentImage,
-              { scale: 1.08, rotation: index % 2 === 0 ? 1.2 : -1.2 },
-              {
-                scale: 1,
-                rotation: 0,
-                duration: 0.3,
-                ease: "power3.out",
-              },
-              position,
-            )
-            .to(
-              currentCopy,
-              {
-                autoAlpha: 1,
-                duration: 0.08,
-                ease: "power2.out",
-              },
-              position + 0.26,
-            )
-            .to(
-              ".js-workstream-progress",
-              {
-                scaleX: (index + 2) / cards.length,
-                duration: 0.28,
-              },
-              position,
+      mm.add(
+        "(min-width: 640px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          const cards = gsap.utils.toArray<HTMLElement>(".js-workstream-card");
+          const navHeight = () =>
+            document.querySelector("header")?.getBoundingClientRect().height ??
+            64;
+          const pinDistance = () =>
+            Math.round(
+              window.innerHeight * (window.innerWidth >= 768 ? 3.8 : 2.8),
             );
-        });
-      });
+
+          cards.slice(1).forEach((card) => {
+            gsap.set(card, { clipPath: "inset(100% 0 0 0)" });
+            gsap.set(card.querySelector(".workstream-copy"), { autoAlpha: 0 });
+          });
+          gsap.set(".js-workstream-progress", {
+            scaleX: 0.25,
+            transformOrigin: "left center",
+          });
+
+          const timeline = gsap.timeline({
+            defaults: { ease: "none" },
+            scrollTrigger: {
+              trigger: root.current,
+              start: () => `top top+=${navHeight()}`,
+              end: () => `+=${pinDistance()}`,
+              pin: true,
+              pinSpacing: true,
+              scrub: 0.95,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+            },
+          });
+
+          cards.slice(1).forEach((card, index) => {
+            const position = index * 0.3;
+            const previous = cards[index];
+            const currentImage = card.querySelector(".js-workstream-image");
+            const previousImage = previous.querySelector(
+              ".js-workstream-image",
+            );
+            const previousCopy = previous.querySelector(".workstream-copy");
+            const currentCopy = card.querySelector(".workstream-copy");
+
+            timeline
+              .to(
+                previousCopy,
+                {
+                  autoAlpha: 0,
+                  duration: 0.07,
+                  ease: "power2.in",
+                },
+                position + 0.04,
+              )
+              .to(
+                previousImage,
+                {
+                  scale: 0.94,
+                  rotation: index % 2 === 0 ? -1.5 : 1.5,
+                  duration: 0.24,
+                  ease: "power2.inOut",
+                },
+                position,
+              )
+              .to(
+                card,
+                {
+                  clipPath: "inset(0% 0 0 0)",
+                  duration: 0.3,
+                  ease: "power4.inOut",
+                },
+                position,
+              )
+              .fromTo(
+                currentImage,
+                { scale: 1.08, rotation: index % 2 === 0 ? 1.2 : -1.2 },
+                {
+                  scale: 1,
+                  rotation: 0,
+                  duration: 0.3,
+                  ease: "power3.out",
+                },
+                position,
+              )
+              .to(
+                currentCopy,
+                {
+                  autoAlpha: 1,
+                  duration: 0.08,
+                  ease: "power2.out",
+                },
+                position + 0.26,
+              )
+              .to(
+                ".js-workstream-progress",
+                {
+                  scaleX: (index + 2) / cards.length,
+                  duration: 0.28,
+                },
+                position,
+              );
+          });
+        },
+      );
 
       return () => mm.revert();
     },
@@ -177,7 +182,7 @@ export function WorkstreamsSection() {
               width={1600}
               height={800}
               className="js-workstream-image workstream-image"
-              loading={index === 0 ? "eager" : "lazy"}
+              loading="lazy"
               decoding="async"
             />
 

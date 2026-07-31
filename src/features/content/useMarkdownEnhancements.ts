@@ -36,26 +36,171 @@ function addCopyButtons(
     button.type = "button";
     button.className = "code-copy-button";
     button.textContent = "Copy";
-    button.setAttribute("aria-label", "Copy code to clipboard");
+
+    const languageClass = Array.from(pre.classList).find((className) =>
+      className.startsWith("language-"),
+    );
+    const language = languageClass?.slice("language-".length);
+    const codeLabel = language ? `${language} code` : "code";
+    button.setAttribute("aria-label", `Copy ${codeLabel} to clipboard`);
+
+    const status = document.createElement("span");
+    status.className = "sr-only";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    status.setAttribute("aria-atomic", "true");
+
+    let resetTimer: number | undefined;
+    let announcementFrame: number | undefined;
+
+    const showFeedback = (visibleText: string, announcement: string) => {
+      button.textContent = visibleText;
+      status.textContent = "";
+      if (announcementFrame !== undefined) {
+        window.cancelAnimationFrame(announcementFrame);
+      }
+      announcementFrame = window.requestAnimationFrame(() => {
+        status.textContent = announcement;
+      });
+      if (resetTimer !== undefined) {
+        window.clearTimeout(resetTimer);
+      }
+      resetTimer = window.setTimeout(() => {
+        button.textContent = "Copy";
+      }, 1500);
+    };
 
     const onClick = async () => {
       const code = pre.querySelector("code")?.textContent ?? "";
       try {
         await navigator.clipboard.writeText(code);
-        button.textContent = "Copied!";
-        window.setTimeout(() => {
-          button.textContent = "Copy";
-        }, 1500);
+        showFeedback("Copied!", `${codeLabel} copied to clipboard.`);
       } catch {
-        button.textContent = "Failed";
+        showFeedback("Failed", `${codeLabel} could not be copied.`);
       }
     };
 
     button.addEventListener("click", onClick);
     pre.appendChild(button);
+    pre.appendChild(status);
     register(() => {
       button.removeEventListener("click", onClick);
+      if (resetTimer !== undefined) window.clearTimeout(resetTimer);
+      if (announcementFrame !== undefined) {
+        window.cancelAnimationFrame(announcementFrame);
+      }
       button.remove();
+      status.remove();
+    });
+  });
+}
+
+function registerOverflowRegion(
+  element: HTMLElement,
+  label: string,
+  register: (cleanup: () => void) => void,
+): void {
+  const originalAttributes = {
+    ariaLabel: element.getAttribute("aria-label"),
+    role: element.getAttribute("role"),
+    tabIndex: element.getAttribute("tabindex"),
+  };
+  let active = true;
+
+  const restoreAttribute = (
+    name: "aria-label" | "role" | "tabindex",
+    value: string | null,
+  ) => {
+    if (value === null) {
+      element.removeAttribute(name);
+    } else {
+      element.setAttribute(name, value);
+    }
+  };
+
+  const refresh = () => {
+    if (!active) return;
+    const isOverflowing =
+      element.clientWidth > 0 &&
+      element.scrollWidth > Math.ceil(element.clientWidth) + 1;
+
+    element.classList.toggle("is-overflowing", isOverflowing);
+    if (isOverflowing) {
+      element.tabIndex = 0;
+      element.setAttribute("role", "region");
+      element.setAttribute("aria-label", `Scrollable ${label}`);
+    } else {
+      restoreAttribute("tabindex", originalAttributes.tabIndex);
+      restoreAttribute("role", originalAttributes.role);
+      restoreAttribute("aria-label", originalAttributes.ariaLabel);
+    }
+  };
+
+  const frame = window.requestAnimationFrame(refresh);
+  const resizeObserver =
+    typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(() => refresh());
+  resizeObserver?.observe(element);
+  window.addEventListener("resize", refresh);
+  void document.fonts.ready.then(refresh);
+
+  register(() => {
+    active = false;
+    window.cancelAnimationFrame(frame);
+    resizeObserver?.disconnect();
+    window.removeEventListener("resize", refresh);
+    element.classList.remove("is-overflowing");
+    restoreAttribute("tabindex", originalAttributes.tabIndex);
+    restoreAttribute("role", originalAttributes.role);
+    restoreAttribute("aria-label", originalAttributes.ariaLabel);
+  });
+}
+
+function enhanceHorizontalOverflow(
+  container: HTMLElement,
+  register: (cleanup: () => void) => void,
+): void {
+  container
+    .querySelectorAll<HTMLPreElement>('pre[class*="language-"]')
+    .forEach((pre) => {
+      const languageClass = Array.from(pre.classList).find((className) =>
+        className.startsWith("language-"),
+      );
+      const language = languageClass?.slice("language-".length);
+      registerOverflowRegion(
+        pre,
+        language ? `${language} code block` : "code block",
+        register,
+      );
+    });
+
+  container
+    .querySelectorAll<HTMLElement>(".katex-display")
+    .forEach((equation) =>
+      registerOverflowRegion(equation, "equation", register),
+    );
+
+  container.querySelectorAll<HTMLTableElement>("table").forEach((table) => {
+    if (table.parentElement?.classList.contains("markdown-table-scroll")) {
+      return;
+    }
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "markdown-table-scroll";
+    table.before(wrapper);
+    wrapper.appendChild(table);
+
+    const caption = table.querySelector("caption")?.textContent?.trim();
+    registerOverflowRegion(
+      wrapper,
+      caption ? `${caption} table` : "data table",
+      register,
+    );
+    register(() => {
+      if (wrapper.parentNode) {
+        wrapper.replaceWith(table);
+      }
     });
   });
 }
@@ -79,20 +224,23 @@ export function useMarkdownEnhancements(
       if (hasMermaid) {
         const mermaid = (await import("mermaid")).default;
         if (disposed || !container) return;
+        const rootStyles = window.getComputedStyle(document.documentElement);
+        const token = (name: string) =>
+          rootStyles.getPropertyValue(name).trim();
         mermaid.initialize({
           startOnLoad: false,
           securityLevel: "strict",
           theme: "base",
           flowchart: { useMaxWidth: true },
           themeVariables: {
-            primaryColor: "#e6f9f6",
-            primaryBorderColor: "#0d6f63",
-            primaryTextColor: "#794f27",
-            lineColor: "#8a7b66",
-            secondaryColor: "#f7f3df",
-            tertiaryColor: "#fdf0ea",
-            textColor: "#725d42",
-            fontFamily: "Nunito, 'Noto Sans SC', sans-serif",
+            primaryColor: token("--color-primary-soft"),
+            primaryBorderColor: token("--color-primary-deep"),
+            primaryTextColor: token("--color-ink"),
+            lineColor: token("--color-border"),
+            secondaryColor: token("--color-surface"),
+            tertiaryColor: token("--color-surface-2"),
+            textColor: token("--color-ink-soft"),
+            fontFamily: token("--font-body"),
             fontSize: "14px",
           },
         });
@@ -112,6 +260,9 @@ export function useMarkdownEnhancements(
 
       if (!disposed && container) {
         addCopyButtons(container, (cleanup) => cleanups.push(cleanup));
+        enhanceHorizontalOverflow(container, (cleanup) =>
+          cleanups.push(cleanup),
+        );
       }
     }
 

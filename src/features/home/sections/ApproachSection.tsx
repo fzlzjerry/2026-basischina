@@ -227,10 +227,20 @@ export function ApproachSection() {
                 {i > 0 ? (
                   // Mobile-only dotted connector so the trail idea survives
                   // the stacked layout (the SVG trail is desktop-only).
-                  <div
+                  <svg
                     aria-hidden="true"
-                    className="-mt-6 mb-6 h-12 border-l-4 border-dotted border-app-teal sm:hidden"
-                  />
+                    className="-mt-6 mb-6 h-12 w-2 text-app-teal sm:hidden"
+                    viewBox="0 0 8 48"
+                    fill="none"
+                  >
+                    <path
+                      d="M4 1 V47"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeDasharray="1 8"
+                    />
+                  </svg>
                 ) : null}
                 <span className="js-approach-spot h-28 w-28">
                   <step.Spot />

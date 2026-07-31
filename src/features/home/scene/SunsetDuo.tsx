@@ -14,6 +14,7 @@ export function SunsetDuo({ className = "" }: { className?: string }) {
       aria-hidden="true"
       width={2172}
       height={724}
+      loading="lazy"
       decoding="async"
       draggable={false}
       className={`object-bottom ${className}`}

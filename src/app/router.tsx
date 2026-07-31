@@ -1,7 +1,5 @@
 import type { RouteRecord } from "vite-react-ssg";
 import { AppShell } from "@/app/shell/AppShell";
-import { MarkdownPage } from "@/features/content/MarkdownPage";
-import { NotFoundPage } from "@/features/content/NotFoundPage";
 import { RouteErrorBoundary } from "@/shared/components/ErrorBoundary";
 import { pages, type PageConfig } from "@/config/pages";
 
@@ -9,12 +7,31 @@ function routeForPage(page: PageConfig): RouteRecord {
   const errorElement = <RouteErrorBoundary />;
 
   if (page.kind === "markdown") {
-    // Markdown pages render synchronously (content is in the prerender), so they
-    // use a plain element — no lazy boundary needed.
-    const element = <MarkdownPage page={page} />;
+    // Process Markdown in a route loader during SSG. vite-react-ssg serializes
+    // that result for hydration/navigation, so the browser does not need the
+    // Markdown parser, KaTeX renderer, sanitizer, or every article source.
+    const loader = async () => {
+      const [{ loadMarkdown }, { processMarkdown }] = await Promise.all([
+        import("@/features/content/markdownLoader"),
+        import("@/features/content/markdownService"),
+      ]);
+      return processMarkdown(await loadMarkdown(page.contentPath));
+    };
+    const lazy = async () => {
+      const { MarkdownPage } = await import("@/features/content/MarkdownPage");
+      return {
+        Component: () => <MarkdownPage page={page} />,
+      };
+    };
+
     return page.path === "/"
-      ? { index: true, element, errorElement }
-      : { path: page.path.replace(/^\//, ""), element, errorElement };
+      ? { index: true, loader, lazy, errorElement }
+      : {
+          path: page.path.replace(/^\//, ""),
+          loader,
+          lazy,
+          errorElement,
+        };
   }
 
   // React pages use vite-react-ssg route-level lazy: the runtime resolves the
@@ -26,7 +43,13 @@ function routeForPage(page: PageConfig): RouteRecord {
 }
 
 const childRoutes: RouteRecord[] = pages.map(routeForPage);
-childRoutes.push({ path: "*", element: <NotFoundPage /> });
+childRoutes.push({
+  path: "*",
+  lazy: async () => {
+    const { NotFoundPage } = await import("@/features/content/NotFoundPage");
+    return { Component: NotFoundPage };
+  },
+});
 
 /**
  * Route tree (§11). Generated entirely from the page registry. Declared as

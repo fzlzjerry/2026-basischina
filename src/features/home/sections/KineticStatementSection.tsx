@@ -38,9 +38,9 @@ export function KineticStatementSection() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.set(".js-kinetic-line-a", { xPercent: -9 });
-        gsap.set(".js-kinetic-line-b", { xPercent: 0 });
-        gsap.set(".js-kinetic-line-c", { xPercent: -6 });
+        gsap.set(".js-kinetic-line-a", { xPercent: -3 });
+        gsap.set(".js-kinetic-line-b", { xPercent: 3 });
+        gsap.set(".js-kinetic-line-c", { xPercent: -3 });
         gsap.set(".js-kinetic-fill", {
           clipPath: "inset(0 100% 0 0)",
         });
@@ -53,17 +53,17 @@ export function KineticStatementSection() {
         };
 
         gsap.to(".js-kinetic-line-a", {
-          xPercent: 6,
+          xPercent: 3,
           ease: "none",
           scrollTrigger: progress,
         });
         gsap.to(".js-kinetic-line-b", {
-          xPercent: -6,
+          xPercent: -3,
           ease: "none",
           scrollTrigger: progress,
         });
         gsap.to(".js-kinetic-line-c", {
-          xPercent: 8,
+          xPercent: 3,
           ease: "none",
           scrollTrigger: progress,
         });
@@ -96,17 +96,21 @@ export function KineticStatementSection() {
   );
 
   return (
-    <section ref={root} className="kinetic-statement">
+    <section
+      ref={root}
+      className="kinetic-statement"
+      aria-labelledby="heal-loop-heading"
+    >
+      <h2 id="heal-loop-heading" className="sr-only">
+        Observe the need. Engineer with care. Return it to life.
+      </h2>
       <div className="kinetic-statement-sticky">
         <div className="kinetic-statement-meta">
           <span>THE HEAL LOOP</span>
           <span>ONE IDEA / THREE MOVEMENTS</span>
         </div>
 
-        <div
-          className="kinetic-statement-lines"
-          aria-label="Observe the need. Engineer with care. Return it to life."
-        >
+        <div className="kinetic-statement-lines" aria-hidden="true">
           <p className="js-kinetic-line-a">
             OBSERVE
             <span className="kinetic-mobile-break">

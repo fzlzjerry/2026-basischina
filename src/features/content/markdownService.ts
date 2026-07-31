@@ -13,7 +13,6 @@
 import MarkdownIt from "markdown-it";
 import { load as yamlLoad } from "js-yaml";
 import * as katex from "katex";
-import DOMPurify from "dompurify";
 import { markdownItKatex } from "./markdownItKatex";
 import { resolveAssetUrl } from "@/shared/utils/assetUrl";
 import { isExternalUrl, resolveInternalHref } from "@/shared/utils/url";
@@ -42,16 +41,12 @@ export interface ProcessedMarkdown {
   hasMermaid: boolean;
 }
 
-/**
- * Security boundary (§22): raw HTML in Markdown is DISABLED by default, so the
- * generated HTML is safe by construction. Flip this to true ONLY with a
- * documented reason — sanitization (DOMPurify) then runs before the HTML is ever
- * handed to dangerouslySetInnerHTML.
- */
-const allowRawHtml: boolean = false;
-
 const md = new MarkdownIt({
-  html: allowRawHtml,
+  // Security boundary (§22): authored raw HTML is disabled, so the renderer
+  // escapes it instead of passing untrusted markup to dangerouslySetInnerHTML.
+  // If raw HTML is ever enabled, add sanitization in this build-time loader
+  // before changing this flag.
+  html: false,
   linkify: true,
   typographer: true,
   breaks: false,
@@ -200,21 +195,6 @@ function buildToc(tokens: MdToken[]): TocItem[] {
   return roots;
 }
 
-// --- Sanitization (only relevant when raw HTML is enabled) --------------------
-
-function sanitize(html: string): string {
-  if (!allowRawHtml) return html;
-  // On the server there is no DOM; raw HTML is disabled anyway, so this branch
-  // is only reached on the client when the project has opted into raw HTML.
-  if (typeof window === "undefined") return html;
-  return DOMPurify.sanitize(html, {
-    USE_PROFILES: { html: true, mathMl: true, svg: true },
-    ADD_ATTR: ["target", "rel", "id", "class"],
-    ALLOWED_URI_REGEXP:
-      /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
-  });
-}
-
 // --- Public API ---------------------------------------------------------------
 
 /**
@@ -238,7 +218,7 @@ export function processMarkdown(raw: string): ProcessedMarkdown {
   const tokens = md.parse(body, env);
   demoteBodyH1(tokens);
   const toc = buildToc(tokens);
-  const html = sanitize(md.renderer.render(tokens, md.options, env));
+  const html = md.renderer.render(tokens, md.options, env);
   const hasMermaid =
     /```\s*mermaid/.test(body) || html.includes('class="mermaid"');
 

@@ -368,7 +368,7 @@ export function HeroSection() {
   return (
     <section
       ref={root}
-      className="relative flex min-h-[calc(100dvh-3.5rem)] flex-col overflow-hidden bg-page heal-grid"
+      className="relative flex min-h-[calc(100dvh-4.75rem)] flex-col overflow-hidden bg-page heal-grid xl:min-h-[calc(100dvh-4.5rem)]"
     >
       <h1 className="sr-only">
         HEAL: healthier, happier companions, by BASIS-China
@@ -419,6 +419,9 @@ export function HeroSection() {
                 alt=""
                 width={1600}
                 height={622}
+                loading="eager"
+                {...{ fetchpriority: "high" }}
+                decoding="async"
                 className="relative z-10 h-auto w-full"
                 style={{
                   filter: "drop-shadow(6px 8px 0 rgb(47 36 23 / 0.18))",

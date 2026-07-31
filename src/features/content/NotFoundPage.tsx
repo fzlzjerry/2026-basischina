@@ -118,7 +118,7 @@ export function NotFoundPage() {
               <p className="font-hand text-base tracking-[0.3em] text-app-orange-ink">
                 MISSING
               </p>
-              <p className="mt-1 font-script text-[clamp(4.5rem,3.5rem+5vw,7rem)] font-bold leading-none text-ink">
+              <p className="mt-1 font-script text-[clamp(4.5rem,3.5rem+5vw,6rem)] font-bold leading-none text-ink">
                 404
               </p>
               <h1 className="mt-1 pb-1 font-script text-[clamp(1.9rem,1.5rem+1.6vw,2.6rem)] font-bold leading-[1.05] text-ink">
@@ -168,7 +168,7 @@ export function NotFoundPage() {
                 <li key={group.key}>
                   <Link
                     to={group.pages[0].path}
-                    className={`js-nf-pill heal-sticker inline-flex items-center px-5 py-2.5 font-hand text-base leading-none text-sticker-ink transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring ${
+                    className={`js-nf-pill heal-sticker inline-flex min-h-11 items-center px-5 py-2.5 font-hand text-base leading-none text-sticker-ink transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring ${
                       group.key === "home"
                         ? "bg-app-orange"
                         : "bg-surface-2 hover:bg-app-orange-soft"

@@ -16,7 +16,7 @@ function TocList({ items }: { items: TocItem[] }) {
         <li key={item.url}>
           <a
             href={item.url}
-            className="block rounded-[10px] px-2 py-1 text-sm text-ink-soft transition hover:bg-app-orange-soft hover:text-sticker-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+            className="flex min-h-11 items-center rounded-[10px] px-2 py-1 text-sm text-ink-soft transition hover:bg-app-orange-soft hover:text-sticker-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
           >
             {item.title}
           </a>
@@ -53,7 +53,7 @@ export function ArticleTableOfContents({ items }: ArticleTableOfContentsProps) {
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="toc-list"
-          className="flex w-full items-center justify-between rounded-[10px] font-hand text-base text-sticker-ink transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+          className="flex min-h-11 w-full items-center justify-between rounded-[10px] font-hand text-base text-sticker-ink transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
         >
           On this page
           <Icon as={open ? CaretDown : CaretRight} size="sm" aria-hidden />

@@ -6,19 +6,19 @@ import type { TeamMember, TeamSection } from "./teamTypes";
  */
 export const teamMembers: TeamMember[] = [
   {
-    name: "Student Member",
+    name: "Wet Lab Student Member",
     role: "student",
     focus: "Wet Lab",
     bio: "Add a short bio describing this member's contributions.",
   },
   {
-    name: "Student Member",
+    name: "Dry Lab & Modeling Student Member",
     role: "student",
     focus: "Dry Lab & Modeling",
     bio: "Add a short bio describing this member's contributions.",
   },
   {
-    name: "Student Member",
+    name: "Human Practices Student Member",
     role: "student",
     focus: "Human Practices",
     bio: "Add a short bio describing this member's contributions.",

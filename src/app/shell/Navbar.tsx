@@ -17,14 +17,16 @@ const groups = getNavGroups();
 
 function pillClasses(isActive: boolean): string {
   return [
-    "heal-sticker inline-flex items-center gap-1 px-3.5 py-1.5 font-hand text-[15px] leading-none text-sticker-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
-    isActive ? "bg-app-orange" : "bg-surface-2 hover:bg-app-orange-soft",
+    "heal-sticker inline-flex min-h-11 items-center gap-1 px-3.5 py-1.5 font-hand text-[15px] leading-none text-sticker-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+    isActive
+      ? "bg-app-orange font-bold"
+      : "bg-surface-2 hover:bg-app-orange-soft",
   ].join(" ");
 }
 
 function dropdownLinkClasses(isActive: boolean): string {
   return [
-    "block rounded-[10px] px-3 py-2 font-hand text-[15px] leading-snug transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+    "flex min-h-11 items-center rounded-[10px] px-3 py-2 font-hand text-[15px] leading-snug transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
     isActive
       ? "bg-app-orange-soft font-bold text-sticker-ink"
       : "text-sticker-ink hover:bg-hover",
@@ -33,7 +35,7 @@ function dropdownLinkClasses(isActive: boolean): string {
 
 function mobileLinkClasses(isActive: boolean): string {
   return [
-    "block rounded-[12px] px-3 py-2 font-hand text-base leading-snug transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+    "flex min-h-11 items-center rounded-[12px] px-3 py-2 font-hand text-base leading-snug transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
     isActive
       ? "bg-app-orange font-bold text-sticker-ink"
       : "text-sticker-ink hover:bg-app-orange-soft",
@@ -142,6 +144,7 @@ export function Navbar() {
   return (
     <header
       ref={navRef}
+      data-site-chrome="navbar"
       className="sticky top-0 z-40 border-b-[3px] border-sticker-ink bg-page/90 backdrop-blur"
     >
       <nav
@@ -151,7 +154,7 @@ export function Navbar() {
         <NavLink
           to="/"
           end
-          className="flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+          className="flex min-h-11 items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
         >
           <span className="font-script text-[2rem] font-bold leading-none text-ink">
             {wikiEnv.teamName}
@@ -161,7 +164,7 @@ export function Navbar() {
         </NavLink>
 
         {/* Desktop navigation */}
-        <ul className="hidden items-center gap-1.5 lg:flex">
+        <ul className="hidden items-center gap-1.5 xl:flex">
           {groups.map((group, i) => {
             if (group.pages.length === 1) {
               const page = group.pages[0];
@@ -211,7 +214,12 @@ export function Navbar() {
                   className={pillClasses(groupActive)}
                   style={stickerStyle(i)}
                 >
-                  {group.label}
+                  <span>
+                    {group.label}
+                    {groupActive ? (
+                      <span className="sr-only">, current section</span>
+                    ) : null}
+                  </span>
                   <Icon
                     as={CaretDown}
                     size="xs"
@@ -222,7 +230,9 @@ export function Navbar() {
                 {isOpen ? (
                   <ul
                     id={`nav-group-${group.key}`}
-                    className="heal-sticker absolute left-0 z-50 mt-2 min-w-52 bg-page p-1.5"
+                    className={`heal-sticker absolute z-50 mt-2 min-w-52 bg-page p-1.5 ${
+                      i === groups.length - 1 ? "right-0" : "left-0"
+                    }`}
                     style={stickerStyle(0, "0deg")}
                   >
                     {group.pages.map((page) => (
@@ -253,7 +263,7 @@ export function Navbar() {
           aria-expanded={mobileOpen}
           aria-controls="mobile-nav"
           onClick={() => setMobileOpen((value) => !value)}
-          className="heal-sticker bg-surface-2 p-2.5 text-sticker-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring lg:hidden"
+          className="heal-sticker min-h-11 min-w-11 bg-surface-2 p-2.5 text-sticker-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring xl:hidden"
           style={stickerStyle(0, "-1.5deg")}
         >
           <span className="sr-only">Toggle navigation</span>
@@ -272,7 +282,7 @@ export function Navbar() {
       {mobileOpen ? (
         <div
           id="mobile-nav"
-          className="max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t-[3px] border-sticker-ink bg-page px-4 py-3 lg:hidden"
+          className="max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t-[3px] border-sticker-ink bg-page px-4 py-3 xl:hidden"
         >
           {groups.map((group) => {
             // Single-page groups (e.g. Home) stay flat links, mirroring desktop.
@@ -310,9 +320,14 @@ export function Navbar() {
                       current === group.key ? null : group.key,
                     )
                   }
-                  className={`flex w-full items-center justify-between rounded-[12px] px-3 py-2 font-hand text-base leading-none transition hover:bg-app-orange-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring ${groupActive ? "text-app-orange-ink" : "text-sticker-ink"}`}
+                  className={`flex min-h-11 w-full items-center justify-between rounded-[12px] px-3 py-2 font-hand text-base leading-none transition hover:bg-app-orange-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring ${groupActive ? "font-bold text-app-orange-ink" : "text-sticker-ink"}`}
                 >
-                  <span>{group.label}</span>
+                  <span>
+                    {group.label}
+                    {groupActive ? (
+                      <span className="sr-only">, current section</span>
+                    ) : null}
+                  </span>
                   <Icon
                     as={CaretDown}
                     size="xs"

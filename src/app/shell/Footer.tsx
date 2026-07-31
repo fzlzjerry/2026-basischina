@@ -27,7 +27,10 @@ export function Footer() {
     // relative z-10 so the scallop paints ABOVE the homepage's
     // position:relative sunset band (its -mb pulls the footer's divider zone
     // underneath it, which would otherwise flatten the hand-cut edge).
-    <footer className="relative z-10 text-footer-text">
+    <footer
+      data-site-chrome="footer"
+      className="relative z-10 text-footer-text"
+    >
       {/* Scalloped ground edge into the brown footer. No top margin: on the
           homepage the sunset band sits flush above the scallop, and content
           pages bring their own bottom padding. */}
@@ -41,7 +44,7 @@ export function Footer() {
             <p className="font-script text-3xl leading-none text-page">
               <Link
                 to="/"
-                className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
+                className="inline-flex min-h-11 items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
               >
                 {wikiEnv.teamName}
               </Link>
@@ -51,20 +54,20 @@ export function Footer() {
               happier companions.
             </p>
           </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-5">
             {footerGroups.map((group) => (
               <nav key={group.key} aria-label={group.label}>
                 {/* Hand-printed column headers (Gochi), not uppercase tracked
                     scaffolding — the footer keeps the notebook's voice. */}
-                <p className="font-hand text-lg leading-none text-footer-text-muted">
+                <p className="font-hand text-lg leading-none text-footer-text-muted [overflow-wrap:anywhere]">
                   {group.label}
                 </p>
-                <ul className="mt-3 space-y-2">
+                <ul className="mt-3">
                   {group.pages.map((page) => (
                     <li key={page.path}>
                       <Link
                         to={page.path}
-                        className="text-sm text-footer-text transition hover:text-page hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
+                        className="flex min-h-11 w-full max-w-full items-center text-sm text-footer-text transition [overflow-wrap:anywhere] hover:text-page hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
                       >
                         {navLabelFor(page)}
                       </Link>
@@ -99,7 +102,7 @@ export function Footer() {
             <p>
               The repository used to create this website is available at{" "}
               <a
-                className="font-medium text-page underline transition hover:text-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
+                className="font-medium text-page underline transition [overflow-wrap:anywhere] hover:text-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
                 href={`https://gitlab.igem.org/${wikiEnv.teamYear}/${teamSlug}`}
                 rel="noopener noreferrer"
                 target="_blank"

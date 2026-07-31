@@ -24,6 +24,7 @@ function SpotImage({
       alt={alt}
       width={512}
       height={512}
+      loading="lazy"
       decoding="async"
       draggable={false}
       className={`h-full w-full object-contain ${className}`}

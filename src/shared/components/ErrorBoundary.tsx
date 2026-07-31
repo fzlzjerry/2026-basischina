@@ -1,7 +1,7 @@
 import { Warning } from "@phosphor-icons/react";
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Link, isRouteErrorResponse, useRouteError } from "react-router-dom";
-import { buttonClasses } from "@/shared/components/Button";
+import { buttonClasses } from "@/shared/components/buttonStyles";
 import { Icon } from "@/shared/components/Icon";
 
 /**
@@ -31,7 +31,7 @@ export function RouteErrorBoundary() {
       />
       <h1 className="text-3xl font-bold text-ink">{title}</h1>
       <p className="mt-4 text-ink-soft">{detail}</p>
-      <Link to="/" className={buttonClasses("primary", "md", "mt-8")}>
+      <Link to="/" className={buttonClasses("primary", "md", "mt-8", "light")}>
         Back to Home
       </Link>
     </section>

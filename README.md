@@ -102,7 +102,7 @@ build with the same values used for deployment.
 - [Vite](https://vite.dev) + [vite-react-ssg](https://github.com/Daydreamer-riri/vite-react-ssg) (static prerender)
 - [React Router](https://reactrouter.com) (v6, data routes)
 - [Tailwind CSS](https://tailwindcss.com) v4
-- [markdown-it](https://github.com/markdown-it/markdown-it), [KaTeX](https://katex.org), [Prism](https://prismjs.com), [Mermaid](https://mermaid.js.org), [DOMPurify](https://github.com/cure53/DOMPurify)
+- [markdown-it](https://github.com/markdown-it/markdown-it), [KaTeX](https://katex.org), [Prism](https://prismjs.com), [Mermaid](https://mermaid.js.org)
 - Head management via vite-react-ssg's SSR-safe `<Head>` (react-helmet-async)
 
 > **Note on the head manager.** The blueprint recommends `@unhead/react` *or an
@@ -114,7 +114,8 @@ build with the same values used for deployment.
 
 `bun run build` produces a static `dist/`. CI (`.gitlab-ci.yml`) publishes it to
 GitLab Pages; each route is a real HTML file, so direct links and refreshes work
-without a server, and `404.html` falls back to the SPA shell.
+without a server. The wildcard route also prerenders `404.html`, keeping unknown
+URLs aligned with the in-app not-found page during hydration.
 
 ## License
 
