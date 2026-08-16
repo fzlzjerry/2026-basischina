@@ -1,8 +1,8 @@
 import { useRef } from "react";
-import { Link } from "react-router-dom";
 import { PawPrint, UsersThree } from "@phosphor-icons/react";
 import { Icon } from "@/shared/components/Icon";
-import { ctaClasses, stickerStyleRaw } from "@/shared/styles/heal";
+import { InkLink } from "@/shared/drawably/InkLink";
+import { inkCtaClasses } from "@/shared/styles/heal";
 import {
   gsap,
   registerGsap,
@@ -98,28 +98,26 @@ export function ClosingCtaSection() {
           Have a look around the project, or come say hello.
         </p>
         <div className="js-closing mt-9 flex flex-wrap justify-center gap-4">
-          <Link
+          <InkLink
             to="/description"
-            className={ctaClasses("primary")}
-            style={stickerStyleRaw(
-              "-1deg",
-              "16px 11px 18px 9px / 10px 17px 10px 16px",
-            )}
+            seed={55}
+            sketchVariant="scribble"
+            roughness={1.4}
+            className={inkCtaClasses()}
           >
             <Icon as={PawPrint} weight="fill" />
             <span>Explore the project</span>
-          </Link>
-          <Link
+          </InkLink>
+          <InkLink
             to="/team"
-            className={ctaClasses("secondary")}
-            style={stickerStyleRaw(
-              "1.2deg",
-              "11px 17px 10px 16px / 16px 9px 18px 11px",
-            )}
+            seed={68}
+            sketchVariant="outline"
+            roughness={1.35}
+            className={inkCtaClasses()}
           >
             <Icon as={UsersThree} />
             <span>Meet the team</span>
-          </Link>
+          </InkLink>
         </div>
       </div>
 

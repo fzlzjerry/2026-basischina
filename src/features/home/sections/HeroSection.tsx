@@ -1,10 +1,10 @@
 import { useRef } from "react";
-import { Link } from "react-router-dom";
 import { PawPrint, UsersThree } from "@phosphor-icons/react";
 import { Icon } from "@/shared/components/Icon";
 import { SectionDivider } from "@/shared/components/SectionDivider";
 import { WashiTape } from "@/shared/components/WashiTape";
-import { ctaClasses, stickerStyleRaw } from "@/shared/styles/heal";
+import { InkLink } from "@/shared/drawably/InkLink";
+import { inkCtaClasses } from "@/shared/styles/heal";
 import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
 import { HeroSketch } from "../scene/HeroDoodles";
 import { CareSpot, EngineerSpot, UnderstandSpot } from "../scene/StepSpots";
@@ -492,28 +492,26 @@ export function HeroSection() {
                   <path className="js-hero-arrow" d="M70 54 L 89 63 L 84 43" />
                 </svg>
               </div>
-              <Link
+              <InkLink
                 to="/description"
-                className={ctaClasses("primary")}
-                style={stickerStyleRaw(
-                  "-1.2deg",
-                  "16px 11px 18px 9px / 10px 17px 10px 16px",
-                )}
+                seed={21}
+                sketchVariant="scribble"
+                roughness={1.4}
+                className={inkCtaClasses()}
               >
                 <Icon as={PawPrint} weight="fill" />
                 <span>Explore the project</span>
-              </Link>
-              <Link
+              </InkLink>
+              <InkLink
                 to="/team"
-                className={ctaClasses("secondary")}
-                style={stickerStyleRaw(
-                  "1deg",
-                  "11px 17px 10px 16px / 16px 9px 18px 11px",
-                )}
+                seed={34}
+                sketchVariant="outline"
+                roughness={1.35}
+                className={inkCtaClasses()}
               >
                 <Icon as={UsersThree} />
                 <span>Meet the team</span>
-              </Link>
+              </InkLink>
             </div>
 
             <div

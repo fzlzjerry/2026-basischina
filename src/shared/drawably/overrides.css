@@ -1,0 +1,63 @@
+/**
+ * HEAL overrides for drawably. Never edit node_modules; win by loading after
+ * drawably/style.css. Stickers stay the chrome language — this only retints
+ * the ink-control layer.
+ */
+
+.drawably-host,
+.drawably-button {
+  font-family: var(--font-hand), var(--font-body), ui-rounded, sans-serif;
+}
+
+.drawably-inputbox,
+.drawably-inputbox input {
+  font-family: var(--font-body);
+  color: var(--color-ink);
+}
+
+/* DESIGN.md: buttons never animate scale. Kill the library squash. */
+.drawably-button {
+  transition: none;
+}
+
+.drawably-button:active {
+  transform: none;
+}
+
+.drawably-svg .drawably-scribble {
+  stroke-width: 1.4;
+}
+
+/* Scribble CTAs: orange pencil hatch, ink outline, readable dark type. */
+.drawably-button--scribble .drawably-scribble {
+  stroke: var(--color-app-orange);
+}
+
+.drawably-button--scribble .drawably-outline,
+.drawably-button--scribble .drawably-focus {
+  stroke: var(--color-sticker-ink);
+}
+
+/* First-paint fallback before useEffect attach draws the SVG. */
+.ink-button:not(.drawably-host) {
+  box-shadow: inset 0 0 0 2px var(--color-sticker-ink);
+}
+
+.ink-button,
+.drawably-button.ink-button {
+  min-height: 2.75rem;
+  padding: 0.45rem 1.1rem;
+  color: var(--color-sticker-ink);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.ink-button--ghost {
+  color: var(--color-ink);
+}
+
+.ink-field {
+  display: inline-flex;
+  align-items: center;
+}

@@ -1,8 +1,9 @@
 import { Warning } from "@phosphor-icons/react";
 import { Component, type ErrorInfo, type ReactNode } from "react";
-import { Link, isRouteErrorResponse, useRouteError } from "react-router-dom";
+import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 import { buttonClasses } from "@/shared/components/buttonStyles";
 import { Icon } from "@/shared/components/Icon";
+import { InkLink } from "@/shared/drawably/InkLink";
 
 /**
  * Route-level error UI (§11). Rendered by React Router as a route `errorElement`
@@ -31,9 +32,13 @@ export function RouteErrorBoundary() {
       />
       <h1 className="text-3xl font-bold text-ink">{title}</h1>
       <p className="mt-4 text-ink-soft">{detail}</p>
-      <Link to="/" className={buttonClasses("primary", "md", "mt-8", "light")}>
+      <InkLink
+        to="/"
+        seed={1}
+        className={buttonClasses("primary", "md", "mt-8", "light")}
+      >
         Back to Home
-      </Link>
+      </InkLink>
     </section>
   );
 }

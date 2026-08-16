@@ -338,33 +338,24 @@
   padding-top: 3.75rem;
 }
 
-.markdown-body .code-copy-button {
+.markdown-body .code-copy-button,
+.markdown-body .code-copy-button.drawably-button {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
   display: inline-flex;
-  min-width: 2.75rem;
+  min-width: 4.75rem;
   min-height: 2.75rem;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-family: var(--font-hand), var(--font-body), ui-rounded, sans-serif;
+  font-size: 0.95rem;
   line-height: 1;
-  padding: 0.3rem 0.55rem;
-  border-radius: var(--radius-min);
-  background: var(--color-primary-soft);
-  color: var(--color-ink); /* 6.50:1 on primary-soft */
-  border: 1px solid var(--color-border);
+  padding: 0.4rem 0.85rem;
+  color: var(--drawably-ink, var(--color-sticker-ink));
+  background: transparent;
+  border: 0;
   cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.markdown-body .code-copy-button:hover {
-  background: var(--color-app-teal-soft);
-}
-
-.markdown-body .code-copy-button:focus-visible {
-  outline: 2px solid var(--color-focus-ring);
-  outline-offset: 2px;
 }
 
 /* Code and math keep their native scrollers; tables use the wrapper above.

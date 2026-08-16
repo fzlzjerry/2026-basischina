@@ -3,27 +3,33 @@ export type ButtonSize = "sm" | "md" | "lg";
 export type ButtonFocusContext = "light" | "dark";
 
 const BASE =
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-pill font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0";
+  "inline-flex min-h-11 items-center justify-center gap-2 font-hand leading-none text-sticker-ink disabled:cursor-not-allowed disabled:opacity-60";
 
 const SIZES: Record<ButtonSize, string> = {
-  sm: "px-4 py-2 text-sm",
-  md: "px-6 py-3 text-base",
-  lg: "px-7 py-3.5 text-lg",
+  sm: "px-3.5 py-2 text-sm",
+  md: "px-5 py-2.5 text-base",
+  lg: "px-6 py-3 text-lg",
 };
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary:
-    "bg-primary-deep text-white shadow-btn-3d hover:shadow-btn-3d-hover hover:-translate-y-px active:shadow-btn-3d-active active:translate-y-0.5",
-  danger:
-    "bg-error text-white shadow-btn-danger hover:shadow-btn-danger-hover hover:-translate-y-px active:shadow-btn-danger-active active:translate-y-0.5",
-  secondary:
-    "bg-surface text-primary-deep border-2 border-border shadow-soft hover:-translate-y-px hover:shadow-soft-hover hover:border-primary-deep active:translate-y-0.5",
-  ghost: "bg-transparent text-primary-deep hover:bg-primary-soft",
+  primary: "",
+  danger: "",
+  secondary: "",
+  ghost: "ink-button--ghost",
 };
 
+export function inkTone(
+  variant: ButtonVariant,
+): "neutral" | "danger" | undefined {
+  if (variant === "danger") return "danger";
+  if (variant === "secondary" || variant === "ghost") return "neutral";
+  return undefined;
+}
+
 /**
- * Returns the full class string for a button surface. Use on `<Button>` or on a
- * `<Link className={buttonClasses(...)}>` that should look like a button.
+ * Layout classes for an ink-layer button. Pair with `<Button>`, `<InkButton>`,
+ * or `<InkLink>` so drawably can draw the stroke — do not use as a standalone
+ * filled pill.
  */
 export function buttonClasses(
   variant: ButtonVariant = "primary",

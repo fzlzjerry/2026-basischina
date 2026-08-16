@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { attachInkButton } from "@/shared/drawably/attach";
+import { seedFrom } from "@/shared/drawably/defaults";
 
 /**
  * Client-side DOM enhancements for rendered Markdown (§15.5).
@@ -29,13 +31,18 @@ function addCopyButtons(
   const blocks = container.querySelectorAll<HTMLPreElement>(
     'pre[class*="language-"]',
   );
-  blocks.forEach((pre) => {
+  blocks.forEach((pre, index) => {
     if (pre.querySelector(".code-copy-button")) return;
     pre.classList.add("code-block");
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "code-copy-button";
-    button.textContent = "Copy";
+    button.className = "code-copy-button ink-button";
+    // Keep the visible label in a child span. Setting button.textContent would
+    // wipe the SVG drawably prepends into the host.
+    const label = document.createElement("span");
+    label.className = "code-copy-label";
+    label.textContent = "Copy";
+    button.appendChild(label);
 
     const languageClass = Array.from(pre.classList).find((className) =>
       className.startsWith("language-"),
@@ -50,11 +57,22 @@ function addCopyButtons(
     status.setAttribute("aria-live", "polite");
     status.setAttribute("aria-atomic", "true");
 
+    const seed = seedFrom("copy", language ?? "", index);
+    pre.appendChild(button);
+    pre.appendChild(status);
+    const sketch = attachInkButton(button, { seed });
+
     let resetTimer: number | undefined;
     let announcementFrame: number | undefined;
 
-    const showFeedback = (visibleText: string, announcement: string) => {
-      button.textContent = visibleText;
+    const showFeedback = (
+      visibleText: string,
+      announcement: string,
+      nextState: "success" | "error",
+    ) => {
+      label.textContent = visibleText;
+      sketch.setState(nextState);
+      sketch.resketch(seed);
       status.textContent = "";
       if (announcementFrame !== undefined) {
         window.cancelAnimationFrame(announcementFrame);
@@ -66,7 +84,9 @@ function addCopyButtons(
         window.clearTimeout(resetTimer);
       }
       resetTimer = window.setTimeout(() => {
-        button.textContent = "Copy";
+        label.textContent = "Copy";
+        sketch.setState("idle");
+        sketch.resketch(seed);
       }, 1500);
     };
 
@@ -74,21 +94,20 @@ function addCopyButtons(
       const code = pre.querySelector("code")?.textContent ?? "";
       try {
         await navigator.clipboard.writeText(code);
-        showFeedback("Copied!", `${codeLabel} copied to clipboard.`);
+        showFeedback("Copied!", `${codeLabel} copied to clipboard.`, "success");
       } catch {
-        showFeedback("Failed", `${codeLabel} could not be copied.`);
+        showFeedback("Failed", `${codeLabel} could not be copied.`, "error");
       }
     };
 
     button.addEventListener("click", onClick);
-    pre.appendChild(button);
-    pre.appendChild(status);
     register(() => {
       button.removeEventListener("click", onClick);
       if (resetTimer !== undefined) window.clearTimeout(resetTimer);
       if (announcementFrame !== undefined) {
         window.cancelAnimationFrame(announcementFrame);
       }
+      sketch.destroy();
       button.remove();
       status.remove();
     });

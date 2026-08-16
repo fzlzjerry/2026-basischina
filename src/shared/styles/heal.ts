@@ -49,3 +49,8 @@ export function ctaClasses(variant: "primary" | "secondary"): string {
     variant === "primary" ? "bg-app-orange" : "bg-surface-2",
   ].join(" ");
 }
+
+/** Pen-drawn homepage CTA. Pair with `<InkLink sketchVariant="scribble"|"outline">`. */
+export function inkCtaClasses(): string {
+  return "inline-flex min-h-12 items-center gap-2 px-7 py-3.5 font-hand text-lg leading-none text-sticker-ink";
+}

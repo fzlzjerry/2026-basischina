@@ -126,7 +126,17 @@ export function Footer() {
                 Phosphor Icons
                 <span className="sr-only"> (opens in new tab)</span>
               </a>{" "}
-              (MIT) and the Caveat, Gochi Hand, and Nunito typefaces (SIL Open
+              (MIT),{" "}
+              <a
+                className="font-medium text-page underline transition hover:text-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
+                href="https://github.com/Danilaa1/drawably"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                drawably
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>{" "}
+              (MIT), and the Caveat, Gochi Hand, and Nunito typefaces (SIL Open
               Font License).
             </p>
           </div>

@@ -1,0 +1,12 @@
+/**
+ * HEAL theme bridge for drawably. Set once on :root so every ink control
+ * inherits notebook colours instead of the library's cobalt / paper-white.
+ */
+:root {
+  --drawably-stroke: var(--color-sticker-ink);
+  --drawably-fill: var(--color-sticker-ink);
+  --drawably-paper: var(--color-page);
+  --drawably-error: var(--color-error);
+  --drawably-success: var(--color-primary-deep);
+  --drawably-width: 2.5;
+}

@@ -165,11 +165,20 @@ clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
 
 ## Components
 
-- Buttons (content pages): pill, 3D press rail (`shadow-btn-3d*`), primary deep
-  teal (`Button.tsx`).
+- **Ink layer (drawably).** Real `<button>` / `<a>` / `<input>` with a seeded
+  rough SVG stroke that boils (0.28px, frozen under reduced-motion) and
+  re-sketches on hover. Tokens live in `src/shared/drawably/tokens.css`:
+  stroke/fill = `--color-sticker-ink`, paper = `--color-page`, error =
+  `--color-error`, success = `--color-primary-deep`, width 2.5. Pages import
+  `InkButton` / `InkLink` / `InkCheckbox` / … or the shared `Button` facade —
+  never `drawably/react`. **Actions are pen:** homepage Hero + closing CTAs
+  (primary `scribble`, secondary `outline`), markdown Copy, route-error Home.
+  **Chrome stays paper:** nav pills, bento tiles, 404 suggestion pills, TOC /
+  roster cutouts. Do not wrap a `.heal-sticker` / `.heal-cutout` in an ink
+  frame. No press-scale.
 - **HEAL sticker family.** `.heal-sticker`: 2.5px `--color-sticker-ink` outline +
   hard offset `--shadow-sticker` (no blur) + per-element wonky radius and tilt
-  via `--rot`, WITH hover-lift / press feedback (interactive: nav pills, CTAs,
+  via `--rot`, WITH hover-lift / press feedback (interactive: nav pills,
   tiles, 404 suggestion pills). `.heal-cutout`: the same outline + shadow + tilt
   but NO hover/press, for static reading surfaces and labels (the article prose
   page, the TOC aside, the category chip, team roster cards, empty states) so

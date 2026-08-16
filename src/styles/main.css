@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "drawably/style.css";
+@import "../shared/drawably/tokens.css";
+@import "../shared/drawably/overrides.css";
 
 /* ===========================================================================
    Design tokens (§3). Tailwind v4 auto-generates utilities from these:
