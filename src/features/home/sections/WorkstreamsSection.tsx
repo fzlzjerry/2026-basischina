@@ -9,6 +9,8 @@ const WORKSTREAMS = [
     eyebrow: "QUESTION TO DIRECTION",
     line: "Map the need. Frame the idea. Keep the animal in view.",
     image: "assets/project-cover.webp",
+    width: 1600,
+    height: 800,
     alt: "A cat and dog mapping a pet-care project from need to testing",
     tone: "project",
   },
@@ -17,8 +19,10 @@ const WORKSTREAMS = [
     title: "Wet lab",
     eyebrow: "BENCH TO EVIDENCE",
     line: "Build carefully. Measure honestly. Leave a readable trail.",
-    image: "assets/wet-lab-cover.webp",
-    alt: "A cat and dog carrying out a careful wet-lab experiment",
+    image: "assets/wet-lab-cover.jpg",
+    alt: "Two calico cats explore a wet-lab bench with test tubes and a gel tray",
+    width: 1527,
+    height: 1079,
     tone: "wet",
   },
   {
@@ -26,8 +30,10 @@ const WORKSTREAMS = [
     title: "Dry lab",
     eyebrow: "MODEL TO DECISION",
     line: "Use computation to ask sharper questions of the biology.",
-    image: "assets/dry-lab-cover-v2.webp",
-    alt: "A cat and dog collaborating on modeling, software, and hardware",
+    image: "assets/dry-lab-cover.webp",
+    alt: "Cats troubleshoot overlapping computer windows while another naps beside a plotted line",
+    width: 1600,
+    height: 1132,
     tone: "dry",
   },
   {
@@ -35,8 +41,10 @@ const WORKSTREAMS = [
     title: "Engagement",
     eyebrow: "LISTEN TOGETHER",
     line: "Bring the work outside the lab and let people reshape it.",
-    image: "assets/engagement-cover-v2.webp",
-    alt: "A cat and dog building a community engagement board",
+    image: "assets/engagement-cover.webp",
+    alt: "Four calico cats collaborate among notes, speech bubbles, and a chart",
+    width: 1800,
+    height: 1193,
     tone: "engagement",
   },
 ] as const;
@@ -179,8 +187,8 @@ export function WorkstreamsSection() {
             <img
               src={resolveAssetUrl(stream.image)}
               alt={stream.alt}
-              width={1600}
-              height={800}
+              width={stream.width}
+              height={stream.height}
               className="js-workstream-image workstream-image"
               loading="lazy"
               decoding="async"

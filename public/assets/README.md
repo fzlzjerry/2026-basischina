@@ -7,10 +7,26 @@ renderer rewrites it under the base path automatically).
 
 ## Category covers
 
-The Project, Wet Lab, Dry Lab, Engagement, and Team mastheads are native 2:1
-WebP assets (`*-cover*.webp`, 1600×800). They intentionally contain no words:
-`src/shared/components/CategoryCover.tsx` renders the accessible category label
-and page heading as live HTML over the left-side safe zone.
+Project and Team use native 1600×800 WebP covers. The active Wet Lab, Dry Lab,
+and Engagement art intentionally keeps each source's original aspect ratio:
+
+- `wet-lab-cover.jpg` — 1527×1079
+- `dry-lab-cover.webp` — 1600×1132
+- `engagement-cover.webp` — 1800×1193
+
+`src/shared/components/CategoryCover.tsx` keeps Project and Team in their native
+2:1 banner treatment. Wet Lab, Dry Lab, and Engagement use the edgeless `plate`
+composition: full native-ratio artwork tipped and bled beyond the article
+measure, with live labels set as separate hand-ruled marginalia. On mobile the
+artwork goes flat and runs to the right trim. A multiply blend lets the notebook
+grid show through light source-paper areas. The homepage workstream leaves reuse
+the same files and native dimensions.
+
+## 404 motion
+
+`not-found-cat.mp4` is a silent 3520×2488, 0.87-second decorative tail-flick.
+The 404 route resolves it through `resolveAssetUrl` and plays it once only when
+reduced motion is not requested; otherwise it leaves a decoded still visible.
 
 ## Required for SEO
 

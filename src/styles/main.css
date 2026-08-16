@@ -315,6 +315,43 @@
     background-blend-mode: multiply;
   }
 
+  /* Section masthead artwork printed ONTO the notebook page rather than pasted
+     into a frame. `multiply` (via Tailwind's mix-blend-multiply on the img)
+     lets the graph rules and paper grain read through the illustration's own
+     light paper tone; because --color-page is near-white the hue shift is
+     imperceptible and the drawing keeps its contrast.
+
+     A source that carries a flat, EMPTY print margin (no alpha, nothing drawn
+     in it) adds `.heal-art-bleed` plus a `--heal-art-margin` narrower than that
+     measured margin; the two intersecting gradients dissolve the paper edge
+     into the page so the artwork has no rectangular border. This fades paper,
+     never drawing. Sources that bleed their drawing to the edge, or that
+     already carry a real alpha channel, use `.heal-art-print` alone. */
+  .heal-art-print {
+    mix-blend-mode: multiply;
+  }
+  .heal-art-bleed {
+    --heal-art-mask:
+      linear-gradient(
+        to right,
+        transparent 0,
+        #000 var(--heal-art-margin),
+        #000 calc(100% - var(--heal-art-margin)),
+        transparent 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0,
+        #000 var(--heal-art-margin),
+        #000 calc(100% - var(--heal-art-margin)),
+        transparent 100%
+      );
+    -webkit-mask-image: var(--heal-art-mask);
+    mask-image: var(--heal-art-mask);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
   /* Hand-ruled lines. Both are alpha MASKS (the wobbly stroke is the visible
      part), so the line's colour comes from the element's own background —
      pair with a bg-* utility and a height (e.g. `heal-rule h-2 bg-border`).
@@ -340,6 +377,91 @@
   }
   .heal-rule-dash {
     --heal-rule-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='8'%3E%3Cpath d='M0 4.5 C 120 2.9 240 6.1 360 4.4 C 480 2.8 600 6 720 4.5' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-dasharray='15 9 24 11 8 7 18 12 30 10 13 8'/%3E%3C/svg%3E");
+  }
+
+  /* Vertical sibling of `.heal-rule`: the same drifting hand-drawn stroke
+     turned on its side and tiled with repeat-y, for ruling the margin of a
+     page the way a notebook carries a coloured margin line. Also an alpha
+     MASK, so the colour comes from the element's own background — pair with a
+     bg-* utility and a width (e.g. `heal-rule-v w-2.5 bg-app-blue`). */
+  .heal-rule-v {
+    --heal-rule-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='720'%3E%3Cpath d='M5.4 0 C 3.6 34 7.4 66 5.9 102 C 4.4 138 7.6 164 6.1 200 C 4.6 236 3.9 262 5.6 300 C 7.2 338 3.7 372 5.4 410 C 7 448 7.4 480 5.7 516 C 3.9 552 7.1 586 6.2 622 C 5.4 658 4 692 5.4 720' fill='none' stroke='%23000' stroke-width='4.6'/%3E%3C/svg%3E");
+    -webkit-mask-image: var(--heal-rule-mask);
+    mask-image: var(--heal-rule-mask);
+    -webkit-mask-repeat: repeat-y;
+    mask-repeat: repeat-y;
+    -webkit-mask-size: 10px 720px;
+    mask-size: 10px 720px;
+    -webkit-mask-position: center top;
+    mask-position: center top;
+  }
+
+  /* Section masthead: a plate tipped into the notebook. The illustration is
+     the dominant object — oversized, tipped a degree and a half, and printed
+     past the article's right measure into the page margin — while the live
+     type is deliberately marginalia beside it, ruled off by `.heal-rule-v`.
+     Art and type hold separate grid tracks, so they can never intersect.
+
+     --plate-bleed is how far the plate runs past the content box. It is capped
+     against the viewport so the tipped corners always stop short of the trim;
+     its 1rem floor equals the article's own phone padding, so on a narrow
+     screen the plate runs out to the trim edge exactly and never overflows. */
+  .heal-plate {
+    --plate-bleed: max(1rem, min(11rem, (100vw - 76rem) / 2));
+    --plate-width: min(50vw, 46rem);
+  }
+  /* Rows are explicit so the margin line can span the whole masthead: head,
+     plate, foot on a phone; head over a stretched foot row beside the
+     full-height plate from lg up. */
+  .heal-plate-grid {
+    display: grid;
+    grid-template-columns: 0.625rem minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    column-gap: 1rem;
+    row-gap: 1.75rem;
+  }
+  .heal-plate-rule {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+  .heal-plate-head,
+  .heal-plate-foot {
+    grid-column: 2;
+  }
+  /* Phone: the plate drops below the type and runs out to the trim edge flat
+     and untipped — the widest thing on the screen, and a composition of its
+     own rather than the desktop columns stacked. */
+  .heal-plate-art {
+    grid-column: 2;
+    width: calc(100% + var(--plate-bleed));
+    max-width: none;
+  }
+  .heal-plate-close {
+    margin-right: calc(-1 * var(--plate-bleed));
+  }
+  @media (min-width: 1024px) {
+    .heal-plate-grid {
+      grid-template-columns: 0.625rem minmax(0, 1fr) auto;
+      grid-template-rows: auto 1fr;
+      column-gap: 1.5rem;
+    }
+    .heal-plate-head {
+      align-self: start;
+    }
+    .heal-plate-foot {
+      align-self: end;
+    }
+    .heal-plate-art {
+      grid-column: 3;
+      grid-row: 1 / -1;
+      align-self: start;
+      width: var(--plate-width);
+      /* Rides a little higher than the type it is set against. */
+      margin-top: -0.75rem;
+      margin-left: 2.5rem;
+      margin-right: calc(-1 * var(--plate-bleed));
+      transform: rotate(-1.5deg);
+    }
   }
 
   /* Washi tape strip: translucent striped tape with TORN ends (clip-path
@@ -914,6 +1036,29 @@
     will-change: transform;
   }
 
+  /* The restored category art no longer reserves a quiet title zone. On
+     desktop, a paper-toned edge fade protects the live workstream copy without
+     boxing it into a card or obscuring the mascots. Mobile already has its
+     own top-to-bottom reading veil below. */
+  @media (min-width: 640px) {
+    .workstream-card-wet::before,
+    .workstream-card-dry::before,
+    .workstream-card-engagement::before {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        rgb(249 246 237 / 0.98) 0%,
+        rgb(249 246 237 / 0.9) 20%,
+        rgb(249 246 237 / 0.38) 34%,
+        transparent 50%
+      );
+      pointer-events: none;
+    }
+  }
+
   .workstream-copy {
     position: absolute;
     z-index: 4;
@@ -1314,6 +1459,13 @@ html {
     background: none !important;
     height: 0 !important;
     border-top: 1px solid #000 !important;
+  }
+  .heal-rule-v {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    background: none !important;
+    width: 0 !important;
+    border-left: 1px solid #000 !important;
   }
   .heal-rule-dash {
     border-top-style: dashed !important;

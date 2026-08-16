@@ -56,16 +56,17 @@ background images — always pair it with a `bg-*` utility on the same element.
 - **HEAL hand-lettered faces (display + page chrome only).** `--font-script`:
   Caveat (flowing script) — the wordmark + hero h1 + every `HomeSectionHeader`
   h2 + closing h2, AND every content-page title (MarkdownArticle h1, TeamPage
-  h1/h2, the 404 "404" + heading). `--font-hand`: Gochi Hand (marker print) —
+  h1/h2, and the 404 heading). `--font-hand`: Gochi Hand (marker print) —
   nav sticker pills, sticker CTAs, step titles, badges, the article category
-  chip, TOC toggle, team member names, 404 suggestion pills. Self-hosted woff2
-  (latin + latin-ext) extracted from the HEAL reference bundle (OFL),
-  `font-display: swap`. Both are LATIN-ONLY: they fall back through the Nunito
-  stack so CJK and body copy stay on `--font-body`. All page titles in the
-  registry are English, so Caveat renders them; member names fall back per-glyph
-  for any CJK. NO eyebrow labels except the hero's single one; NO ribbon
-  (`Title` / `ac-ribbon` is retired from shipped pages but kept available). The
-  Markdown PROSE body never adopts the hand faces: it stays on the readable
+  chip, TOC toggle, team member names, the 404 status line and suggestion pills.
+  Self-hosted woff2 (latin + latin-ext) extracted from the HEAL reference bundle
+  (OFL), `font-display: swap`. Both are LATIN-ONLY: they fall back through the
+  Nunito stack so CJK and body copy stay on `--font-body`. All page titles in
+  the registry are English, so Caveat renders them; member names fall back
+  per-glyph for any CJK. The hero and 404 each use one deliberate status line;
+  repeated eyebrow labels remain banned. NO ribbon (`Title` / `ac-ribbon` is
+  retired from shipped pages but kept available). The Markdown PROSE body never
+  adopts the hand faces: it stays on the readable
   `markdown.css` register (Nunito/system) so dense technical copy stays legible.
 - Hero h1 `font-script clamp(3rem → 5.75rem)`; section h2 `font-script
 clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
@@ -79,12 +80,28 @@ clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
   charcoal texture, irregular doubled outlines, and visible hand pressure.
   Functional strokes that must scale or draw in (section dividers, arrows,
   swashes, paw trails) stay inline SVG.
-- Project, Wet Lab, Dry Lab, Engagement, and Team share a native 2:1 cover
-  series in `public/assets/`: the peach cat and teal dog interact with each
-  category's real tools on layered graph paper. The artwork reserves a quiet
-  left zone; `CategoryCover` supplies the live category label and real page h1
-  so wording stays exact, accessible, reusable across routes, and collision-free
-  on mobile.
+- Content mastheads use category-specific local art from `public/assets/`.
+  Project and Team keep the native 1600×800 `banner` composition with live
+  labels in the artwork's reserved safe zone. Wet Lab uses
+  `wet-lab-cover.jpg` (1527×1079), while Dry Lab and Engagement use the
+  restored `dry-lab-cover.webp` (1600×1132) and
+  `engagement-cover.webp` (1800×1193).
+- Wet Lab, Dry Lab, and Engagement use `CategoryCover`'s `plate` composition:
+  the native-ratio illustration is oversized, tipped, and bled past the
+  article measure as the masthead's dominant object. Live chip, out-scaled
+  title, summary, and update note form notebook marginalia in a separate track
+  behind a hand-ruled category-color margin line. On mobile, that line holds a
+  single vertical composition and the flat artwork runs exactly to the right
+  trim. Art is never cropped and live copy never overlaps it.
+- `mix-blend-mode: multiply` prints each light source-paper area onto the
+  notebook grid. Engagement's real alpha remains visible, while Dry Lab's
+  measured empty border receives a narrow edge-dissolve mask. There is no
+  opaque frame, ring, shadow, or tape around these three covers.
+- The homepage workstream leaves reuse the same files; a paper-toned desktop
+  edge fade protects their cinematic overlay copy.
+- The 404 route uses local `not-found-cat.mp4` (3520×2488, silent, 0.87s) as a
+  decorative one-shot tail-flick plate. It never loops, starts only when reduced
+  motion is not requested, and parks on a decoded still otherwise.
 - Scenes are EDGELESS on content surfaces: transparent raster art over
   CSS-painted architecture and gradients. (The old hero room scene and its
   `HeroRoom`/`Mascots` components were deleted 2026-07-02; the homepage hero is

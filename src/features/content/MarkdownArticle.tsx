@@ -10,10 +10,21 @@ import { ArticleTableOfContents } from "./ArticleTableOfContents";
 import { useMarkdownEnhancements } from "./useMarkdownEnhancements";
 import type { ProcessedMarkdown } from "./markdownService";
 
-// Section cover illustrations keyed by category. Every image is a native 2:1
-// member of the same hand-drawn series, composed with a quiet left title zone.
-// The category label and real page h1 remain live HTML via CategoryCover: art
-// stays reusable and accessible, while long mobile titles can flow below it.
+// Section cover illustrations keyed by category. Each entry preserves its
+// source image's native dimensions for stable, proportional layout, and the
+// category label plus the real page h1 always stay live HTML via CategoryCover:
+// the art stays reusable and accessible, and no copy is baked into it.
+//
+// `variant` picks the masthead composition. `project` art is drawn to a 2:1
+// safe zone, so its labels can sit inside the frame. The three section
+// illustrations are near-4:3, drawn edge to edge and already carry their own
+// hand-lettering, so they take the `plate` masthead: the artwork tipped into
+// the page as the dominant object, printed onto the notebook grid past the
+// article's own measure, never cropped, never written over.
+//
+// `artMargin` is the measured width of a source's flat, empty print margin, so
+// that paper edge can dissolve into the page. wet-lab bleeds its drawing to
+// every edge and engagement ships a real alpha channel, so neither sets one.
 //
 // `path` is a PUBLIC asset (resolved through the deploy base path at render),
 // not a bundled import: MarkdownArticle is loaded eagerly by every route, so a
@@ -23,6 +34,8 @@ type CoverConfig = {
   alt: string;
   width: number;
   height: number;
+  variant?: "banner" | "plate";
+  artMargin?: number;
 };
 const CATEGORY_COVER: Partial<Record<PageCategory, CoverConfig>> = {
   project: {
@@ -32,22 +45,28 @@ const CATEGORY_COVER: Partial<Record<PageCategory, CoverConfig>> = {
     height: 800,
   },
   "wet-lab": {
-    path: "assets/wet-lab-cover.webp",
-    alt: "A cat and dog carrying out a careful wet-lab experiment",
-    width: 1600,
-    height: 800,
+    path: "assets/wet-lab-cover.jpg",
+    alt: 'Two calico cats at a wet-lab bench of test tubes, a flask and a gel tray, under a speech bubble hand-lettered "Wet"',
+    width: 1527,
+    height: 1079,
+    variant: "plate",
   },
   "dry-lab": {
-    path: "assets/dry-lab-cover-v2.webp",
-    alt: "A cat and dog collaborating on modeling, software, and hardware",
+    path: "assets/dry-lab-cover.webp",
+    alt: 'Cats inside a retro computer desktop hand-lettered "Dry Lab": one bats at an error dialog while another naps beside a plotted line',
     width: 1600,
-    height: 800,
+    height: 1132,
+    variant: "plate",
+    // Measured flat border: 5.0% at the narrowest (right) edge, so a 4.5%
+    // dissolve still stops short of every drawn pixel.
+    artMargin: 4.5,
   },
   "human-practices": {
-    path: "assets/engagement-cover-v2.webp",
-    alt: "A cat and dog building a community engagement board",
-    width: 1600,
-    height: 800,
+    path: "assets/engagement-cover.webp",
+    alt: 'Four calico cats among speech bubbles, loose notes and a bar chart, above hand-lettered "Engagement"',
+    width: 1800,
+    height: 1193,
+    variant: "plate",
   },
 };
 
@@ -82,6 +101,26 @@ export function MarkdownArticle({
   const cover = CATEGORY_COVER[category];
   const heading = processed.meta.title ?? title;
 
+  // Summary + update date. The `plate` masthead composes these itself — the
+  // summary at the head of its margin, the date hand-noted at the foot — and
+  // closes the header with its own full-spread rule; every other header keeps
+  // them stacked under the h1 above the shared divider.
+  const isPlate = cover?.variant === "plate";
+  const date = processed.meta.date ? String(processed.meta.date) : undefined;
+  const meta =
+    description || date ? (
+      <div className="space-y-2">
+        {description ? (
+          <p className="max-w-3xl text-lg text-ink-soft">{description}</p>
+        ) : null}
+        {date ? (
+          <p className="text-sm text-ink-soft">
+            Updated <time dateTime={date}>{date}</time>
+          </p>
+        ) : null}
+      </div>
+    ) : null;
+
   return (
     <div className="min-h-screen bg-page heal-grid">
       <article className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
@@ -93,7 +132,11 @@ export function MarkdownArticle({
               imageAlt={cover.alt}
               imageWidth={cover.width}
               imageHeight={cover.height}
+              variant={cover.variant}
+              artMargin={cover.artMargin}
               title={heading}
+              summary={isPlate ? description : undefined}
+              date={isPlate ? date : undefined}
             />
           ) : (
             <>
@@ -103,24 +146,15 @@ export function MarkdownArticle({
               </h1>
             </>
           )}
-          {description ? (
-            <p className="mt-3 max-w-3xl text-lg text-ink-soft">
-              {description}
-            </p>
+          {!isPlate && meta ? <div className="mt-3">{meta}</div> : null}
+          {/* Hand-ruled header divider: irregular ink dashes, not machine ones.
+              `plate` draws its own across the wider masthead spread. */}
+          {!isPlate ? (
+            <div
+              aria-hidden="true"
+              className="heal-rule-dash mt-6 h-2 bg-sticker-ink/40"
+            />
           ) : null}
-          {processed.meta.date ? (
-            <p className="mt-2 text-sm text-ink-soft">
-              Updated{" "}
-              <time dateTime={String(processed.meta.date)}>
-                {String(processed.meta.date)}
-              </time>
-            </p>
-          ) : null}
-          {/* Hand-ruled header divider: irregular ink dashes, not machine ones. */}
-          <div
-            aria-hidden="true"
-            className="heal-rule-dash mt-6 h-2 bg-sticker-ink/40"
-          />
         </header>
 
         <div className="gap-10 lg:grid lg:grid-cols-[1fr_16rem]">
