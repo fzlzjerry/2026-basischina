@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { CaretDown } from "@phosphor-icons/react";
 import { wikiEnv } from "@/config/env";
 import { footerPages, getNavGroups, navLabelFor } from "@/config/navigation";
+import { Icon } from "@/shared/components/Icon";
 import { SectionDivider } from "@/shared/components/SectionDivider";
 
 const footerGroups = getNavGroups()
@@ -17,12 +20,18 @@ const footerGroups = getNavGroups()
 
 const teamSlug = wikiEnv.basePath.replace(/^\/+|\/+$/g, "");
 
+const linkClass =
+  "flex min-h-11 w-full max-w-full items-center text-sm text-footer-text transition [overflow-wrap:anywhere] hover:text-page hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark";
+
 /**
  * Footer (§14). Link columns derive from the page registry. The Creative Commons
  * license notice and the link to the GitLab repository are required on every
  * iGEM wiki page.
  */
 export function Footer() {
+  const { pathname } = useLocation();
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+
   return (
     // relative z-10 so the scallop paints ABOVE the homepage's
     // position:relative sunset band (its -mb pulls the footer's divider zone
@@ -37,9 +46,6 @@ export function Footer() {
       <SectionDivider variant="scallop" fill="var(--color-footer)" />
       <div className="bg-footer">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-          {/* Brand row above the columns, then all five nav groups on one lg
-              row — a short column just ends instead of reserving a tall,
-              empty grid row beneath it. */}
           <div className="mb-10">
             <p className="font-script text-3xl leading-none text-page">
               <Link
@@ -54,21 +60,17 @@ export function Footer() {
               happier companions.
             </p>
           </div>
-          <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-5">
+
+          <div className="hidden gap-8 xl:grid xl:grid-cols-5">
             {footerGroups.map((group) => (
               <nav key={group.key} aria-label={group.label}>
-                {/* Hand-printed column headers (Gochi), not uppercase tracked
-                    scaffolding — the footer keeps the notebook's voice. */}
                 <p className="font-hand text-lg leading-none text-footer-text-muted [overflow-wrap:anywhere]">
                   {group.label}
                 </p>
                 <ul className="mt-3">
                   {group.pages.map((page) => (
                     <li key={page.path}>
-                      <Link
-                        to={page.path}
-                        className="flex min-h-11 w-full max-w-full items-center text-sm text-footer-text transition [overflow-wrap:anywhere] hover:text-page hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
-                      >
+                      <Link to={page.path} className={linkClass}>
                         {navLabelFor(page)}
                       </Link>
                     </li>
@@ -78,12 +80,60 @@ export function Footer() {
             ))}
           </div>
 
-          {/* Hand-ruled divider (mask takes its colour from the bg utility). */}
+          <div className="xl:hidden">
+            {footerGroups.map((group) => {
+              const isOpen = openGroup === group.key;
+              const groupActive = group.pages.some(
+                (page) => page.path === pathname,
+              );
+              return (
+                <nav
+                  key={group.key}
+                  aria-label={group.label}
+                  className="border-b border-footer-divider/60 last:border-b-0"
+                >
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={`footer-group-${group.key}`}
+                    onClick={() =>
+                      setOpenGroup((current) =>
+                        current === group.key ? null : group.key,
+                      )
+                    }
+                    className="flex min-h-11 w-full items-center justify-between py-2 text-left font-hand text-lg leading-none text-footer-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
+                  >
+                    <span>
+                      {group.label}
+                      {groupActive ? (
+                        <span className="sr-only">, current section</span>
+                      ) : null}
+                    </span>
+                    <Icon
+                      as={CaretDown}
+                      size="xs"
+                      className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                  {isOpen ? (
+                    <ul id={`footer-group-${group.key}`} className="pb-2">
+                      {group.pages.map((page) => (
+                        <li key={page.path}>
+                          <Link to={page.path} className={linkClass}>
+                            {navLabelFor(page)}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </nav>
+              );
+            })}
+          </div>
+
           <hr className="heal-rule my-8 h-2 border-0 bg-footer-divider" />
 
-          {/* Required on every iGEM wiki page: license + repository link.
-              Full-strength footer text: the muted tone sits below AA at this
-              size. */}
           <div className="space-y-2 text-xs text-footer-text">
             <p>
               © {wikiEnv.teamYear} {wikiEnv.teamName}. Content on this site is
@@ -112,9 +162,6 @@ export function Footer() {
               </a>
               .
             </p>
-            {/* Credit for reused third-party assets (iGEM requires borrowed,
-                openly-licensed content to be attributed). Kept here, not on the
-                Attributions page, whose form is the only judged content. */}
             <p>
               Built with{" "}
               <a

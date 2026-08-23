@@ -29,7 +29,7 @@ interface StickerForgeModule {
 }
 
 interface PeelableHealStickerProps {
-  onReady: (element: StickerForgeController | null) => void;
+  onReady?: (element: StickerForgeController | null) => void;
 }
 
 let stickerForgeModule: Promise<StickerForgeModule> | null = null;
@@ -192,7 +192,7 @@ export function PeelableHealSticker({ onReady }: PeelableHealStickerProps) {
 
         sticker.current = controller;
         setIsReady(true);
-        onReady(controller);
+        onReady?.(controller);
       } catch {
         // Keep the pre-rendered sticker visible when WebGL is unavailable.
       }
@@ -234,7 +234,7 @@ export function PeelableHealSticker({ onReady }: PeelableHealStickerProps) {
       if (fallbackHandle !== null) window.clearTimeout(fallbackHandle);
       sticker.current?.destroy();
       sticker.current = null;
-      onReady(null);
+      onReady?.(null);
     };
   }, [onReady]);
 

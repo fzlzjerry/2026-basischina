@@ -4,7 +4,7 @@ import { Icon } from "@/shared/components/Icon";
 import { SectionDivider } from "@/shared/components/SectionDivider";
 import { WashiTape } from "@/shared/components/WashiTape";
 import { InkLink } from "@/shared/drawably/InkLink";
-import { inkCtaClasses } from "@/shared/styles/heal";
+import { inkCtaClasses, stickerStyle } from "@/shared/styles/heal";
 import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
 import { HeroSketch } from "../scene/HeroDoodles";
 import { CareSpot, EngineerSpot, UnderstandSpot } from "../scene/StepSpots";
@@ -12,25 +12,25 @@ import bannerUrl from "@/assets/brand/heal-banner.webp";
 
 const CHAPTERS = [
   {
-    number: "01",
+    folio: "one",
     verb: "Understand",
-    cue: "OBSERVE / LISTEN / LEARN",
+    cue: "listen first",
     note: "Begin with the animal, not the answer.",
     tone: "understand",
     Spot: UnderstandSpot,
   },
   {
-    number: "02",
+    folio: "two",
     verb: "Engineer",
-    cue: "DESIGN / TEST / REFINE",
+    cue: "make it gentle",
     note: "Turn biology into something gentle.",
     tone: "engineer",
     Spot: EngineerSpot,
   },
   {
-    number: "03",
+    folio: "three",
     verb: "Care",
-    cue: "MAKE / SHARE / LIVE",
+    cue: "bring it home",
     note: "Bring the science into everyday life.",
     tone: "care",
     Spot: CareSpot,
@@ -44,9 +44,9 @@ const CHAPTERS = [
  * notebook: Understand, Engineer, Care.
  *
  * The cinematic layer never enlarges the HEAL banner beyond its authored
- * composition. It replaces the previous zoom-and-swash treatment with
- * full-viewport chapters, typographic scale, colour changes, and a long,
- * legible progress rail.
+ * composition. Chapters keep notebook density — a faint Caveat watermark,
+ * a Gochi cue, a sticker folio — without tracked HUD. The 300% track is
+ * desktop-only.
  */
 export function HeroSection() {
   const root = useRef<HTMLElement>(null);
@@ -131,7 +131,13 @@ export function HeroSection() {
             },
             0.7,
           );
+      });
 
+        // Desktop only: the 300% horizontal notebook stays off small screens
+        // so the cover and Approach cards carry the three verbs there.
+        mm.add(
+          "(min-width: 640px) and (prefers-reduced-motion: no-preference)",
+          () => {
         const pinDistance = () =>
           Math.round(
             window.innerHeight * (window.innerWidth >= 768 ? 4.6 : 3.4),
@@ -148,7 +154,6 @@ export function HeroSection() {
           scaleX: 0.025,
           transformOrigin: "left center",
         });
-        gsap.set(".js-hero-counter-track", { yPercent: 0 });
 
         const scrollCinema = gsap.timeline({
           defaults: { ease: "none" },
@@ -194,14 +199,11 @@ export function HeroSection() {
             },
             0.025,
           )
-          // The rail covers the whole experience, so the length of the hijack
-          // is visible from the first cinematic frame.
           .to(
             ".js-hero-progress",
             { scaleX: 1, duration: 0.9, ease: "none" },
             0.07,
           )
-          // Chapter 01 settles before the horizontal camera begins to travel.
           .fromTo(
             ".js-hero-chapter-1 .js-hero-chapter-visual",
             { scale: 0.78, rotation: -8 },
@@ -223,7 +225,6 @@ export function HeroSection() {
             { xPercent: 0, duration: 0.16, ease: "power3.out" },
             0.07,
           )
-          // Vertical input, horizontal story: 01 to 02.
           .to(
             ".js-hero-chapter-track",
             {
@@ -232,15 +233,6 @@ export function HeroSection() {
               ease: "power3.inOut",
             },
             0.25,
-          )
-          .to(
-            ".js-hero-counter-track",
-            {
-              yPercent: -33.3333,
-              duration: 0.18,
-              ease: "power3.inOut",
-            },
-            0.29,
           )
           .to(
             ".js-hero-chapter-1 .js-hero-chapter-visual",
@@ -279,8 +271,6 @@ export function HeroSection() {
             { xPercent: -3, duration: 0.24, ease: "power2.out" },
             0.3,
           )
-          // Chapter 02 to 03. The second move is deliberately not identical:
-          // it accelerates later and lets the Care illustration lead the wipe.
           .to(
             ".js-hero-chapter-track",
             {
@@ -289,15 +279,6 @@ export function HeroSection() {
               ease: "power4.inOut",
             },
             0.58,
-          )
-          .to(
-            ".js-hero-counter-track",
-            {
-              yPercent: -66.6667,
-              duration: 0.18,
-              ease: "power3.inOut",
-            },
-            0.63,
           )
           .to(
             ".js-hero-chapter-2 .js-hero-chapter-visual",
@@ -336,8 +317,6 @@ export function HeroSection() {
             { xPercent: -5, duration: 0.25, ease: "power3.out" },
             0.63,
           )
-          // Hold the last composition long enough to read, then open the lower
-          // edge to the real approach section in normal document flow.
           .to(
             ".js-hero-cinema-endline",
             {
@@ -358,7 +337,8 @@ export function HeroSection() {
             },
             0.88,
           );
-      });
+          },
+        );
 
       return () => mm.revert();
     },
@@ -376,16 +356,16 @@ export function HeroSection() {
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 hidden w-24 lg:block"
+        className="pointer-events-none absolute inset-y-0 left-0 w-10 sm:w-16 lg:w-24"
       >
         <div
-          className="absolute inset-y-0 left-[4.5rem] w-[2px]"
+          className="absolute inset-y-0 left-5 w-[2px] sm:left-10 lg:left-[4.5rem]"
           style={{ background: "#d98b86" }}
         />
         {["20%", "50%", "80%"].map((top) => (
           <span
             key={top}
-            className="absolute left-6 h-6 w-6 -translate-y-1/2 rounded-full border border-border-soft"
+            className="absolute left-2 h-4 w-4 -translate-y-1/2 rounded-full border border-border-soft sm:left-4 sm:h-5 sm:w-5 lg:left-6 lg:h-6 lg:w-6"
             style={{
               top,
               background: "var(--color-surface-2)",
@@ -395,7 +375,7 @@ export function HeroSection() {
         ))}
       </div>
 
-      <div className="hero-layout relative mx-auto flex w-full max-w-[1360px] flex-1 flex-col justify-start px-4 pb-20 pt-14 sm:justify-center sm:px-6 sm:pt-10 lg:px-16 lg:pb-24">
+      <div className="hero-layout relative mx-auto flex w-full max-w-[1360px] flex-1 flex-col justify-start pb-20 pl-12 pr-4 pt-14 sm:justify-center sm:px-6 sm:pl-8 sm:pt-10 lg:px-16 lg:pb-24">
         <div className="js-hero-meta mb-5 flex items-end justify-between gap-4 px-1 sm:mb-6 lg:px-8">
           <p className="font-hand text-base text-app-orange-ink sm:text-lg">
             BASIS-China · iGEM 2026
@@ -437,6 +417,7 @@ export function HeroSection() {
                 className="js-hero-shutter js-hero-shutter-right hero-shutter right-0 bg-primary-soft"
               />
             </div>
+
           </div>
         </div>
 
@@ -525,11 +506,6 @@ export function HeroSection() {
       </div>
 
       <div aria-hidden="true" className="js-hero-cinema hero-cinema-deck">
-        <div className="hero-cinema-masthead">
-          <span>HEAL / FIELD NOTES</span>
-          <span>VERTICAL INPUT / HORIZONTAL STORY</span>
-        </div>
-
         <div className="hero-chapter-viewport">
           <div className="js-hero-chapter-track hero-chapter-track">
             {CHAPTERS.map((chapter, index) => (
@@ -537,38 +513,37 @@ export function HeroSection() {
                 key={chapter.verb}
                 className={`js-hero-chapter-${index + 1} hero-chapter hero-chapter-${chapter.tone}`}
               >
+                <WashiTape
+                  tone={index % 2 === 0 ? "orange" : "teal"}
+                  className={`top-7 left-[14%] z-[6] w-28 ${index % 2 === 0 ? "-rotate-3" : "rotate-2"}`}
+                />
                 <span className="js-hero-chapter-word hero-chapter-word">
                   {chapter.verb}
                 </span>
                 <div className="hero-chapter-copy">
-                  <span className="hero-chapter-kicker">{chapter.cue}</span>
+                  <span className="hero-chapter-cue">{chapter.cue}</span>
                   <strong>{chapter.verb}</strong>
                   <p>{chapter.note}</p>
                 </div>
                 <div className="js-hero-chapter-visual hero-chapter-visual">
                   <chapter.Spot />
                 </div>
-                <span className="hero-chapter-index">{chapter.number}</span>
+                <span
+                  className="hero-chapter-folio heal-cutout"
+                  style={stickerStyle(index)}
+                >
+                  {chapter.folio}
+                </span>
               </article>
             ))}
           </div>
         </div>
 
         <div className="hero-cinema-footer">
-          <div className="hero-cinema-counter" aria-hidden="true">
-            <span className="hero-cinema-counter-window">
-              <span className="js-hero-counter-track hero-cinema-counter-track">
-                <span>01</span>
-                <span>02</span>
-                <span>03</span>
-              </span>
-            </span>
-            <span className="hero-cinema-counter-total">/ 03</span>
-          </div>
-          <span className="hero-cinema-progress-track">
+          <span className="hero-cinema-cue">keep going</span>
+          <span className="hero-cinema-progress-track heal-rule">
             <span className="js-hero-progress hero-cinema-progress" />
           </span>
-          <span className="hero-cinema-scroll-cue">KEEP SCROLLING</span>
         </div>
 
         <span className="js-hero-cinema-endline hero-cinema-endline" />

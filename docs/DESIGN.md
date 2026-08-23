@@ -148,20 +148,26 @@ clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
 - There are no autonomous mascot idle loops. The nap-cat and peeking cat stay
   still; motion is reserved for the hero's single entrance, scroll cinema, the
   Approach trail, and direct interaction feedback.
-- **Hero scroll cinema is deliberately pinned.** The section pins immediately
-  below the live sticky-nav height. The static cover folds away into a
-  three-screen horizontal field-notebook track for Understand, Engineer, and
-  Care, then releases with normal pin spacing. Desktop uses about 4.6
-  viewport-heights of scroll; mobile uses about 3.4. The 300%-wide track stays
-  clipped inside the pinned section, never creates a nested scroller, and the
-  entire pin timeline is absent under `prefers-reduced-motion`.
+- **Hero scroll cinema is deliberately pinned on desktop.** The section pins
+  immediately below the live sticky-nav height. The static cover folds away
+  into a three-screen horizontal field-notebook track for Understand,
+  Engineer, and Care, then releases with normal pin spacing. Desktop uses
+  about 4.6 viewport-heights of scroll. Below 640px the pin and the 300%-wide
+  track are absent — the cover stays put and Approach carries the three
+  verbs. The entire pin timeline is also absent under `prefers-reduced-motion`.
+  Cinema chrome (tracked mastheads, `01/02/03` counters, `KEEP SCROLLING`) is
+  retired. Each chapter still has notebook density: a faint Caveat watermark,
+  a Gochi cue, a sticker folio, washi, and a hand-ruled progress rail.
 - **The homepage continues its motion language below the Hero.** A 190vh dark
-  kinetic statement scrubs three oversized lines, a colour fill, and a circular
-  HEAL seal. It is followed by a second pinned sequence: four full-screen
-  notebook leaves for Project, Wet lab, Dry lab, and Engagement wipe upward
-  over about 3.8 viewport-heights on desktop and 2.8 on mobile. Under reduced
-  motion those leaves become a normal vertical stack and the statement remains
-  still.
+  kinetic statement fills the sticky viewport with three handwritten lines
+  and a colour fill on “gentle.” The peelable HEAL sticker lives on this
+  band as a large pasted object. A second pinned sequence then lifts four
+  full-screen notebook leaves (Project, Wet lab, Dry lab, Engagement) into
+  place over about 3.8 viewport-heights on desktop and 2.8 from 640px up —
+  a hard-shadow paper raise, not a clip-path wipe. Leaves keep Gochi cues,
+  sticker folios, and washi. Under reduced motion those leaves become a
+  normal vertical stack and the statement remains still. Tracked HUD labels
+  (`THE HEAL LOOP`, `04 LEAVES`, workstream eyebrows) stay retired.
 
 ## Components
 
@@ -197,6 +203,10 @@ clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
   own self-contained versions: the h2 underline and `hr` are wobbly data-URI
   strokes in `markdown.css`, and blockquotes wear a full soft ink outline with
   wonky corners (never a side-stripe rail).
+- **Peelable HEAL sticker.** `PeelableHealSticker` sits on the dark kinetic
+  band as a large pasted seal. WebGL peel mounts only with enough CPU/RAM
+  and `prefers-reduced-motion: no-preference`; otherwise the prerendered
+  sticker stays put. No auto-peel.
 - **Washi tape (`WashiTape.tsx` + `.heal-tape`).** Translucent striped strip
   with torn short edges (clip-path); tint from `bg-app-orange/55` or
   `bg-app-teal/55`. Recurs so the paste-up conceit stays a system: hero

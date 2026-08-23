@@ -76,21 +76,19 @@ export function ApproachSection() {
           start: "top 78%",
           stagger: 0.12,
         });
-        // The header's marker swash draws itself a beat after the header lands
-        // (hand register: strokes draw by length, they don't fade).
-        drawIn(".js-swash", {
-          trigger: root.current,
-          start: "top 78%",
-          delay: 0.35,
-        });
-        // The numbered 1·2·3 badges fade in a beat after their steps — in
-        // place, no scale, so each badge's CSS tilt (--rot) is never touched.
         scrollFadeIn(".js-step-badge", {
           trigger: root.current,
           start: "top 78%",
           stagger: 0.18,
           delay: 0.25,
           duration: 0.45,
+        });
+        // The header's marker swash draws itself a beat after the header lands
+        // (hand register: strokes draw by length, they don't fade).
+        drawIn(".js-swash", {
+          trigger: root.current,
+          start: "top 78%",
+          delay: 0.35,
         });
         // The trail is the section's scroll narrative: it draws in direct
         // response to progress through the three steps instead of playing a

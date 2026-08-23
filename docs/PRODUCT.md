@@ -46,8 +46,8 @@ abstract "DNA / code of life" science site.
 - Generative fixes over subtractive: add depth, environment, committed color.
 - The homepage Hero is intentionally scroll-directed: pin beneath the sticky
   nav, unfold Understand → Engineer → Care, then release cleanly into the page.
-  Never create a nested scrollbar, trap keyboard focus, or pin under reduced
-  motion.
+  Never create a nested scrollbar, trap keyboard focus, pin under reduced
+  motion, or pin the 300% cinema track below 640px.
 - The homepage is a long-form project tour rather than a short landing page:
   Hero cinema → three-step approach → kinetic mission statement → four
   full-screen workstream leaves → route index → team send-off. The cinematic

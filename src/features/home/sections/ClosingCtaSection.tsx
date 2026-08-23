@@ -79,7 +79,7 @@ export function ClosingCtaSection() {
       className="relative -mb-10 overflow-hidden sm:-mb-14"
       style={{
         background:
-          "linear-gradient(180deg, var(--color-sunset-sky) 0%, var(--color-sunset) 62%, var(--color-sunset-deep) 100%)",
+          "linear-gradient(180deg, var(--color-sunset-sky) 0%, var(--color-sunset-sky) 42%, var(--color-sunset) 72%, var(--color-sunset-deep) 100%)",
       }}
     >
       {/* Notebook grid over the sunset gradient (multiply), so this band sits
@@ -89,7 +89,7 @@ export function ClosingCtaSection() {
         aria-hidden="true"
         className="js-closing-grid heal-grid pointer-events-none absolute -inset-y-12 inset-x-0 mix-blend-multiply"
       />
-      <div className="relative mx-auto max-w-3xl px-4 pt-20 text-center sm:px-6 sm:pt-24">
+      <div className="relative mx-auto max-w-3xl px-4 pb-6 pt-24 text-center sm:px-6 sm:pt-28">
         <h2 className="js-closing pb-1 font-script text-[clamp(2.8rem,1.8rem+3.2vw,4.5rem)] font-bold leading-[1.04] text-ink">
           {"Come hang out with\u00A0us."}
         </h2>

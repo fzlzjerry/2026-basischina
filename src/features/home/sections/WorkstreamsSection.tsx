@@ -1,12 +1,14 @@
 import { useRef } from "react";
+import { WashiTape } from "@/shared/components/WashiTape";
+import { stickerStyle } from "@/shared/styles/heal";
 import { resolveAssetUrl } from "@/shared/utils/assetUrl";
 import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
 
 const WORKSTREAMS = [
   {
-    number: "01",
+    folio: "one",
     title: "Project",
-    eyebrow: "QUESTION TO DIRECTION",
+    cue: "from need to direction",
     line: "Map the need. Frame the idea. Keep the animal in view.",
     image: "assets/project-cover.webp",
     width: 1600,
@@ -15,9 +17,9 @@ const WORKSTREAMS = [
     tone: "project",
   },
   {
-    number: "02",
+    folio: "two",
     title: "Wet lab",
-    eyebrow: "BENCH TO EVIDENCE",
+    cue: "from bench to evidence",
     line: "Build carefully. Measure honestly. Leave a readable trail.",
     image: "assets/wet-lab-cover.jpg",
     alt: "Two calico cats explore a wet-lab bench with test tubes and a gel tray",
@@ -26,9 +28,9 @@ const WORKSTREAMS = [
     tone: "wet",
   },
   {
-    number: "03",
+    folio: "three",
     title: "Dry lab",
-    eyebrow: "MODEL TO DECISION",
+    cue: "from model to decision",
     line: "Use computation to ask sharper questions of the biology.",
     image: "assets/dry-lab-cover.webp",
     alt: "Cats troubleshoot overlapping computer windows while another naps beside a plotted line",
@@ -37,9 +39,9 @@ const WORKSTREAMS = [
     tone: "dry",
   },
   {
-    number: "04",
+    folio: "four",
     title: "Engagement",
-    eyebrow: "LISTEN TOGETHER",
+    cue: "listen together",
     line: "Bring the work outside the lab and let people reshape it.",
     image: "assets/engagement-cover.webp",
     alt: "Four calico cats collaborate among notes, speech bubbles, and a chart",
@@ -74,8 +76,13 @@ export function WorkstreamsSection() {
               window.innerHeight * (window.innerWidth >= 768 ? 3.8 : 2.8),
             );
 
-          cards.slice(1).forEach((card) => {
-            gsap.set(card, { clipPath: "inset(100% 0 0 0)" });
+          cards.slice(1).forEach((card, index) => {
+            gsap.set(card, {
+              yPercent: 108,
+              rotation: index % 2 === 0 ? 2.4 : -2.2,
+              transformOrigin: "50% 100%",
+              visibility: "visible",
+            });
             gsap.set(card.querySelector(".workstream-copy"), { autoAlpha: 0 });
           });
           gsap.set(".js-workstream-progress", {
@@ -120,8 +127,7 @@ export function WorkstreamsSection() {
               .to(
                 previousImage,
                 {
-                  scale: 0.94,
-                  rotation: index % 2 === 0 ? -1.5 : 1.5,
+                  scale: 0.97,
                   duration: 0.24,
                   ease: "power2.inOut",
                 },
@@ -130,7 +136,8 @@ export function WorkstreamsSection() {
               .to(
                 card,
                 {
-                  clipPath: "inset(0% 0 0 0)",
+                  yPercent: 0,
+                  rotation: 0,
                   duration: 0.3,
                   ease: "power4.inOut",
                 },
@@ -138,10 +145,9 @@ export function WorkstreamsSection() {
               )
               .fromTo(
                 currentImage,
-                { scale: 1.08, rotation: index % 2 === 0 ? 1.2 : -1.2 },
+                { scale: 1.04 },
                 {
                   scale: 1,
-                  rotation: 0,
                   duration: 0.3,
                   ease: "power3.out",
                 },
@@ -154,7 +160,7 @@ export function WorkstreamsSection() {
                   duration: 0.08,
                   ease: "power2.out",
                 },
-                position + 0.26,
+                position + 0.22,
               )
               .to(
                 ".js-workstream-progress",
@@ -184,6 +190,10 @@ export function WorkstreamsSection() {
             className={`js-workstream-card workstream-card workstream-card-${stream.tone}`}
             style={{ zIndex: index + 1 }}
           >
+            <WashiTape
+              tone={index % 2 === 0 ? "orange" : "teal"}
+              className={`top-6 left-[16%] z-[5] w-32 ${index % 2 === 0 ? "-rotate-2" : "rotate-3"}`}
+            />
             <img
               src={resolveAssetUrl(stream.image)}
               alt={stream.alt}
@@ -195,8 +205,13 @@ export function WorkstreamsSection() {
             />
 
             <div className="workstream-copy">
-              <span className="workstream-eyebrow">{stream.eyebrow}</span>
-              <span className="workstream-number">{stream.number}</span>
+              <span className="workstream-cue">{stream.cue}</span>
+              <span
+                className="workstream-folio heal-cutout"
+                style={stickerStyle(index)}
+              >
+                {stream.folio}
+              </span>
               <h3>{stream.title}</h3>
               <p>{stream.line}</p>
             </div>
@@ -204,11 +219,11 @@ export function WorkstreamsSection() {
         ))}
 
         <div className="workstream-chrome">
-          <span>INSIDE THE PROJECT</span>
-          <span className="workstream-progress-track">
+          <span>inside the notebook</span>
+          <span className="workstream-progress-track heal-rule">
             <span className="js-workstream-progress workstream-progress" />
           </span>
-          <span>04 LEAVES</span>
+          <span>four pages</span>
         </div>
       </div>
     </section>

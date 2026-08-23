@@ -6,9 +6,9 @@ import {
 import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
 
 /**
- * A long typographic breath between the introductory project loop and the
- * detailed wiki chapters. The copy is intentionally structural rather than
- * claim-heavy while project content is still being written.
+ * A long typographic breath between the project loop and the wiki chapters.
+ * Three handwritten lines fill the dark notebook — the same thought, not a
+ * third restatement of Understand / Engineer / Care.
  */
 export function KineticStatementSection() {
   const root = useRef<HTMLElement>(null);
@@ -102,53 +102,28 @@ export function KineticStatementSection() {
       aria-labelledby="heal-loop-heading"
     >
       <h2 id="heal-loop-heading" className="sr-only">
-        Observe the need. Engineer with care. Return it to life.
+        Start with a real need. Keep the biology gentle. Design for the life
+        around it.
       </h2>
       <div className="kinetic-statement-sticky">
-        <div className="kinetic-statement-meta">
-          <span>THE HEAL LOOP</span>
-          <span>ONE IDEA / THREE MOVEMENTS</span>
-        </div>
-
         <div className="kinetic-statement-lines" aria-hidden="true">
-          <p className="js-kinetic-line-a">
-            OBSERVE
-            <span className="kinetic-mobile-break">
-              <br />
-            </span>{" "}
-            THE NEED.
-          </p>
+          <p className="js-kinetic-line-a">Start with a real need.</p>
           <p className="js-kinetic-line-b">
-            ENGINEER
-            <span className="kinetic-mobile-break">
-              <br />
-            </span>{" "}
-            WITH{" "}
+            Keep the biology{" "}
             <span className="kinetic-statement-fill-wrap">
-              CARE.
+              gentle.
               <span
                 aria-hidden="true"
                 className="js-kinetic-fill kinetic-statement-fill"
               >
-                CARE.
+                gentle.
               </span>
             </span>
           </p>
-          <p className="js-kinetic-line-c">
-            RETURN
-            <span className="kinetic-mobile-break">
-              <br />
-            </span>{" "}
-            IT TO LIFE.
-          </p>
+          <p className="js-kinetic-line-c">Design for the life around it.</p>
         </div>
 
         <PeelableHealSticker onReady={handleStickerReady} />
-
-        <p className="kinetic-statement-note">
-          Start with a real need. Keep the biology gentle. Design for the life
-          around it.
-        </p>
       </div>
     </section>
   );
