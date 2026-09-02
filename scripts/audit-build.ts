@@ -2,7 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { gzipSync } from "node:zlib";
 import { pageData } from "../src/config/pageData";
-import { buildAssetUrl, resolveWikiEnv } from "../src/config/envShared";
+import { igemStatic } from "../src/config/igemStatic";
 
 interface ManifestChunk {
   file: string;
@@ -12,13 +12,14 @@ interface ManifestChunk {
 
 const DIST_DIR = join(process.cwd(), "dist");
 const MANIFEST_PATH = join(DIST_DIR, ".vite", "manifest.json");
-const EXPECTED_HTML_PAGES = pageData.length + 1;
+// Registry pages + 404.html + the unlisted /studio writing preview.
+const EXPECTED_HTML_PAGES = pageData.length + 2;
 const MAX_ENTRY_RAW_BYTES = 550 * 1024;
 const MAX_ENTRY_GZIP_BYTES = 180 * 1024;
 const MAX_GLOBAL_CSS_GZIP_BYTES = 32 * 1024;
 const MAX_LAZY_CHUNK_RAW_BYTES = 900 * 1024;
 const MAX_LAZY_CHUNK_GZIP_BYTES = 300 * 1024;
-const wikiEnv = resolveWikiEnv(process.env as Record<string, string>);
+const MAX_HOME_GPU_GZIP_BYTES = 64 * 1024;
 
 function formatKiB(bytes: number): string {
   return `${(bytes / 1024).toFixed(2)} KiB`;
@@ -143,6 +144,27 @@ if (legacyFontAssets.length > 0) {
   );
 }
 
+const homeGpuChunks = assetFiles.filter((file) =>
+  /^(?:runtime|startHeroPaper|startKineticTextInk|startWorkstreamPrint)-.+\.js$/.test(
+    file,
+  ),
+);
+let homeGpuGzipBytes = 0;
+for (const file of homeGpuChunks) {
+  const contents = await readFile(join(DIST_DIR, "assets", file));
+  homeGpuGzipBytes += gzipSync(contents).byteLength;
+}
+if (homeGpuChunks.length !== 4) {
+  failures.push(
+    `Expected four lazy homepage GPU chunks; found ${homeGpuChunks.length}.`,
+  );
+}
+if (homeGpuGzipBytes > MAX_HOME_GPU_GZIP_BYTES) {
+  failures.push(
+    `Homepage GPU chunks total ${formatKiB(homeGpuGzipBytes)} gzip; budget is ${formatKiB(MAX_HOME_GPU_GZIP_BYTES)}.`,
+  );
+}
+
 const entryFileName = entry ? basename(entry.file) : "";
 for (const file of assetFiles.filter(
   (asset) => asset.endsWith(".js") && asset !== entryFileName,
@@ -169,7 +191,7 @@ const homeHtml = await readFile(join(DIST_DIR, "index.html"), "utf8");
 if (/KaTeX_[^"'<> ]+\.(?:woff2?|ttf)/.test(homeHtml)) {
   failures.push("Homepage HTML still references KaTeX font assets.");
 }
-const expectedFaviconUrl = buildAssetUrl(wikiEnv.basePath, "favicon-heal.png");
+const expectedFaviconUrl = igemStatic.favicon;
 if (
   !linkTags(homeHtml).some(
     (tag) =>
@@ -178,6 +200,15 @@ if (
   )
 ) {
   failures.push("Homepage favicon is missing the configured base path.");
+}
+
+if (!htmlFiles.includes("studio.html")) {
+  failures.push("The unlisted studio.html writing preview is missing.");
+} else {
+  const studioHtml = await readFile(join(DIST_DIR, "studio.html"), "utf8");
+  if (!/noindex/.test(studioHtml)) {
+    failures.push("studio.html is missing robots noindex.");
+  }
 }
 
 if (!htmlFiles.includes("404.html")) {
@@ -205,6 +236,9 @@ console.log(
   `  Largest lazy chunk ${largestLazyChunk.file}: ${formatKiB(largestLazyChunk.raw)} raw / ${formatKiB(largestLazyChunk.gzip)} gzip.`,
 );
 console.log(`  Global CSS: ${formatKiB(globalCssGzipBytes)} gzip.`);
+console.log(
+  `  Homepage GPU: ${formatKiB(homeGpuGzipBytes)} gzip across ${homeGpuChunks.length} lazy chunks.`,
+);
 console.log(`  Automatic font/image preloads: ${assetPreloads}.`);
 console.log(`  Recursive module preloads: ${modulePreloads}.`);
 

@@ -1,5 +1,7 @@
-import peekingCatUrl from "@/assets/brand/illustrations/peeking-cat.webp";
-import pawCornerUrl from "@/assets/brand/illustrations/paw-corner.webp";
+import { igemStatic } from "@/config/igemStatic";
+
+const peekingCatUrl = igemStatic.illustrations.peekingCat;
+const pawCornerUrl = igemStatic.illustrations.pawCorner;
 
 /**
  * GPT Image mascot cameos that carry the HEAL banner's real pencil/crayon

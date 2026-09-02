@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { PawPrint, UsersThree } from "@phosphor-icons/react";
 import { Icon } from "@/shared/components/Icon";
 import { SectionDivider } from "@/shared/components/SectionDivider";
@@ -8,7 +8,23 @@ import { inkCtaClasses, stickerStyle } from "@/shared/styles/heal";
 import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
 import { HeroSketch } from "../scene/HeroDoodles";
 import { CareSpot, EngineerSpot, UnderstandSpot } from "../scene/StepSpots";
-import bannerUrl from "@/assets/brand/heal-banner.webp";
+import { igemStatic } from "@/config/igemStatic";
+import { LazyGpuCanvas } from "../gpu/LazyGpuCanvas";
+import {
+  createHeroPaperInputs,
+  type GpuEffectHandle,
+  type HeroPaperInputs,
+  type HomeGpuRenderer,
+} from "../gpu/types";
+
+const bannerUrl = igemStatic.banner;
+const CHAPTER_WIDTH_PERCENT = 100 / 3;
+
+function numericGsapProperty(value: unknown): number | null {
+  const parsed =
+    typeof value === "number" ? value : Number.parseFloat(String(value));
+  return Number.isFinite(parsed) ? parsed : null;
+}
 
 const CHAPTERS = [
   {
@@ -50,6 +66,20 @@ const CHAPTERS = [
  */
 export function HeroSection() {
   const root = useRef<HTMLElement>(null);
+  const deck = useRef<HTMLDivElement>(null);
+  const paperInputs = useRef(createHeroPaperInputs());
+  const paperHandle = useRef<GpuEffectHandle | null>(null);
+
+  const loadHeroPaper = useCallback(async () => {
+    const module = await import("../gpu/hero/startHeroPaper");
+    return module.heroPaperRenderer as HomeGpuRenderer<HeroPaperInputs>;
+  }, []);
+  const capturePaperHandle = useCallback((handle: GpuEffectHandle | null) => {
+    paperHandle.current = handle;
+  }, []);
+  const syncPaperLive = useCallback((live: boolean) => {
+    deck.current?.classList.toggle("is-paper-live", live);
+  }, []);
 
   useGSAP(
     () => {
@@ -133,212 +163,237 @@ export function HeroSection() {
           );
       });
 
-        // Desktop only: the 300% horizontal notebook stays off small screens
-        // so the cover and Approach cards carry the three verbs there.
-        mm.add(
-          "(min-width: 640px) and (prefers-reduced-motion: no-preference)",
-          () => {
-        const pinDistance = () =>
-          Math.round(
-            window.innerHeight * (window.innerWidth >= 768 ? 4.6 : 3.4),
-          );
-        const navHeight = () =>
-          document.querySelector("header")?.getBoundingClientRect().height ??
-          64;
+      // Desktop only: the 300% horizontal notebook stays off small screens
+      // so the cover and Approach cards carry the three verbs there.
+      mm.add(
+        "(min-width: 640px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          const pinDistance = () =>
+            Math.round(
+              window.innerHeight * (window.innerWidth >= 768 ? 4.6 : 3.4),
+            );
+          const navHeight = () =>
+            document.querySelector("header")?.getBoundingClientRect().height ??
+            64;
 
-        gsap.set(".js-hero-cinema", {
-          autoAlpha: 0,
-          clipPath: "inset(9% 7% round 2rem)",
-        });
-        gsap.set(".js-hero-progress", {
-          scaleX: 0.025,
-          transformOrigin: "left center",
-        });
+          gsap.set(".js-hero-cinema", {
+            autoAlpha: 0,
+            clipPath: "inset(9% 7% round 2rem)",
+          });
+          gsap.set(".js-hero-progress", {
+            scaleX: 0.025,
+            transformOrigin: "left center",
+          });
 
-        const scrollCinema = gsap.timeline({
-          defaults: { ease: "none" },
-          scrollTrigger: {
-            trigger: root.current,
-            start: () => `top top+=${navHeight()}`,
-            end: () => `+=${pinDistance()}`,
-            pin: true,
-            pinSpacing: true,
-            anticipatePin: 1,
-            scrub: 0.9,
-            invalidateOnRefresh: true,
-          },
-        });
+          const chapterTrack =
+            root.current?.querySelector<HTMLElement>(
+              ".js-hero-chapter-track",
+            ) ?? null;
+          const cinema =
+            root.current?.querySelector<HTMLElement>(".js-hero-cinema") ?? null;
 
-        scrollCinema
-          // Fold the static cover away rather than zooming through it.
-          .to(
-            ".js-hero-copy, .js-hero-meta",
-            { autoAlpha: 0, duration: 0.06 },
-            0,
-          )
-          .to(
-            ".js-hero-art",
-            {
-              scale: 0.62,
-              rotation: -2,
-              autoAlpha: 0,
-              duration: 0.12,
-              transformOrigin: "50% 50%",
-              ease: "power3.in",
+          const scrollCinema = gsap.timeline({
+            defaults: { ease: "none" },
+            scrollTrigger: {
+              trigger: root.current,
+              start: () => `top top+=${navHeight()}`,
+              end: () => `+=${pinDistance()}`,
+              pin: true,
+              pinSpacing: true,
+              anticipatePin: 1,
+              scrub: 0.9,
+              invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                const xPercent = chapterTrack
+                  ? numericGsapProperty(
+                      gsap.getProperty(chapterTrack, "xPercent"),
+                    )
+                  : 0;
+                const opacity = cinema
+                  ? numericGsapProperty(gsap.getProperty(cinema, "opacity"))
+                  : 0;
+                if (xPercent === null || opacity === null) return;
+                paperInputs.current.track = Math.min(
+                  2,
+                  Math.max(0, -xPercent / CHAPTER_WIDTH_PERCENT),
+                );
+                paperInputs.current.wet = self.progress;
+                paperInputs.current.inView = opacity > 0.04;
+                paperHandle.current?.invalidate();
+              },
             },
-            0,
-          )
-          .set(".js-hero-cinema", { visibility: "visible" }, 0.025)
-          .to(
-            ".js-hero-cinema",
-            {
-              autoAlpha: 1,
-              clipPath: "inset(0% 0% round 0rem)",
-              duration: 0.14,
-              ease: "power4.inOut",
-            },
-            0.025,
-          )
-          .to(
-            ".js-hero-progress",
-            { scaleX: 1, duration: 0.9, ease: "none" },
-            0.07,
-          )
-          .fromTo(
-            ".js-hero-chapter-1 .js-hero-chapter-visual",
-            { scale: 0.78, rotation: -8 },
-            {
-              scale: 1,
-              rotation: -2,
-              duration: 0.15,
-              ease: "power3.out",
-            },
-            0.07,
-          )
-          .set(
-            ".js-hero-chapter-1 .js-hero-chapter-word",
-            { xPercent: 9 },
-            0.065,
-          )
-          .to(
-            ".js-hero-chapter-1 .js-hero-chapter-word",
-            { xPercent: 0, duration: 0.16, ease: "power3.out" },
-            0.07,
-          )
-          .to(
-            ".js-hero-chapter-track",
-            {
-              xPercent: -33.3333,
-              duration: 0.27,
-              ease: "power3.inOut",
-            },
-            0.25,
-          )
-          .to(
-            ".js-hero-chapter-1 .js-hero-chapter-visual",
-            {
-              scale: 0.72,
-              rotation: 9,
-              xPercent: -16,
-              duration: 0.18,
-              ease: "power2.in",
-            },
-            0.25,
-          )
-          .set(
-            ".js-hero-chapter-2 .js-hero-chapter-visual",
-            { scale: 0.7, rotation: -12, xPercent: 18 },
-            0.29,
-          )
-          .to(
-            ".js-hero-chapter-2 .js-hero-chapter-visual",
-            {
-              scale: 1,
-              rotation: 2,
-              xPercent: 0,
-              duration: 0.22,
-              ease: "power3.out",
-            },
-            0.33,
-          )
-          .set(
-            ".js-hero-chapter-2 .js-hero-chapter-word",
-            { xPercent: 12 },
-            0.29,
-          )
-          .to(
-            ".js-hero-chapter-2 .js-hero-chapter-word",
-            { xPercent: -3, duration: 0.24, ease: "power2.out" },
-            0.3,
-          )
-          .to(
-            ".js-hero-chapter-track",
-            {
-              xPercent: -66.6667,
-              duration: 0.28,
-              ease: "power4.inOut",
-            },
-            0.58,
-          )
-          .to(
-            ".js-hero-chapter-2 .js-hero-chapter-visual",
-            {
-              scale: 0.74,
-              rotation: -10,
-              xPercent: -18,
-              duration: 0.18,
-              ease: "power2.in",
-            },
-            0.58,
-          )
-          .set(
-            ".js-hero-chapter-3 .js-hero-chapter-visual",
-            { scale: 0.68, rotation: 10, xPercent: 20 },
-            0.61,
-          )
-          .to(
-            ".js-hero-chapter-3 .js-hero-chapter-visual",
-            {
-              scale: 1.06,
-              rotation: -2,
-              xPercent: 0,
-              duration: 0.24,
-              ease: "power4.out",
-            },
-            0.65,
-          )
-          .set(
-            ".js-hero-chapter-3 .js-hero-chapter-word",
-            { xPercent: 13 },
-            0.61,
-          )
-          .to(
-            ".js-hero-chapter-3 .js-hero-chapter-word",
-            { xPercent: -5, duration: 0.25, ease: "power3.out" },
-            0.63,
-          )
-          .to(
-            ".js-hero-cinema-endline",
-            {
-              scaleX: 1,
-              duration: 0.12,
-              transformOrigin: "left center",
-              ease: "power3.out",
-            },
-            0.85,
-          )
-          .to(
-            ".js-hero-chapter-3 .js-hero-chapter-visual",
-            {
-              scale: 0.94,
-              rotation: 0,
-              duration: 0.12,
-              ease: "power2.inOut",
-            },
-            0.88,
-          );
-          },
-        );
+          });
+
+          scrollCinema
+            // Fold the static cover away rather than zooming through it.
+            .to(
+              ".js-hero-copy, .js-hero-meta",
+              { opacity: 0, pointerEvents: "none", duration: 0.06 },
+              0,
+            )
+            .to(
+              ".js-hero-art",
+              {
+                scale: 0.62,
+                rotation: -2,
+                autoAlpha: 0,
+                duration: 0.12,
+                transformOrigin: "50% 50%",
+                ease: "power3.in",
+              },
+              0,
+            )
+            .set(".js-hero-cinema", { visibility: "visible" }, 0.025)
+            .to(
+              ".js-hero-cinema",
+              {
+                autoAlpha: 1,
+                clipPath: "inset(0% 0% round 0rem)",
+                duration: 0.14,
+                ease: "power4.inOut",
+              },
+              0.025,
+            )
+            .to(
+              ".js-hero-progress",
+              { scaleX: 1, duration: 0.9, ease: "none" },
+              0.07,
+            )
+            .fromTo(
+              ".js-hero-chapter-1 .js-hero-chapter-visual",
+              { scale: 0.78, rotation: -8 },
+              {
+                scale: 1,
+                rotation: -2,
+                duration: 0.15,
+                ease: "power3.out",
+              },
+              0.07,
+            )
+            .set(
+              ".js-hero-chapter-1 .js-hero-chapter-word",
+              { xPercent: 9 },
+              0.065,
+            )
+            .to(
+              ".js-hero-chapter-1 .js-hero-chapter-word",
+              { xPercent: 0, duration: 0.16, ease: "power3.out" },
+              0.07,
+            )
+            .to(
+              ".js-hero-chapter-track",
+              {
+                xPercent: -33.3333,
+                duration: 0.27,
+                ease: "power3.inOut",
+              },
+              0.25,
+            )
+            .to(
+              ".js-hero-chapter-1 .js-hero-chapter-visual",
+              {
+                scale: 0.72,
+                rotation: 9,
+                xPercent: -16,
+                duration: 0.18,
+                ease: "power2.in",
+              },
+              0.25,
+            )
+            .set(
+              ".js-hero-chapter-2 .js-hero-chapter-visual",
+              { scale: 0.7, rotation: -12, xPercent: 18 },
+              0.29,
+            )
+            .to(
+              ".js-hero-chapter-2 .js-hero-chapter-visual",
+              {
+                scale: 1,
+                rotation: 2,
+                xPercent: 0,
+                duration: 0.22,
+                ease: "power3.out",
+              },
+              0.33,
+            )
+            .set(
+              ".js-hero-chapter-2 .js-hero-chapter-word",
+              { xPercent: 12 },
+              0.29,
+            )
+            .to(
+              ".js-hero-chapter-2 .js-hero-chapter-word",
+              { xPercent: -3, duration: 0.24, ease: "power2.out" },
+              0.3,
+            )
+            .to(
+              ".js-hero-chapter-track",
+              {
+                xPercent: -66.6667,
+                duration: 0.28,
+                ease: "power4.inOut",
+              },
+              0.58,
+            )
+            .to(
+              ".js-hero-chapter-2 .js-hero-chapter-visual",
+              {
+                scale: 0.74,
+                rotation: -10,
+                xPercent: -18,
+                duration: 0.18,
+                ease: "power2.in",
+              },
+              0.58,
+            )
+            .set(
+              ".js-hero-chapter-3 .js-hero-chapter-visual",
+              { scale: 0.68, rotation: 10, xPercent: 20 },
+              0.61,
+            )
+            .to(
+              ".js-hero-chapter-3 .js-hero-chapter-visual",
+              {
+                scale: 1.06,
+                rotation: -2,
+                xPercent: 0,
+                duration: 0.24,
+                ease: "power4.out",
+              },
+              0.65,
+            )
+            .set(
+              ".js-hero-chapter-3 .js-hero-chapter-word",
+              { xPercent: 13 },
+              0.61,
+            )
+            .to(
+              ".js-hero-chapter-3 .js-hero-chapter-word",
+              { xPercent: -5, duration: 0.25, ease: "power3.out" },
+              0.63,
+            )
+            .to(
+              ".js-hero-cinema-endline",
+              {
+                scaleX: 1,
+                duration: 0.12,
+                transformOrigin: "left center",
+                ease: "power3.out",
+              },
+              0.85,
+            )
+            .to(
+              ".js-hero-chapter-3 .js-hero-chapter-visual",
+              {
+                scale: 0.94,
+                rotation: 0,
+                duration: 0.12,
+                ease: "power2.inOut",
+              },
+              0.88,
+            );
+        },
+      );
 
       return () => mm.revert();
     },
@@ -417,7 +472,6 @@ export function HeroSection() {
                 className="js-hero-shutter js-hero-shutter-right hero-shutter right-0 bg-primary-soft"
               />
             </div>
-
           </div>
         </div>
 
@@ -505,7 +559,19 @@ export function HeroSection() {
         </div>
       </div>
 
-      <div aria-hidden="true" className="js-hero-cinema hero-cinema-deck">
+      <div
+        ref={deck}
+        aria-hidden="true"
+        className="js-hero-cinema hero-cinema-deck"
+      >
+        <LazyGpuCanvas
+          hostRef={root}
+          inputs={paperInputs.current}
+          load={loadHeroPaper}
+          className="hero-paper-canvas"
+          onHandle={capturePaperHandle}
+          onLiveChange={syncPaperLive}
+        />
         <div className="hero-chapter-viewport">
           <div className="js-hero-chapter-track hero-chapter-track">
             {CHAPTERS.map((chapter, index) => (

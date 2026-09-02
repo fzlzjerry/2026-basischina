@@ -4,6 +4,10 @@ description: Research, experiments, and step-by-step protocols from BASIS-China,
 author: BASIS-China Team
 date: 2026-05-01
 tags: [experiments, protocols, wet-lab, reproducibility, methods]
+relatedPages:
+  - /notebook
+  - /measurement
+  - /safety-and-security
 ---
 
 This page is a living demonstration of every Markdown feature the wiki renderer
@@ -195,19 +199,41 @@ A horizontal rule separates major blocks:
 
 That rule was written as three dashes on their own line.
 
-## Not supported here
+## Structured experiment-protocol authoring example
 
-For safety and predictability, a few common Markdown extensions are **not**
-enabled in this renderer. The snippets below render as plain text rather than
-their intended widget — avoid them when authoring:
+Experiment documentation should make the objective, materials, controls, safety conditions, and ordered procedure reproducible. The public wiki and its evidence trail should remain understandable, findable, and properly referenced [@igem-special-awards-2026].[^wet-lab-experiments-fixture]
 
-```text
-Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
-Task lists:      - [ ] todo   - [x] done                (no checkboxes)
-Footnotes:       Here is a claim.[^1]                    (no footnote link)
-Definition list: Term\n: definition                      (no <dl>)
-Emoji shortcode: :rocket: :tada:                         (not converted)
+The statement below links directly to the structured record: [[evidence:experiment-protocol-demo|Open this authoring example]].
+
+```protocol
+id: experiment-protocol-demo
+title: Reproducible experiment protocol example
+objective: Demonstrate structured documentation for a controlled assay.
+version: "0.1-authoring-fixture"
+date: 2026-08-23
+materials:
+  - Defined sample
+  - Calibrated measurement instrument
+  - Positive and negative controls
+steps:
+  - Record batch and instrument identifiers.
+  - Prepare samples and controls using the same conditions.
+  - Capture raw measurements before analysis.
+controls:
+  - Negative control
+  - Positive control
+safety:
+  - Replace with the real organism, chemical, and disposal controls.
+citations:
+  - igem-team-wiki-2026
 ```
 
-If you need one of these, raise it with the dry-lab team rather than pasting raw
-HTML — the renderer disables HTML by design (security §22).
+### How this participates in long-form navigation
+
+This heading and the section above enter the table of contents, receive stable permanent links, and update the active-section marker while the reader scrolls. The related-page links in frontmatter connect this example to adjacent evidence routes.
+
+## Still intentionally unsupported
+
+Raw HTML, task-list widgets, definition lists, and emoji shortcodes remain disabled. Add behavior through a reviewed Markdown rule or structured research block rather than pasting executable HTML.
+
+[^wet-lab-experiments-fixture]: This is an authoring fixture, not project evidence. Replace it with verified BASIS-China records, real citations, and measured data before judging.

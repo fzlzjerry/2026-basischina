@@ -34,6 +34,7 @@ export function MarkdownPage({ page }: MarkdownPageProps) {
         category={page.category}
         processed={processed}
         contentKey={page.contentPath}
+        pagePath={page.path}
       />
     </>
   );

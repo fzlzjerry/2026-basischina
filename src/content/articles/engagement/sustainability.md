@@ -4,6 +4,10 @@ description: How the BASIS-China project advances the UN Sustainable Development
 author: BASIS-China Team
 date: 2026-05-01
 tags: [sustainability, sdgs, impact, sustainable-development, un-goals]
+relatedPages:
+  - /human-practices
+  - /entrepreneurship
+  - /results
 ---
 
 This page is a living demonstration of every Markdown feature the wiki renderer
@@ -195,19 +199,39 @@ A horizontal rule separates major blocks:
 
 That rule was written as three dashes on their own line.
 
-## Not supported here
+## Structured sustainability result authoring example
 
-For safety and predictability, a few common Markdown extensions are **not**
-enabled in this renderer. The snippets below render as plain text rather than
-their intended widget — avoid them when authoring:
+Sustainability claims should define the comparison boundary, measurement method, uncertainty, and trade-offs. The public wiki and its evidence trail should remain understandable, findable, and properly referenced [@igem-special-awards-2026].[^engagement-sustainability-fixture]
 
-```text
-Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
-Task lists:      - [ ] todo   - [x] done                (no checkboxes)
-Footnotes:       Here is a claim.[^1]                    (no footnote link)
-Definition list: Term\n: definition                      (no <dl>)
-Emoji shortcode: :rocket: :tada:                         (not converted)
+The statement below links directly to the structured record: [[evidence:sustainability-result-demo|Open this authoring example]].
+
+```result
+id: sustainability-result-demo
+title: Sustainability comparison example
+claim: This fixture demonstrates how to report a comparison without presenting illustrative values as project evidence.
+method: Authoring-schema comparison
+controls:
+  - Defined baseline scenario
+  - Matching functional unit
+replicates:
+  technical: 1
+result:
+  value: Boundary documented
+  unit: authoring fixture
+uncertainty: No lifecycle inventory is represented
+limitations:
+  - Replace with sourced inventory data
+  - Report burden shifting and negative impacts
+citations:
+  - igem-special-awards-2026
 ```
 
-If you need one of these, raise it with the dry-lab team rather than pasting raw
-HTML — the renderer disables HTML by design (security §22).
+### How this participates in long-form navigation
+
+This heading and the section above enter the table of contents, receive stable permanent links, and update the active-section marker while the reader scrolls. The related-page links in frontmatter connect this example to adjacent evidence routes.
+
+## Still intentionally unsupported
+
+Raw HTML, task-list widgets, definition lists, and emoji shortcodes remain disabled. Add behavior through a reviewed Markdown rule or structured research block rather than pasting executable HTML.
+
+[^engagement-sustainability-fixture]: This is an authoring fixture, not project evidence. Replace it with verified BASIS-China records, real citations, and measured data before judging.

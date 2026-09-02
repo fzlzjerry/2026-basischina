@@ -4,6 +4,10 @@ description: The BioBrick parts BASIS-China designed, built, and characterized, 
 author: BASIS-China Team
 date: 2026-05-01
 tags: [parts, registry, biobricks, igem]
+relatedPages:
+  - /contribution
+  - /engineering
+  - /results
 ---
 
 This page is a living demonstration of every Markdown feature the wiki renderer
@@ -195,19 +199,31 @@ A horizontal rule separates major blocks:
 
 That rule was written as three dashes on their own line.
 
-## Not supported here
+## Structured part-record authoring example
 
-For safety and predictability, a few common Markdown extensions are **not**
-enabled in this renderer. The snippets below render as plain text rather than
-their intended widget — avoid them when authoring:
+Part summaries should connect the Registry record to function, chassis, characterization, and current status. The public wiki and its evidence trail should remain understandable, findable, and properly referenced [@igem-special-awards-2026].[^project-parts-fixture]
 
-```text
-Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
-Task lists:      - [ ] todo   - [x] done                (no checkboxes)
-Footnotes:       Here is a claim.[^1]                    (no footnote link)
-Definition list: Term\n: definition                      (no <dl>)
-Emoji shortcode: :rocket: :tada:                         (not converted)
+The statement below links directly to the structured record: [[evidence:part-record-demo|Open this authoring example]].
+
+```part
+id: part-record-demo
+title: Registry part authoring example
+registryId: BBa_DEMO_0001
+function: Demonstrate the structured part schema.
+chassis: Authoring fixture
+status: Not a submitted biological part
+characterization: Replace with measured behavior, conditions, and uncertainty.
+registryUrl: https://parts.igem.org/
+citations:
+  - igem-team-wiki-2026
 ```
 
-If you need one of these, raise it with the dry-lab team rather than pasting raw
-HTML — the renderer disables HTML by design (security §22).
+### How this participates in long-form navigation
+
+This heading and the section above enter the table of contents, receive stable permanent links, and update the active-section marker while the reader scrolls. The related-page links in frontmatter connect this example to adjacent evidence routes.
+
+## Still intentionally unsupported
+
+Raw HTML, task-list widgets, definition lists, and emoji shortcodes remain disabled. Add behavior through a reviewed Markdown rule or structured research block rather than pasting executable HTML.
+
+[^project-parts-fixture]: This is an authoring fixture, not project evidence. Replace it with verified BASIS-China records, real citations, and measured data before judging.

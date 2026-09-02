@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from "node:url";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { wgslVitePlugin } from "@vgpu/wgsl/loader-vite";
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import { resolveWikiEnv } from "./src/config/envShared";
 
@@ -50,7 +51,12 @@ export default defineConfig(({ mode }) => {
 
   return {
     base,
-    plugins: [katexWoff2Only(), react(), tailwindcss()],
+    plugins: [
+      katexWoff2Only(),
+      react(),
+      tailwindcss(),
+      wgslVitePlugin({ minify: true }),
+    ],
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),

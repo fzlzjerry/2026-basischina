@@ -5,13 +5,15 @@ import { Icon } from "@/shared/components/Icon";
 import { wikiEnv } from "@/config/env";
 import { getNavGroups, navLabelFor } from "@/config/navigation";
 import { stickerStyle } from "@/shared/styles/heal";
-import logoUrl from "@/assets/brand/heal-logo.webp";
+import { igemStatic } from "@/config/igemStatic";
 import {
   gsap,
   ScrollTrigger,
   registerGsap,
   useGSAP,
 } from "@/shared/motion/gsap";
+
+const logoUrl = igemStatic.logo;
 
 const groups = getNavGroups();
 
@@ -61,6 +63,33 @@ export function Navbar() {
   const groupButtonRefs = useRef(new Map<string, HTMLButtonElement | null>());
   const mobileToggleRef = useRef<HTMLButtonElement>(null);
   const { pathname } = useLocation();
+
+  // Invert the paper strip when it sits on an espresso/brown band so the
+  // chrome joins the scene instead of floating as cream glass.
+  useEffect(() => {
+    const header = navRef.current;
+    if (!header) return;
+
+    const sync = () => {
+      const bottom = header.getBoundingClientRect().bottom;
+      const zones = document.querySelectorAll("[data-nav-ink]");
+      let onInk = false;
+      zones.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < bottom && rect.bottom > 0) onInk = true;
+      });
+      header.toggleAttribute("data-on-ink", onInk);
+    };
+
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    return () => {
+      window.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+      header.removeAttribute("data-on-ink");
+    };
+  }, [pathname]);
 
   // Scroll-progress bar: a scroll-linked indicator (not autonomous motion), so
   // it stays on for everyone. The header itself never animates in — it paints
@@ -145,7 +174,7 @@ export function Navbar() {
     <header
       ref={navRef}
       data-site-chrome="navbar"
-      className="sticky top-0 z-40 border-b-[3px] border-sticker-ink bg-page/90 backdrop-blur"
+      className="site-nav sticky top-0 z-40 border-b-[3px] border-sticker-ink"
     >
       <nav
         aria-label="Primary"
@@ -156,11 +185,11 @@ export function Navbar() {
           end
           className="flex min-h-11 items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
         >
-          <span className="font-script text-[2rem] font-bold leading-none text-ink">
+          <span className="nav-wordmark font-script text-[1.7rem] font-bold leading-none sm:text-[2rem]">
             {wikiEnv.teamName}
           </span>
           {/* Heal project logo (decorative; the wordmark above is the link name) */}
-          <img src={logoUrl} alt="" className="hidden h-9 w-auto sm:block" />
+          <img src={logoUrl} alt="" className="h-7 w-auto sm:h-9" />
         </NavLink>
 
         {/* Desktop navigation */}

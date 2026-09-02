@@ -4,14 +4,13 @@ import { HeroSection } from "./sections/HeroSection";
 import { ApproachSection } from "./sections/ApproachSection";
 import { KineticStatementSection } from "./sections/KineticStatementSection";
 import { WorkstreamsSection } from "./sections/WorkstreamsSection";
-import { HighlightsSection } from "./sections/HighlightsSection";
 import { ClosingCtaSection } from "./sections/ClosingCtaSection";
 
 const page = requirePage("home");
 
 /**
- * Homepage (§20): composes feature sections only — no multi-thousand-line
- * component. Section content and interaction live inside each section file.
+ * Homepage: cover, three-spot approach, kinetic signature, linked
+ * workstream leaves, then sunset send-off. One telling of each idea.
  */
 export function HomePage() {
   return (
@@ -21,7 +20,6 @@ export function HomePage() {
       <ApproachSection />
       <KineticStatementSection />
       <WorkstreamsSection />
-      <HighlightsSection />
       <ClosingCtaSection />
     </>
   );

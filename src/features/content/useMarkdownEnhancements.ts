@@ -114,6 +114,56 @@ function addCopyButtons(
   });
 }
 
+function enhanceHeadingPermalinks(
+  container: HTMLElement,
+  register: (cleanup: () => void) => void,
+): void {
+  const links = Array.from(
+    container.querySelectorAll<HTMLAnchorElement>(".heading-permalink"),
+  );
+  if (links.length === 0) return;
+
+  const status = document.createElement("span");
+  status.className = "sr-only";
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-live", "polite");
+  status.setAttribute("aria-atomic", "true");
+  container.appendChild(status);
+
+  let announcementFrame: number | undefined;
+  for (const link of links) {
+    const onClick = async () => {
+      const url = new URL(
+        link.getAttribute("href") ?? "",
+        window.location.href,
+      );
+      try {
+        if (!navigator.clipboard?.writeText)
+          throw new Error("Clipboard unavailable");
+        await navigator.clipboard.writeText(url.href);
+        status.textContent = "";
+        if (announcementFrame !== undefined) {
+          window.cancelAnimationFrame(announcementFrame);
+        }
+        announcementFrame = window.requestAnimationFrame(() => {
+          status.textContent = "Section link copied.";
+        });
+      } catch {
+        status.textContent = "Section link selected.";
+      }
+    };
+    link.addEventListener("click", onClick);
+    register(() => link.removeEventListener("click", onClick));
+  }
+
+  register(() => {
+    if (announcementFrame !== undefined) {
+      window.cancelAnimationFrame(announcementFrame);
+    }
+    status.remove();
+  });
+}
+
 function registerOverflowRegion(
   element: HTMLElement,
   label: string,
@@ -201,7 +251,17 @@ function enhanceHorizontalOverflow(
     );
 
   container.querySelectorAll<HTMLTableElement>("table").forEach((table) => {
-    if (table.parentElement?.classList.contains("markdown-table-scroll")) {
+    const existingWrapper = table.parentElement;
+    if (
+      existingWrapper?.classList.contains("markdown-table-scroll") ||
+      existingWrapper?.classList.contains("research-table-scroll")
+    ) {
+      const caption = table.querySelector("caption")?.textContent?.trim();
+      registerOverflowRegion(
+        existingWrapper,
+        caption ? caption + " table" : "data table",
+        register,
+      );
       return;
     }
 
@@ -279,6 +339,9 @@ export function useMarkdownEnhancements(
 
       if (!disposed && container) {
         addCopyButtons(container, (cleanup) => cleanups.push(cleanup));
+        enhanceHeadingPermalinks(container, (cleanup) =>
+          cleanups.push(cleanup),
+        );
         enhanceHorizontalOverflow(container, (cleanup) =>
           cleanups.push(cleanup),
         );
