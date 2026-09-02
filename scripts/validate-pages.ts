@@ -13,6 +13,7 @@ import {
   reservedComponentKeys,
 } from "../src/config/componentKeys";
 import { resolveWikiEnv } from "../src/config/envShared";
+import { findLevel1HeadingLine } from "../src/features/content/lintMarkdown";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const contentDir = path.join(root, "src", "content");
@@ -100,42 +101,10 @@ const collectMarkdownFiles = (dir: string): string[] => {
   return out;
 };
 
-const findLevel1Heading = (source: string): number | null => {
-  const lines = source.split(/\r?\n/);
-  let index = 0;
-
-  // Strip leading YAML frontmatter ("---" on the first line ... closing "---").
-  if (lines[0]?.trim() === "---") {
-    index = 1;
-    while (index < lines.length && lines[index]?.trim() !== "---") index += 1;
-    index += 1; // step past the closing delimiter
-  }
-
-  let inFence = false;
-  let fenceMarker = "";
-  for (; index < lines.length; index += 1) {
-    const line = lines[index] ?? "";
-    const fence = line.match(/^\s*(```+|~~~+)/);
-    if (fence) {
-      const marker = fence[1].startsWith("`") ? "`" : "~";
-      if (!inFence) {
-        inFence = true;
-        fenceMarker = marker;
-      } else if (marker === fenceMarker) {
-        inFence = false;
-        fenceMarker = "";
-      }
-      continue;
-    }
-    if (!inFence && /^# \S/.test(line)) return index + 1; // 1-based line number
-  }
-  return null;
-};
-
 if (fs.existsSync(contentDir)) {
   for (const file of collectMarkdownFiles(contentDir)) {
     const rel = path.relative(contentDir, file);
-    const lineNo = findLevel1Heading(fs.readFileSync(file, "utf8"));
+    const lineNo = findLevel1HeadingLine(fs.readFileSync(file, "utf8"));
     if (lineNo !== null) {
       fail(
         `src/content/${rel}: level-1 heading at line ${lineNo}. Article bodies must start at "##" — the route layout owns the page <h1>.`,

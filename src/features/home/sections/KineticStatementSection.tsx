@@ -1,19 +1,25 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   PeelableHealSticker,
   type StickerForgeController,
 } from "@/features/home/components/PeelableHealSticker";
 import { gsap, registerGsap, useGSAP } from "@/shared/motion/gsap";
+import { KineticTextInk } from "../components/KineticTextInk";
+import { createKineticTextInkInputs } from "../gpu/kinetic-text/types";
+import type { GpuEffectHandle } from "../gpu/types";
 
 /**
- * A long typographic breath between the project loop and the wiki chapters.
- * Three handwritten lines fill the dark notebook — the same thought, not a
- * third restatement of Understand / Engineer / Care.
+ * The homepage signature: three handwritten lines on espresso, with a colour
+ * fill on “gentle.” and a peelable HEAL seal. No pin besides the sticky type.
  */
 export function KineticStatementSection() {
   const root = useRef<HTMLElement>(null);
+  const sticky = useRef<HTMLDivElement>(null);
   const sticker = useRef<StickerForgeController | null>(null);
   const peelProgress = useRef(0);
+  const textInkInputs = useRef(createKineticTextInkInputs());
+  const textInkHandle = useRef<GpuEffectHandle | null>(null);
+  const [stickerInteractive, setStickerInteractive] = useState(false);
 
   const applyPeelProgress = useCallback(() => {
     const element = sticker.current;
@@ -31,6 +37,12 @@ export function KineticStatementSection() {
     },
     [applyPeelProgress],
   );
+  const captureTextInkHandle = useCallback((handle: GpuEffectHandle | null) => {
+    textInkHandle.current = handle;
+  }, []);
+  const syncTextInkLive = useCallback((live: boolean) => {
+    sticky.current?.classList.toggle("is-kinetic-ink-live", live);
+  }, []);
 
   useGSAP(
     () => {
@@ -38,35 +50,10 @@ export function KineticStatementSection() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.set(".js-kinetic-line-a", { xPercent: -3 });
-        gsap.set(".js-kinetic-line-b", { xPercent: 3 });
-        gsap.set(".js-kinetic-line-c", { xPercent: -3 });
         gsap.set(".js-kinetic-fill", {
           clipPath: "inset(0 100% 0 0)",
         });
 
-        const progress = {
-          trigger: root.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1,
-        };
-
-        gsap.to(".js-kinetic-line-a", {
-          xPercent: 3,
-          ease: "none",
-          scrollTrigger: progress,
-        });
-        gsap.to(".js-kinetic-line-b", {
-          xPercent: -3,
-          ease: "none",
-          scrollTrigger: progress,
-        });
-        gsap.to(".js-kinetic-line-c", {
-          xPercent: 3,
-          ease: "none",
-          scrollTrigger: progress,
-        });
         gsap.to(peelProgress, {
           current: 0.18,
           ease: "none",
@@ -88,6 +75,22 @@ export function KineticStatementSection() {
             scrub: 0.5,
           },
         });
+        gsap.to(textInkInputs.current, {
+          drive: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top 82%",
+            end: "top 22%",
+            scrub: 0.5,
+          },
+          onUpdate: () => {
+            textInkHandle.current?.invalidate();
+            if (textInkInputs.current.drive >= 0.98) {
+              setStickerInteractive(true);
+            }
+          },
+        });
       });
 
       return () => mm.revert();
@@ -99,13 +102,22 @@ export function KineticStatementSection() {
     <section
       ref={root}
       className="kinetic-statement"
+      data-nav-ink=""
       aria-labelledby="heal-loop-heading"
     >
       <h2 id="heal-loop-heading" className="sr-only">
         Start with a real need. Keep the biology gentle. Design for the life
         around it.
       </h2>
-      <div className="kinetic-statement-sticky">
+      <div ref={sticky} className="kinetic-statement-sticky">
+        <KineticTextInk
+          rootRef={root}
+          stageRef={sticky}
+          inputs={textInkInputs.current}
+          onHandle={captureTextInkHandle}
+          onLiveChange={syncTextInkLive}
+        />
+
         <div className="kinetic-statement-lines" aria-hidden="true">
           <p className="js-kinetic-line-a">Start with a real need.</p>
           <p className="js-kinetic-line-b">
@@ -123,7 +135,10 @@ export function KineticStatementSection() {
           <p className="js-kinetic-line-c">Design for the life around it.</p>
         </div>
 
-        <PeelableHealSticker onReady={handleStickerReady} />
+        <PeelableHealSticker
+          onReady={handleStickerReady}
+          interactive={stickerInteractive}
+        />
       </div>
     </section>
   );

@@ -4,6 +4,10 @@ description: How our team applied the Design-Build-Test-Learn cycle to iterate, 
 author: BASIS-China Team
 date: 2026-05-01
 tags: [engineering, dbtl, design, iteration, igem]
+relatedPages:
+  - /description
+  - /results
+  - /experiments
 ---
 
 This page is a living demonstration of every Markdown feature the wiki renderer
@@ -195,19 +199,32 @@ A horizontal rule separates major blocks:
 
 That rule was written as three dashes on their own line.
 
-## Not supported here
+## Structured engineering-cycle authoring example
 
-For safety and predictability, a few common Markdown extensions are **not**
-enabled in this renderer. The snippets below render as plain text rather than
-their intended widget — avoid them when authoring:
+Engineering pages should expose each design-build-test-learn decision rather than describe iteration only in prose. The public wiki and its evidence trail should remain understandable, findable, and properly referenced [@igem-special-awards-2026].[^project-engineering-fixture]
 
-```text
-Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
-Task lists:      - [ ] todo   - [x] done                (no checkboxes)
-Footnotes:       Here is a claim.[^1]                    (no footnote link)
-Definition list: Term\n: definition                      (no <dl>)
-Emoji shortcode: :rocket: :tada:                         (not converted)
+The statement below links directly to the structured record: [[evidence:engineering-cycle-demo|Open this authoring example]].
+
+```dbtl
+id: engineering-cycle-demo
+title: Design-build-test-learn authoring example
+cycles:
+  - title: Cycle 1
+    design: Define a measurable design objective and success threshold.
+    build: Record the construct, protocol, or model version that was produced.
+    test: Compare the build against explicit controls and retain the raw data.
+    learn: State what the result changed in the team's understanding.
+    next: Link the learning to a concrete next design.
+citations:
+  - igem-special-awards-2026
 ```
 
-If you need one of these, raise it with the dry-lab team rather than pasting raw
-HTML — the renderer disables HTML by design (security §22).
+### How this participates in long-form navigation
+
+This heading and the section above enter the table of contents, receive stable permanent links, and update the active-section marker while the reader scrolls. The related-page links in frontmatter connect this example to adjacent evidence routes.
+
+## Still intentionally unsupported
+
+Raw HTML, task-list widgets, definition lists, and emoji shortcodes remain disabled. Add behavior through a reviewed Markdown rule or structured research block rather than pasting executable HTML.
+
+[^project-engineering-fixture]: This is an authoring fixture, not project evidence. Replace it with verified BASIS-China records, real citations, and measured data before judging.

@@ -1,6 +1,8 @@
-import understandUrl from "@/assets/brand/illustrations/understand.webp";
-import engineerUrl from "@/assets/brand/illustrations/engineer.webp";
-import careUrl from "@/assets/brand/illustrations/care.webp";
+import { igemStatic } from "@/config/igemStatic";
+
+const understandUrl = igemStatic.illustrations.understand;
+const engineerUrl = igemStatic.illustrations.engineer;
+const careUrl = igemStatic.illustrations.care;
 
 /**
  * GPT Image redraws for the three Approach steps. The transparent WebP assets

@@ -2,18 +2,25 @@
  * Pure Markdown processing (§15.2).
  *
  * This module is SSR-safe and side-effect free: it parses frontmatter, renders
- * Markdown to HTML, renders KaTeX to static HTML/MathML, builds a table of
- * contents, rewrites internal links/asset URLs under the base path, and emits
- * Mermaid placeholders. It does NOT touch the DOM, attach listeners, scroll, or
- * update SEO — all of that lives in useMarkdownEnhancements / MarkdownPage.
- *
- * Syntax highlighting (Prism) and Mermaid rendering are deliberately deferred to
- * the client enhancement hook so this module never needs a DOM at build time.
+ * Markdown to HTML, builds a table of contents, resolves links/assets, and
+ * expands scientific citations plus whitelisted research blocks. DOM-only
+ * enhancements remain in useMarkdownEnhancements.
  */
 import MarkdownIt from "markdown-it";
 import { load as yamlLoad } from "js-yaml";
 import * as katex from "katex";
+import referencesRaw from "@/content/references/references.yaml?raw";
 import { markdownItKatex } from "./markdownItKatex";
+import {
+  createScientificRenderState,
+  extractFootnoteDefinitions,
+  parseReferenceLibrary,
+  registerScientificCitationRules,
+  renderCitationGroup,
+  renderScientificSections,
+  type ScientificRenderEnv,
+} from "./scientificCitations";
+import { isResearchBlockKind, renderResearchBlock } from "./researchBlocks";
 import { resolveAssetUrl } from "@/shared/utils/assetUrl";
 import { isExternalUrl, resolveInternalHref } from "@/shared/utils/url";
 import { uniqueSlug } from "@/shared/utils/slug";
@@ -24,6 +31,7 @@ export interface MarkdownMeta {
   author?: string;
   date?: string;
   tags?: string[];
+  relatedPages?: string[];
   [key: string]: unknown;
 }
 
@@ -41,37 +49,54 @@ export interface ProcessedMarkdown {
   hasMermaid: boolean;
 }
 
+const referenceLibraryResult = parseReferenceLibrary(referencesRaw);
+if (referenceLibraryResult.issues.length > 0) {
+  throw new Error(
+    "Invalid scientific reference library:\n" +
+      referenceLibraryResult.issues.map((issue) => "  - " + issue).join("\n"),
+  );
+}
+const referenceLibrary = referenceLibraryResult.library;
+
 const md = new MarkdownIt({
-  // Security boundary (§22): authored raw HTML is disabled, so the renderer
-  // escapes it instead of passing untrusted markup to dangerouslySetInnerHTML.
-  // If raw HTML is ever enabled, add sanitization in this build-time loader
-  // before changing this flag.
   html: false,
   linkify: true,
   typographer: true,
   breaks: false,
 });
 
-md.set({
-  highlight: (code, lang) => renderCodeBlock(code, lang),
-});
-
 md.use(markdownItKatex, { katex, throwOnError: false });
+registerScientificCitationRules(md);
 
-/** Token type derived from the instance (avoids `export =` namespace quirks). */
+/** Token type derived from the instance (avoids export namespace quirks). */
 type MdToken = ReturnType<typeof md.parse>[number];
 
-function renderCodeBlock(code: string, lang: string): string {
-  const language = (lang || "text").toLowerCase();
-  if (language === "mermaid") {
-    // Placeholder rendered to SVG on the client by useMarkdownEnhancements.
-    return `<pre class="mermaid">${md.utils.escapeHtml(code)}</pre>`;
-  }
-  const escaped = md.utils.escapeHtml(code);
-  return `<pre class="language-${language}"><code class="language-${language}">${escaped}</code></pre>`;
-}
+const defaultFence =
+  md.renderer.rules.fence ??
+  ((tokens, idx, options, _env, self) =>
+    self.renderToken(tokens, idx, options));
 
-// --- Link hardening + base-path rewriting (§15.4) -----------------------------
+md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+  const token = tokens[idx];
+  const language = token.info.trim().split(/\s+/)[0]?.toLowerCase() ?? "";
+
+  if (language === "mermaid") {
+    return (
+      '<pre class="mermaid">' + md.utils.escapeHtml(token.content) + "</pre>"
+    );
+  }
+
+  if (isResearchBlockKind(language)) {
+    return renderResearchBlock(language, token.content, {
+      resolveHref: resolveAssetUrl,
+      renderCitations: (keys) => renderCitationGroup(md, keys, env),
+    }).html;
+  }
+
+  return defaultFence(tokens, idx, options, env, self);
+};
+
+// --- Link hardening + base-path rewriting ------------------------------------
 
 const defaultLinkOpen =
   md.renderer.rules.link_open ??
@@ -83,8 +108,6 @@ const defaultLinkClose =
   ((tokens, idx, options, _env, self) =>
     self.renderToken(tokens, idx, options));
 
-/** Set by link_open, consumed by the matching link_close (links cannot nest,
- *  so a single env flag is safe). */
 interface LinkRenderEnv {
   externalLink?: boolean;
 }
@@ -105,8 +128,6 @@ md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
   return defaultLinkOpen(tokens, idx, options, env, self);
 };
 
-// Announce the new-tab behaviour to screen readers, inside the link and after
-// its visible label (WCAG G201).
 md.renderer.rules.link_close = (tokens, idx, options, env, self) => {
   const linkEnv = env as LinkRenderEnv;
   const suffix = linkEnv.externalLink
@@ -125,7 +146,28 @@ md.renderer.rules.image = (tokens, idx, options, _env, self) => {
   return self.renderToken(tokens, idx, options);
 };
 
-// --- Frontmatter --------------------------------------------------------------
+const defaultHeadingClose =
+  md.renderer.rules.heading_close ??
+  ((tokens, idx, options, _env, self) =>
+    self.renderToken(tokens, idx, options));
+
+md.renderer.rules.heading_close = (tokens, idx, options, env, self) => {
+  const opening = tokens[idx - 2];
+  const inline = tokens[idx - 1];
+  const id = opening?.attrGet("id");
+  const depth = Number(opening?.tag.slice(1));
+  const permalink =
+    id && depth >= 2 && depth <= 3
+      ? '<a class="heading-permalink" href="#' +
+        md.utils.escapeHtml(id) +
+        '" aria-label="Permanent link to ' +
+        md.utils.escapeHtml(inline?.content ?? "section") +
+        '">#</a>'
+      : "";
+  return permalink + defaultHeadingClose(tokens, idx, options, env, self);
+};
+
+// --- Frontmatter -------------------------------------------------------------
 
 function parseFrontmatter(raw: string): { meta: MarkdownMeta; body: string } {
   const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(raw);
@@ -143,12 +185,6 @@ function parseFrontmatter(raw: string): { meta: MarkdownMeta; body: string } {
   return { meta, body: raw.slice(match[0].length) };
 }
 
-/**
- * YAML parses an unquoted `date: 2026-05-01` into a Date object, and rendering a
- * Date via String()/toString() is timezone-dependent — which causes a
- * server/client hydration mismatch. Normalize any date to a stable ISO calendar
- * string so the prerendered and hydrated output are identical.
- */
 function normalizeMeta(meta: MarkdownMeta): void {
   const rawDate = meta.date as unknown;
   if (rawDate instanceof Date) {
@@ -156,30 +192,37 @@ function normalizeMeta(meta: MarkdownMeta): void {
   } else if (rawDate != null && typeof rawDate !== "string") {
     meta.date = String(rawDate);
   }
+
+  if (!Array.isArray(meta.relatedPages)) {
+    delete meta.relatedPages;
+  } else {
+    meta.relatedPages = meta.relatedPages.filter(
+      (item): item is string => typeof item === "string" && item.length > 0,
+    );
+  }
 }
 
-// --- Table of contents --------------------------------------------------------
+// --- Table of contents -------------------------------------------------------
 
 function buildToc(tokens: MdToken[]): TocItem[] {
   const used = new Set<string>();
   const flat: TocItem[] = [];
 
-  for (let i = 0; i < tokens.length; i += 1) {
-    const token = tokens[i];
+  for (let index = 0; index < tokens.length; index += 1) {
+    const token = tokens[index];
     if (token.type !== "heading_open") continue;
     const depth = Number(token.tag.slice(1));
     if (depth < 2 || depth > 3) continue;
 
-    const inline = tokens[i + 1];
-    const text = inline?.content?.trim() ?? "";
-    if (!text) continue;
+    const inline = tokens[index + 1];
+    const title = inline?.content?.trim() ?? "";
+    if (!title) continue;
 
-    const slug = uniqueSlug(text, used);
+    const slug = uniqueSlug(title, used);
     token.attrSet("id", slug);
-    flat.push({ title: text, url: `#${slug}`, depth, children: [] });
+    flat.push({ title, url: "#" + slug, depth, children: [] });
   }
 
-  // Nest h3 items under the preceding h2.
   const roots: TocItem[] = [];
   let current: TocItem | null = null;
   for (const item of flat) {
@@ -195,12 +238,6 @@ function buildToc(tokens: MdToken[]): TocItem[] {
   return roots;
 }
 
-// --- Public API ---------------------------------------------------------------
-
-/**
- * Demote any in-body <h1> to <h2> so the page keeps exactly one visible h1 —
- * the article header owns it (§23). Headings are then h2/h3 for TOC nesting.
- */
 function demoteBodyH1(tokens: MdToken[]): void {
   for (const token of tokens) {
     if (
@@ -212,15 +249,40 @@ function demoteBodyH1(tokens: MdToken[]): void {
   }
 }
 
+// --- Public API --------------------------------------------------------------
+
 export function processMarkdown(raw: string): ProcessedMarkdown {
-  const { meta, body } = parseFrontmatter(raw);
-  const env: Record<string, unknown> = {};
-  const tokens = md.parse(body, env);
+  const frontmatter = parseFrontmatter(raw);
+  const footnotes = extractFootnoteDefinitions(frontmatter.body);
+  const env: ScientificRenderEnv = {
+    scientific: createScientificRenderState(
+      referenceLibrary,
+      footnotes.definitions,
+    ),
+  };
+  const tokens = md.parse(footnotes.body, env);
   demoteBodyH1(tokens);
   const toc = buildToc(tokens);
-  const html = md.renderer.render(tokens, md.options, env);
-  const hasMermaid =
-    /```\s*mermaid/.test(body) || html.includes('class="mermaid"');
+  let html = md.renderer.render(tokens, md.options, env);
+  const supplemental = renderScientificSections(md, env);
+  if (supplemental.html) html += "\n" + supplemental.html;
+  for (const section of supplemental.sections) {
+    toc.push({
+      title: section.title,
+      url: section.url,
+      depth: 2,
+      children: [],
+    });
+  }
 
-  return { html, meta, toc, hasMermaid };
+  const hasMermaid =
+    /[\x60]{3}\s*mermaid/.test(footnotes.body) ||
+    html.includes('class="mermaid"');
+
+  return {
+    html,
+    meta: frontmatter.meta,
+    toc,
+    hasMermaid,
+  };
 }

@@ -6,7 +6,7 @@
  * hydration and client navigation. This keeps all article sources out of the
  * global browser entry while preserving complete prerendered HTML.
  */
-const markdownModules = import.meta.glob("/src/content/**/*.md", {
+const markdownModules = import.meta.glob("/src/content/articles/**/*.md", {
   query: "?raw",
   import: "default",
 }) as Record<string, () => Promise<string>>;

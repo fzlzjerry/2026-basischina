@@ -4,6 +4,10 @@ description: How our model's assumptions, data, parameters, and results work and
 author: BASIS-China Team
 date: 2026-05-01
 tags: [modeling, dry-lab, ode, simulation, parameters]
+relatedPages:
+  - /measurement
+  - /results
+  - /software
 ---
 
 This page is a living demonstration of every Markdown feature the wiki renderer
@@ -195,19 +199,41 @@ A horizontal rule separates major blocks:
 
 That rule was written as three dashes on their own line.
 
-## Not supported here
+## Structured model-summary authoring example
 
-For safety and predictability, a few common Markdown extensions are **not**
-enabled in this renderer. The snippets below render as plain text rather than
-their intended widget — avoid them when authoring:
+Model pages should make assumptions, parameter units and sources, validation, sensitivity, and limitations inspectable. The public wiki and its evidence trail should remain understandable, findable, and properly referenced [@igem-special-awards-2026].[^dry-lab-model-fixture]
 
-```text
-Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
-Task lists:      - [ ] todo   - [x] done                (no checkboxes)
-Footnotes:       Here is a claim.[^1]                    (no footnote link)
-Definition list: Term\n: definition                      (no <dl>)
-Emoji shortcode: :rocket: :tada:                         (not converted)
+The statement below links directly to the structured record: [[evidence:model-summary-demo|Open this authoring example]].
+
+```model-summary
+id: model-summary-demo
+title: Model documentation example
+assumptions:
+  - Demonstration values are illustrative and not project measurements.
+  - The example response is treated as continuous.
+parameters:
+  - name: k
+    value: "0.50"
+    unit: 1/h
+    source: Authoring fixture
+  - name: K
+    value: "2.00"
+    unit: mg/L
+    source: Authoring fixture
+validation: Replace with comparison against measured or independently sourced data.
+sensitivity: Report which parameters most strongly change the conclusion.
+limitations:
+  - No biological conclusion can be drawn from this fixture.
+citations:
+  - igem-special-awards-2026
 ```
 
-If you need one of these, raise it with the dry-lab team rather than pasting raw
-HTML — the renderer disables HTML by design (security §22).
+### How this participates in long-form navigation
+
+This heading and the section above enter the table of contents, receive stable permanent links, and update the active-section marker while the reader scrolls. The related-page links in frontmatter connect this example to adjacent evidence routes.
+
+## Still intentionally unsupported
+
+Raw HTML, task-list widgets, definition lists, and emoji shortcodes remain disabled. Add behavior through a reviewed Markdown rule or structured research block rather than pasting executable HTML.
+
+[^dry-lab-model-fixture]: This is an authoring fixture, not project evidence. Replace it with verified BASIS-China records, real citations, and measured data before judging.

@@ -4,6 +4,10 @@ description: How stakeholder engagement shaped a responsible BASIS-China project
 author: BASIS-China Team
 date: 2026-05-01
 tags: [human-practices, stakeholders, ethics, integration, responsibility]
+relatedPages:
+  - /education
+  - /inclusivity
+  - /sustainability
 ---
 
 This page is a living demonstration of every Markdown feature the wiki renderer
@@ -195,19 +199,36 @@ A horizontal rule separates major blocks:
 
 That rule was written as three dashes on their own line.
 
-## Not supported here
+## Structured stakeholder impact authoring example
 
-For safety and predictability, a few common Markdown extensions are **not**
-enabled in this renderer. The snippets below render as plain text rather than
-their intended widget — avoid them when authoring:
+Human Practices should show how stakeholder input changed the project, not only document that an activity occurred. The public wiki and its evidence trail should remain understandable, findable, and properly referenced [@igem-special-awards-2026].[^engagement-human-practices-fixture]
 
-```text
-Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
-Task lists:      - [ ] todo   - [x] done                (no checkboxes)
-Footnotes:       Here is a claim.[^1]                    (no footnote link)
-Definition list: Term\n: definition                      (no <dl>)
-Emoji shortcode: :rocket: :tada:                         (not converted)
+The statement below links directly to the structured record: [[evidence:human-practices-impact-demo|Open this authoring example]].
+
+```stakeholder-impact
+id: human-practices-impact-demo
+title: Stakeholder-to-design-change example
+entries:
+  - stakeholder: Veterinarian fixture
+    method: Structured interview example
+    insight: Fixed serving guidance may not fit animals of different weights.
+    change: Demonstrate weight-based guidance as a design requirement.
+    followUp: Return the revised requirement for stakeholder review.
+  - stakeholder: Pet owner fixture
+    method: Usability discussion example
+    insight: Instructions need plain-language risk and storage information.
+    change: Add a concise usage and safety checklist.
+    followUp: Test comprehension with representative users.
+citations:
+  - igem-special-awards-2026
 ```
 
-If you need one of these, raise it with the dry-lab team rather than pasting raw
-HTML — the renderer disables HTML by design (security §22).
+### How this participates in long-form navigation
+
+This heading and the section above enter the table of contents, receive stable permanent links, and update the active-section marker while the reader scrolls. The related-page links in frontmatter connect this example to adjacent evidence routes.
+
+## Still intentionally unsupported
+
+Raw HTML, task-list widgets, definition lists, and emoji shortcodes remain disabled. Add behavior through a reviewed Markdown rule or structured research block rather than pasting executable HTML.
+
+[^engagement-human-practices-fixture]: This is an authoring fixture, not project evidence. Replace it with verified BASIS-China records, real citations, and measured data before judging.

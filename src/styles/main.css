@@ -123,9 +123,10 @@
   --shadow-sticker-active: 2px 2px 0 0 rgb(47 36 23 / 0.22);
 
   /* ---- Fonts (families only; @font-face outside @theme) ----
-     Nunito is self-hosted from src/assets/fonts (bundled). The rounded system
-     faces behind it (ui-rounded / SF Pro Rounded, Yuanti SC / Hiragino Maru
-     Gothic for CJK) cover the swap window and any missing glyphs. */
+     Nunito is served from static.igem.wiki (source woff2 stay in
+     src/assets/fonts). The rounded system faces behind it (ui-rounded /
+     SF Pro Rounded, Yuanti SC / Hiragino Maru Gothic for CJK) cover the swap
+     window and any missing glyphs. */
   --font-body:
     "Nunito", "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
   --font-display:
@@ -149,44 +150,47 @@
 }
 
 /* ===========================================================================
-   Self-hosted fonts (§4): Nunito woff2 (latin + latin-ext, ~26KB/weight) lives
-   IN THE REPO at src/assets/fonts/ and is bundled by Vite (relative url()
-   becomes a hashed, base-path-aware asset in dev and build; no external
-   requests). "Noto Sans SC" stays a name-only fallback in the stacks: full
-   CJK woff2 are multi-MB, and system CJK fonts (PingFang etc.) cover the few
+   Fonts (§4): Nunito woff2 is hosted on static.igem.wiki. Source files remain
+   at src/assets/fonts/. "Noto Sans SC" stays a name-only fallback: full CJK
+   woff2 are multi-MB, and system CJK fonts (PingFang etc.) cover the few
    Chinese glyphs gracefully.
    =========================================================================== */
 @font-face {
   font-family: "Nunito";
-  src: url("../assets/fonts/nunito-400.woff2") format("woff2");
+  src: url("https://static.igem.wiki/teams/6123/wiki/fonts/nunito-400.woff2")
+    format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Nunito";
-  src: url("../assets/fonts/nunito-500.woff2") format("woff2");
+  src: url("https://static.igem.wiki/teams/6123/wiki/fonts/nunito-500.woff2")
+    format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Nunito";
-  src: url("../assets/fonts/nunito-600.woff2") format("woff2");
+  src: url("https://static.igem.wiki/teams/6123/wiki/fonts/nunito-600.woff2")
+    format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Nunito";
-  src: url("../assets/fonts/nunito-700.woff2") format("woff2");
+  src: url("https://static.igem.wiki/teams/6123/wiki/fonts/nunito-700.woff2")
+    format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Nunito";
-  src: url("../assets/fonts/nunito-900.woff2") format("woff2");
+  src: url("https://static.igem.wiki/teams/6123/wiki/fonts/nunito-900.woff2")
+    format("woff2");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -194,14 +198,16 @@
 
 /* ===========================================================================
    HEAL hand-lettered faces (§4): Caveat (variable, one file serves 600–700)
-   and Gochi Hand, self-hosted woff2 from the HEAL reference bundle (both OFL).
+   and Gochi Hand, woff2 from the HEAL reference bundle (both OFL), hosted on
+   static.igem.wiki.
    Latin + latin-ext only — no CJK glyphs by design; CJK falls back through the
    --font-script / --font-hand stacks to Nunito/system-rounded. font-display:
    swap keeps them off the critical path (display use only).
    =========================================================================== */
 @font-face {
   font-family: "Caveat";
-  src: url("../assets/fonts/caveat-latin.woff2") format("woff2");
+  src: url("https://static.igem.wiki/teams/6123/wiki/fonts/caveat-latin.woff2")
+    format("woff2");
   font-weight: 600 700;
   font-style: normal;
   font-display: swap;
@@ -212,7 +218,8 @@
 }
 @font-face {
   font-family: "Caveat";
-  src: url("../assets/fonts/caveat-latin-ext.woff2") format("woff2");
+  src: url("https://static.igem.wiki/teams/6123/wiki/fonts/caveat-latin-ext.woff2")
+    format("woff2");
   font-weight: 600 700;
   font-style: normal;
   font-display: swap;
@@ -223,7 +230,8 @@
 }
 @font-face {
   font-family: "Gochi Hand";
-  src: url("../assets/fonts/gochi-hand-latin.woff2") format("woff2");
+  src: url("https://static.igem.wiki/teams/6123/wiki/fonts/gochi-hand-latin.woff2")
+    format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -553,9 +561,7 @@
     pointer-events: none;
   }
 
-  /* The static first-fold art never grows beyond its authored composition.
-     Scroll opens a separate full-viewport cinema layer below rather than
-     stretching decorative shapes through the transparent banner. */
+  /* The static first-fold art never grows beyond its authored composition. */
   .hero-art {
     max-width: 72rem;
   }
@@ -574,6 +580,54 @@
     will-change: transform;
   }
 
+  /* Paper-strip nav. On espresso/brown bands the strip inks over so chrome
+     belongs to the scene; sticker pills stay cream paper. */
+  .site-nav {
+    background-color: var(--color-page);
+    transition:
+      background-color 0.22s var(--ease-cozy),
+      border-color 0.22s var(--ease-cozy);
+  }
+  .site-nav .nav-wordmark {
+    color: var(--color-ink);
+  }
+  .site-nav[data-on-ink] {
+    background-color: var(--color-sticker-ink);
+    border-color: rgb(249 246 237 / 0.28);
+  }
+  .site-nav[data-on-ink] .nav-wordmark {
+    color: var(--color-page);
+  }
+  .site-nav[data-on-ink] a:focus-visible,
+  .site-nav[data-on-ink] button:focus-visible {
+    outline-color: var(--color-focus-on-dark);
+  }
+
+  /* Avant Academy lockup. The hosted file is 3508×2481 with the mark in a
+     2047×778 box at +681+863; crop to that box so it sits at the same optical
+     size as the school wordmark on the brown footer. */
+  .footer-affil-org {
+    --src-h: 2481;
+    --mark-x: 681;
+    --mark-y: 863;
+    --mark-w: 2047;
+    --mark-h: 778;
+    --show-h: 2.85rem;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    height: var(--show-h);
+    width: calc(var(--show-h) * var(--mark-w) / var(--mark-h));
+  }
+  .footer-affil-org img {
+    position: absolute;
+    max-width: none;
+    height: calc(var(--show-h) * var(--src-h) / var(--mark-h));
+    width: auto;
+    left: calc(var(--show-h) * var(--mark-x) / var(--mark-h) * -1);
+    top: calc(var(--show-h) * var(--mark-y) / var(--mark-h) * -1);
+  }
+
   /* Full-screen horizontal story. This layer is decorative repetition of the
      semantic Approach section, and is only exposed when JS + motion are live.
      Its own overflow boundary guarantees the 300%-wide track never creates a
@@ -590,6 +644,16 @@
     will-change: clip-path, opacity;
   }
 
+  .hero-paper-canvas {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
   .hero-chapter-viewport,
   .hero-chapter-track {
     width: 100%;
@@ -597,6 +661,8 @@
   }
 
   .hero-chapter-viewport {
+    position: relative;
+    z-index: 1;
     overflow: hidden;
   }
 
@@ -652,6 +718,12 @@
 
   .hero-chapter-care {
     background: var(--color-primary-soft);
+  }
+
+  .hero-cinema-deck.is-paper-live .hero-chapter-understand,
+  .hero-cinema-deck.is-paper-live .hero-chapter-engineer,
+  .hero-cinema-deck.is-paper-live .hero-chapter-care {
+    background: transparent;
   }
 
   .hero-chapter-word {
@@ -811,10 +883,6 @@
     overflow: clip;
     color: var(--color-page);
     background-color: var(--color-sticker-ink);
-    background-image:
-      linear-gradient(rgb(231 249 245 / 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(231 249 245 / 0.08) 1px, transparent 1px);
-    background-size: 48px 48px;
   }
 
   .kinetic-statement-sticky {
@@ -827,7 +895,24 @@
     overflow: hidden;
   }
 
+  .kinetic-text-ink-canvas {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .kinetic-statement-sticky.is-kinetic-ink-live .kinetic-text-ink-canvas {
+    opacity: 1;
+  }
+
   .kinetic-statement-lines {
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     gap: clamp(0.35rem, 1.2vh, 0.9rem);
@@ -857,17 +942,28 @@
 
   .kinetic-statement-fill {
     position: absolute;
+    z-index: 1;
     inset: 0;
     color: var(--color-primary);
     -webkit-text-stroke: 0;
     will-change: clip-path;
   }
 
+  .kinetic-statement-sticky.is-kinetic-ink-live .kinetic-statement-lines > p {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--color-page);
+  }
+
+  .kinetic-statement-sticky.is-kinetic-ink-live .kinetic-statement-fill {
+    opacity: 0;
+  }
+
   .kinetic-badge {
     position: absolute;
-    right: clamp(3rem, 7vw, 7rem);
-    bottom: clamp(4.3rem, 8vh, 5.8rem);
-    width: clamp(16rem, 22vw, 20rem);
+    z-index: 3;
+    right: clamp(1.25rem, 5vw, 4.5rem);
+    bottom: clamp(1.8rem, 6vh, 4rem);
+    width: clamp(18rem, 30vw, 28rem);
     aspect-ratio: 1400 / 773;
     contain: layout paint;
   }
@@ -943,6 +1039,8 @@
     display: grid;
     min-height: clamp(42rem, 100dvh, 58rem);
     isolation: isolate;
+    color: inherit;
+    text-decoration: none;
     background: var(--color-surface);
     box-shadow: 10px 12px 0 rgb(47 36 23 / 0.16);
   }
@@ -970,6 +1068,33 @@
     object-fit: contain;
     object-position: center;
     will-change: transform;
+  }
+
+  .workstream-print-image,
+  .workstream-print-canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .workstream-print-image {
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .workstream-print-canvas {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .workstream-image.is-print-live .workstream-print-image {
+    opacity: 0;
+  }
+
+  .workstream-image.is-print-live .workstream-print-canvas {
+    opacity: 1;
   }
 
   /* The restored category art no longer reserves a quiet title zone. On
@@ -1016,18 +1141,19 @@
     line-height: 1;
   }
 
-  .workstream-folio {
-    margin-top: clamp(1.15rem, 2.4vh, 1.8rem);
+  .workstream-open {
     display: inline-flex;
-    min-width: 3.1rem;
     align-items: center;
-    justify-content: center;
-    padding: 0.35rem 0.7rem 0.2rem;
-    background: var(--color-app-orange);
-    color: var(--color-sticker-ink);
+    gap: 0.4rem;
+    margin-top: clamp(1.1rem, 2.2vh, 1.6rem);
     font-family: var(--font-hand);
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     line-height: 1;
+    color: var(--color-primary-deep);
+  }
+  .workstream-card:hover .workstream-open,
+  .workstream-card:focus-visible .workstream-open {
+    text-decoration: underline;
   }
 
   .workstream-copy h3 {
@@ -1054,12 +1180,7 @@
     bottom: clamp(1rem, 2.5vw, 2.3rem);
     left: clamp(1.5rem, 6vw, 6rem);
     display: grid;
-    grid-template-columns: auto minmax(8rem, 1fr) auto;
     align-items: center;
-    gap: clamp(1rem, 2.5vw, 2.5rem);
-    font-family: var(--font-hand);
-    font-size: 1.05rem;
-    line-height: 1;
   }
 
   .workstream-progress-track {
@@ -1106,15 +1227,14 @@
 
   .kinetic-statement {
     min-height: auto;
-    background-size: 32px 32px;
   }
 
   .kinetic-statement-sticky {
     position: relative;
     top: auto;
     height: auto;
-    min-height: max(46rem, 120svh);
-    padding-block: 4.5rem 7rem;
+    min-height: max(34rem, 100svh);
+    padding-block: 4rem 8.5rem;
   }
 
   .kinetic-statement-lines {
@@ -1130,7 +1250,7 @@
 
   .kinetic-badge {
     right: 5vw;
-    bottom: 6.5rem;
+    bottom: 1.75rem;
     width: min(14rem, 52vw);
   }
 
@@ -1146,9 +1266,11 @@
   }
 
   .workstream-image {
-    object-fit: contain;
-    object-position: center bottom;
     opacity: 0.92;
+  }
+
+  .workstream-print-image {
+    object-position: center bottom;
   }
 
   .workstream-card::after {
@@ -1180,14 +1302,6 @@
     max-width: 28ch;
     margin-top: 0.75rem;
     font-size: 0.95rem;
-  }
-
-  .workstream-chrome {
-    grid-template-columns: auto minmax(3rem, 1fr);
-  }
-
-  .workstream-chrome > span:last-child {
-    display: none;
   }
 }
 
@@ -1240,13 +1354,6 @@ html {
     position: absolute;
     inset: 0;
     min-height: 0;
-  }
-
-  /* Hide stacked leaves until GSAP parks them. Do not set `transform` here —
-     GSAP owns yPercent/rotation, and a CSS translate gets baked in as a
-     second offset so the next leaf never reaches the viewport. */
-  html.js .workstream-card:not(:first-child) {
-    visibility: hidden;
   }
 }
 

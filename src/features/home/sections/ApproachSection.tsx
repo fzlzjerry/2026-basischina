@@ -1,34 +1,23 @@
 import { useRef } from "react";
-import { stickerStyle } from "@/shared/styles/heal";
 import {
-  gsap,
   drawIn,
+  gsap,
   inViewAtInit,
   registerGsap,
-  scrollFadeIn,
   useGSAP,
 } from "@/shared/motion/gsap";
 import { HomeSectionHeader } from "../components/HomeSectionHeader";
 import { UnderstandSpot, EngineerSpot, CareSpot } from "../scene/StepSpots";
 
 /**
- * Approach section (§20). The platform story in three warm steps — understand
- * pets, engineer gentle biology, turn it into everyday care — placed on a zig
- * down the mint band, connected by a dotted paw trail on desktop. Spot
- * illustrations carry the rhythm; no boxed cards, no DNA, no product shot.
- *
- * The trail is a dashed path revealed through a MASK whose solid path is
- * DrawSVG-animated (DrawSVG can't animate dashed strokes directly); with
- * reduced motion or no JS the mask is fully drawn, so the prerendered trail is
- * always complete.
+ * Compact three-spot row: the only telling of Understand / Engineer / Care.
+ * No numbered badges, no cinema restatement. The paw trail is decorative.
  */
 
 interface Step {
   Spot: typeof UnderstandSpot;
   title: string;
   body: string;
-  /** Zig offsets (lg only). */
-  offset: string;
 }
 
 const STEPS: Step[] = [
@@ -36,25 +25,21 @@ const STEPS: Step[] = [
     Spot: UnderstandSpot,
     title: "Understand",
     body: "We learn what keeps cats and dogs healthy, comfortable, and happy at home.",
-    offset: "lg:mt-0",
   },
   {
     Spot: EngineerSpot,
     title: "Engineer",
     body: "We use synthetic biology to design gentle, effective ingredients from friendly microbes.",
-    offset: "lg:mt-24",
   },
   {
     Spot: CareSpot,
     title: "Care",
     body: "We turn them into everyday products our pets actually enjoy.",
-    offset: "lg:mt-8",
   },
 ];
 
 const TRAIL_D = "M 96 70 C 290 36 330 168 480 178 C 630 188 690 84 836 96";
 
-/** Little paw stamps scattered along the trail. */
 const STAMPS: { x: number; y: number; r: number }[] = [
   { x: 252, y: 92, r: 24 },
   { x: 558, y: 172, r: -12 },
@@ -69,31 +54,11 @@ export function ApproachSection() {
       registerGsap();
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Content fades in place — no displacement anywhere (content never
-        // translates; the strokes and stamps below carry the motion instead).
-        scrollFadeIn(".js-approach-reveal", {
-          trigger: root.current,
-          start: "top 78%",
-          stagger: 0.12,
-        });
-        scrollFadeIn(".js-step-badge", {
-          trigger: root.current,
-          start: "top 78%",
-          stagger: 0.18,
-          delay: 0.25,
-          duration: 0.45,
-        });
-        // The header's marker swash draws itself a beat after the header lands
-        // (hand register: strokes draw by length, they don't fade).
         drawIn(".js-swash", {
           trigger: root.current,
           start: "top 78%",
-          delay: 0.35,
+          delay: 0.2,
         });
-        // The trail is the section's scroll narrative: it draws in direct
-        // response to progress through the three steps instead of playing a
-        // canned entrance and stopping. It remains decorative, non-pinned, and
-        // complete from first paint for reduced-motion/no-JS visitors.
         if (!inViewAtInit(root.current)) {
           gsap.fromTo(
             ".js-paw-trail",
@@ -110,12 +75,6 @@ export function ApproachSection() {
             },
           );
         }
-        // NO clearProps: the stamps are SVG <g>s placed via the transform
-        // ATTRIBUTE with an inline-style fill — GSAP's clearProps on SVG
-        // removes the transform attribute and wipes style.cssText, collapsing
-        // them into an unstyled pile. A from-tween ends at the authored state.
-        // Scale-in stays BELOW 100% the whole way (no overshoot anywhere).
-        // Guarded like the shared helpers: never hide stamps already on screen.
         if (!inViewAtInit(root.current)) {
           gsap.from(".js-paw-stamp", {
             scale: 0.6,
@@ -132,10 +91,6 @@ export function ApproachSection() {
             },
           });
         }
-
-        // Each illustrated step settles into register as its part of the paw
-        // trail reaches the reading line. The motion is scroll-linked and
-        // stays on the decorative image wrapper, never the step copy.
         gsap.utils
           .toArray<HTMLElement>(".js-approach-spot")
           .forEach((spot, index) => {
@@ -166,15 +121,13 @@ export function ApproachSection() {
 
   return (
     <section ref={root} className="bg-primary-soft heal-grid">
-      <div className="mx-auto max-w-5xl px-4 pt-20 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl px-4 pt-16 sm:px-6 sm:pt-20 lg:px-8">
         <HomeSectionHeader
-          className="js-approach-reveal"
           title="From biology to belly rubs."
           lede="How a synthetic-biology idea becomes gentle, everyday care for the animals we live with."
         />
 
-        <div className="relative mt-12 pb-14 lg:mt-16">
-          {/* dotted paw trail weaving through the steps (desktop) */}
+        <div className="relative mt-10 pb-12 lg:mt-14">
           <svg
             aria-hidden="true"
             viewBox="0 0 960 240"
@@ -216,18 +169,16 @@ export function ApproachSection() {
             ))}
           </svg>
 
-          <ol className="relative grid grid-cols-1 gap-12 sm:grid-cols-3 sm:gap-8">
+          <ol className="relative grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-8">
             {STEPS.map((step, i) => (
               <li
                 key={step.title}
-                className={`js-approach-reveal flex flex-col items-center text-center ${step.offset}`}
+                className="flex flex-col items-center text-center"
               >
                 {i > 0 ? (
-                  // Mobile-only dotted connector so the trail idea survives
-                  // the stacked layout (the SVG trail is desktop-only).
                   <svg
                     aria-hidden="true"
-                    className="-mt-6 mb-6 h-12 w-2 text-app-teal sm:hidden"
+                    className="-mt-4 mb-4 h-10 w-2 text-app-teal sm:hidden"
                     viewBox="0 0 8 48"
                     fill="none"
                   >
@@ -240,17 +191,10 @@ export function ApproachSection() {
                     />
                   </svg>
                 ) : null}
-                <span className="js-approach-spot h-28 w-28">
+                <span className="js-approach-spot h-24 w-24 sm:h-28 sm:w-28">
                   <step.Spot />
                 </span>
-                <span
-                  className="js-step-badge heal-sticker mt-4 inline-flex h-9 w-9 items-center justify-center bg-app-orange font-hand text-lg leading-none text-sticker-ink"
-                  style={stickerStyle(i)}
-                  aria-hidden="true"
-                >
-                  {i + 1}
-                </span>
-                <h3 className="mt-3 font-hand text-2xl leading-none text-ink">
+                <h3 className="mt-4 font-hand text-2xl leading-none text-ink">
                   {step.title}
                 </h3>
                 <p className="mt-2 max-w-[34ch] text-balance text-ink-soft">

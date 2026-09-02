@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CaretDown } from "@phosphor-icons/react";
 import { wikiEnv } from "@/config/env";
+import { igemStatic } from "@/config/igemStatic";
 import { footerPages, getNavGroups, navLabelFor } from "@/config/navigation";
 import { Icon } from "@/shared/components/Icon";
 import { SectionDivider } from "@/shared/components/SectionDivider";
@@ -38,6 +39,7 @@ export function Footer() {
     // underneath it, which would otherwise flatten the hand-cut edge).
     <footer
       data-site-chrome="footer"
+      data-nav-ink=""
       className="relative z-10 text-footer-text"
     >
       {/* Scalloped ground edge into the brown footer. No top margin: on the
@@ -46,19 +48,51 @@ export function Footer() {
       <SectionDivider variant="scallop" fill="var(--color-footer)" />
       <div className="bg-footer">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="mb-10">
-            <p className="font-script text-3xl leading-none text-page">
-              <Link
-                to="/"
-                className="inline-flex min-h-11 items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
-              >
-                {wikiEnv.teamName}
-              </Link>
-            </p>
-            <p className="mt-2 max-w-xs text-sm text-footer-text-muted">
-              iGEM {wikiEnv.teamYear}. Engineering biology for healthier,
-              happier companions.
-            </p>
+          <div className="mb-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="font-script text-3xl leading-none text-page">
+                <Link
+                  to="/"
+                  className="inline-flex min-h-11 items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-on-dark"
+                >
+                  {wikiEnv.teamName}
+                </Link>
+              </p>
+              <p className="mt-2 max-w-xs text-sm text-footer-text-muted">
+                iGEM {wikiEnv.teamYear}. Engineering biology for healthier,
+                happier companions.
+              </p>
+            </div>
+
+            <ul
+              aria-label="Affiliations"
+              className="flex flex-col items-start gap-5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8 sm:gap-y-4"
+            >
+              <li>
+                {/* Crop window: the uploaded WebP is padded; CSS clips to the mark. */}
+                <span className="footer-affil-org">
+                  <img
+                    src={igemStatic.affiliations.org}
+                    alt="Avant Academy"
+                    width={3508}
+                    height={2481}
+                    decoding="async"
+                    loading="lazy"
+                  />
+                </span>
+              </li>
+              <li className="max-w-full">
+                <img
+                  src={igemStatic.affiliations.school}
+                  alt="BASIS International & Bilingual Schools · China"
+                  width={2237}
+                  height={296}
+                  decoding="async"
+                  loading="lazy"
+                  className="h-auto w-full max-w-[22.5rem] sm:h-10 sm:w-auto sm:max-w-none"
+                />
+              </li>
+            </ul>
           </div>
 
           <div className="hidden gap-8 xl:grid xl:grid-cols-5">

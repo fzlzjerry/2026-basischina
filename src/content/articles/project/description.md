@@ -4,6 +4,10 @@ description: The problem we tackle, why we chose it, and the science behind our 
 author: BASIS-China Team
 date: 2026-05-01
 tags: [project, description, iGEM, synthetic biology]
+relatedPages:
+  - /engineering
+  - /results
+  - /human-practices
 ---
 
 This page is a living demonstration of every Markdown feature the wiki renderer
@@ -195,19 +199,39 @@ A horizontal rule separates major blocks:
 
 That rule was written as three dashes on their own line.
 
-## Not supported here
+## Structured project-description evidence authoring example
 
-For safety and predictability, a few common Markdown extensions are **not**
-enabled in this renderer. The snippets below render as plain text rather than
-their intended widget — avoid them when authoring:
+A project description should connect its central claim to evidence and clearly mark the limits of that evidence. The public wiki and its evidence trail should remain understandable, findable, and properly referenced [@igem-special-awards-2026].[^project-description-fixture]
 
-```text
-Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
-Task lists:      - [ ] todo   - [x] done                (no checkboxes)
-Footnotes:       Here is a claim.[^1]                    (no footnote link)
-Definition list: Term\n: definition                      (no <dl>)
-Emoji shortcode: :rocket: :tada:                         (not converted)
+The statement below links directly to the structured record: [[evidence:description-evidence-demo|Open this authoring example]].
+
+```result
+id: description-evidence-demo
+title: Project-description evidence example
+claim: This fixture demonstrates evidence-linked authoring and is not a BASIS-China experimental result.
+method: Build-time Markdown processing
+controls:
+  - Raw HTML remains disabled
+  - Citation and evidence IDs are validated
+replicates:
+  biological: 1
+  technical: 1
+result:
+  value: Rendered
+  unit: static HTML
+uncertainty: Not applicable to this authoring fixture
+limitations:
+  - Replace this fixture with verified project evidence
+citations:
+  - igem-team-wiki-2026
 ```
 
-If you need one of these, raise it with the dry-lab team rather than pasting raw
-HTML — the renderer disables HTML by design (security §22).
+### How this participates in long-form navigation
+
+This heading and the section above enter the table of contents, receive stable permanent links, and update the active-section marker while the reader scrolls. The related-page links in frontmatter connect this example to adjacent evidence routes.
+
+## Still intentionally unsupported
+
+Raw HTML, task-list widgets, definition lists, and emoji shortcodes remain disabled. Add behavior through a reviewed Markdown rule or structured research block rather than pasting executable HTML.
+
+[^project-description-fixture]: This is an authoring fixture, not project evidence. Replace it with verified BASIS-China records, real citations, and measured data before judging.

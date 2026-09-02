@@ -1,4 +1,6 @@
-import sunsetDuoUrl from "@/assets/brand/illustrations/sunset-duo.webp";
+import { igemStatic } from "@/config/igemStatic";
+
+const sunsetDuoUrl = igemStatic.illustrations.sunsetDuo;
 
 /**
  * GPT Image redraw of the closing scene. The transparent WebP lets the

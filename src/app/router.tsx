@@ -43,6 +43,19 @@ function routeForPage(page: PageConfig): RouteRecord {
 }
 
 const childRoutes: RouteRecord[] = pages.map(routeForPage);
+
+// Unlisted writing studio. Kept off pageData so it never enters nav, footer,
+// sitemap, or 404 exits. Reachable only by opening /studio directly.
+childRoutes.push({
+  path: "studio",
+  lazy: async () => {
+    const { default: StudioPage } =
+      await import("@/features/studio/StudioPage");
+    return { Component: StudioPage };
+  },
+  errorElement: <RouteErrorBoundary />,
+});
+
 childRoutes.push({
   path: "*",
   lazy: async () => {
@@ -52,9 +65,10 @@ childRoutes.push({
 });
 
 /**
- * Route tree (§11). Generated entirely from the page registry. Declared as
- * vite-react-ssg RouteRecords so every static route is prerendered to HTML at
- * build time. `entry` ties the shell's CSS to every route's prerendered output.
+ * Route tree (§11). Generated from the page registry, plus the unlisted
+ * `/studio` writing preview. Declared as vite-react-ssg RouteRecords so every
+ * static route is prerendered to HTML at build time. `entry` ties the shell's
+ * CSS to every route's prerendered output.
  */
 export const routes: RouteRecord[] = [
   {

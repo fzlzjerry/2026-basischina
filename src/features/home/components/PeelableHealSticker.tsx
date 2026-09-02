@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import healLoopSticker from "@/assets/brand/heal-loop-sticker.webp";
-import healPeelSource from "@/assets/brand/heal-peel-source.webp";
+import { igemStatic } from "@/config/igemStatic";
+
+const healLoopSticker = igemStatic.loopSticker;
+const healPeelSource = igemStatic.peelSource;
 
 export interface StickerForgeController {
   setSource: (source: {
@@ -30,6 +32,7 @@ interface StickerForgeModule {
 
 interface PeelableHealStickerProps {
   onReady?: (element: StickerForgeController | null) => void;
+  interactive?: boolean;
 }
 
 let stickerForgeModule: Promise<StickerForgeModule> | null = null;
@@ -142,17 +145,36 @@ const stickerOptions = {
   quality: "high",
 };
 
-export function PeelableHealSticker({ onReady }: PeelableHealStickerProps) {
+export function PeelableHealSticker({
+  onReady,
+  interactive = true,
+}: PeelableHealStickerProps) {
   const root = useRef<HTMLDivElement>(null);
   const mountPoint = useRef<HTMLDivElement>(null);
   const sticker = useRef<StickerForgeController | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [mediaEligible, setMediaEligible] = useState(false);
+
+  useEffect(() => {
+    const wide = window.matchMedia("(min-width: 640px)");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setMediaEligible(wide.matches && !reducedMotion.matches);
+
+    sync();
+    wide.addEventListener("change", sync);
+    reducedMotion.addEventListener("change", sync);
+    return () => {
+      wide.removeEventListener("change", sync);
+      reducedMotion.removeEventListener("change", sync);
+    };
+  }, []);
 
   useEffect(() => {
     const host = root.current;
     if (
       !host ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !interactive ||
+      !mediaEligible ||
       !canRunInteractiveSticker() ||
       !hasHardwareWebGl()
     ) {
@@ -234,9 +256,10 @@ export function PeelableHealSticker({ onReady }: PeelableHealStickerProps) {
       if (fallbackHandle !== null) window.clearTimeout(fallbackHandle);
       sticker.current?.destroy();
       sticker.current = null;
+      setIsReady(false);
       onReady?.(null);
     };
-  }, [onReady]);
+  }, [interactive, mediaEligible, onReady]);
 
   return (
     <div

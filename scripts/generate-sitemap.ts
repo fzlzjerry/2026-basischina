@@ -69,7 +69,8 @@ fs.writeFileSync(path.join(publicDir, "sitemap.xml"), sitemap, "utf8");
 
 // robots.txt with the absolute sitemap URL (kept in sync with siteUrl).
 const sitemapUrl = `${wikiEnv.siteUrl}/sitemap.xml`;
-const robots = `User-agent: *\nAllow: /\n\nSitemap: ${sitemapUrl}\n`;
+const studioDisallow = `${wikiEnv.basePath}studio`;
+const robots = `User-agent: *\nAllow: /\nDisallow: ${studioDisallow}\n\nSitemap: ${sitemapUrl}\n`;
 fs.writeFileSync(path.join(publicDir, "robots.txt"), robots, "utf8");
 
 console.log(

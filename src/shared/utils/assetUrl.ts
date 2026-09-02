@@ -5,8 +5,12 @@
  * deployment prefix (wikiEnv.basePath) is applied exactly once.
  */
 import { wikiEnv } from "@/config/env";
+import { lookupPublicAssetCdn } from "@/config/igemStatic";
 import { buildAssetUrl } from "@/config/envShared";
 
 export function resolveAssetUrl(assetPath: string): string {
-  return buildAssetUrl(wikiEnv.basePath, assetPath);
+  return (
+    lookupPublicAssetCdn(assetPath) ??
+    buildAssetUrl(wikiEnv.basePath, assetPath)
+  );
 }

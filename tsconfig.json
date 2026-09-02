@@ -24,7 +24,7 @@
     },
 
     /* Types available to both the Vite app and the Bun-run build scripts */
-    "types": ["node", "vite/client"],
+    "types": ["node", "vite/client", "bun"],
 
     /* Linting */
     "strict": true,

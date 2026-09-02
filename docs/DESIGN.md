@@ -158,16 +158,39 @@ clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
   Cinema chrome (tracked mastheads, `01/02/03` counters, `KEEP SCROLLING`) is
   retired. Each chapter still has notebook density: a faint Caveat watermark,
   a Gochi cue, a sticker folio, washi, and a hand-ruled progress rail.
+- **Hero paper transfer is a detail inside the existing cinema, not a new
+  section.** One lazy VGPU effect replaces only the three chapter background
+  fills after its first verified frame. Narrow fibre seams stay locked to the
+  moving notebook pages; there is no new control, explanatory panel, pointer
+  toy, or autonomous animation. CSS fills remain the complete fallback.
 - **The homepage continues its motion language below the Hero.** A 190vh dark
-  kinetic statement fills the sticky viewport with three handwritten lines
-  and a colour fill on “gentle.” The peelable HEAL sticker lives on this
-  band as a large pasted object. A second pinned sequence then lifts four
-  full-screen notebook leaves (Project, Wet lab, Dry lab, Engagement) into
-  place over about 3.8 viewport-heights on desktop and 2.8 from 640px up —
-  a hard-shadow paper raise, not a clip-path wipe. Leaves keep Gochi cues,
-  sticker folios, and washi. Under reduced motion those leaves become a
-  normal vertical stack and the statement remains still. Tracked HUD labels
-  (`THE HEAL LOOP`, `04 LEAVES`, workstream eyebrows) stay retired.
+  kinetic statement fills the sticky viewport with three handwritten lines;
+  the scroll changes their actual letterforms from paper outline to three
+  printed inks. The peelable HEAL sticker lives on this band as a large pasted
+  object. A second pinned sequence then lifts four full-screen notebook leaves
+  (Project, Wet lab, Dry lab, Engagement) into place over about 4.5
+  viewport-heights on desktop and 3.4 from 640px up — a hard-shadow paper
+  raise, not a clip-path wipe. Leaves keep Gochi cues, sticker folios, and
+  washi. Under reduced motion those leaves become a normal vertical stack and
+  the statement remains still. Tracked HUD labels and workstream eyebrows stay
+  retired.
+
+- **Kinetic ink is confined to the real three-line type.** After fonts settle,
+  shaped DOM text runs are rasterized into the RGB channels of one mask;
+  the existing lines then take orange, teal, and warm-paper ink in sequence.
+  The transparent VGPU pass never paints the brown field outside those glyphs,
+  and the real DOM outline remains above it for legibility. The semantic h2 is
+  unchanged. The canvas appears only after a verified frame; reduced-motion,
+  narrow, constrained, and no-WebGPU clients retain the complete static DOM
+  treatment.
+- **Workstream images develop like notebook prints.** Each existing route image
+  is the source texture for its own charcoal-outline → coarse-halftone → colour
+  pass. A new leaf lands as a charcoal print, then develops during its own
+  scroll interval; the completed frame keeps registered ink, screen dots, and
+  paper tooth instead of snapping back to the untouched source. The real
+  `<img>` stays mounted, labelled, and visible until the first verified GPU
+  frame. Reduced-motion, narrow, constrained, and no-WebGPU clients keep the
+  original images in the normal vertical stack.
 
 ## Components
 
@@ -215,6 +238,13 @@ clamp(2.6rem → 4.25rem)`. Script headings need `pb-1` + `leading-[1.04]` for
 - **Marker swash.** `HomeSectionHeader` underlines its Caveat headline with a
   hand-drawn orange stroke (`js-swash`); section timelines draw it in with
   DrawSVG on reveal, and reduced-motion/no-JS get the complete stroke.
+- **Homepage GPU coordinator.** All VGPU surfaces share one lazy low-power
+  device and one GSAP-owned clock. ScrollTrigger mutates stable input records
+  and invalidates frames; renderers never start their own frame loops. The
+  scheduler sleeps when clean or hidden, caps DPR at 1.5 for Hero paper and
+  1.25 for the text/workstream passes, pre-compiles pipelines, and releases
+  surfaces/device on route teardown. The shared runtime plus all three lazy
+  effect families stay within a combined 64 KiB gzip budget.
 - Footer column headers are Gochi Hand (normal case), never uppercase tracked
   labels.
 - Icons: Phosphor, named imports only (audit-enforced), duotone default.

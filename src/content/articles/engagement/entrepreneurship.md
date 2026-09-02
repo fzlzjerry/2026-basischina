@@ -4,6 +4,10 @@ description: Building the business case and a practical commercialization roadma
 author: BASIS-China Team
 date: 2026-05-01
 tags: [entrepreneurship, business, commercialization, market, igem]
+relatedPages:
+  - /human-practices
+  - /sustainability
+  - /description
 ---
 
 This page is a living demonstration of every Markdown feature the wiki renderer
@@ -195,19 +199,36 @@ A horizontal rule separates major blocks:
 
 That rule was written as three dashes on their own line.
 
-## Not supported here
+## Structured customer insight authoring example
 
-For safety and predictability, a few common Markdown extensions are **not**
-enabled in this renderer. The snippets below render as plain text rather than
-their intended widget — avoid them when authoring:
+Entrepreneurship evidence should connect customer needs and expert feedback to product, milestone, resource, and risk decisions. The public wiki and its evidence trail should remain understandable, findable, and properly referenced [@igem-special-awards-2026].[^engagement-entrepreneurship-fixture]
 
-```text
-Raw HTML:        <kbd>Ctrl</kbd> <details>…</details>   (escaped, shown literally)
-Task lists:      - [ ] todo   - [x] done                (no checkboxes)
-Footnotes:       Here is a claim.[^1]                    (no footnote link)
-Definition list: Term\n: definition                      (no <dl>)
-Emoji shortcode: :rocket: :tada:                         (not converted)
+The statement below links directly to the structured record: [[evidence:entrepreneurship-impact-demo|Open this authoring example]].
+
+```stakeholder-impact
+id: entrepreneurship-impact-demo
+title: Customer-to-product-decision example
+entries:
+  - stakeholder: Potential customer fixture
+    method: Problem interview example
+    insight: Ease of administration matters alongside ingredient performance.
+    change: Add administration behavior to the product requirements.
+    followUp: Test the requirement with a low-fidelity prototype.
+  - stakeholder: Manufacturing advisor fixture
+    method: Feasibility review example
+    insight: Storage stability can dominate early scale-up cost.
+    change: Add stability testing before pilot planning.
+    followUp: Revisit milestones after measured stability data exists.
+citations:
+  - igem-special-awards-2026
 ```
 
-If you need one of these, raise it with the dry-lab team rather than pasting raw
-HTML — the renderer disables HTML by design (security §22).
+### How this participates in long-form navigation
+
+This heading and the section above enter the table of contents, receive stable permanent links, and update the active-section marker while the reader scrolls. The related-page links in frontmatter connect this example to adjacent evidence routes.
+
+## Still intentionally unsupported
+
+Raw HTML, task-list widgets, definition lists, and emoji shortcodes remain disabled. Add behavior through a reviewed Markdown rule or structured research block rather than pasting executable HTML.
+
+[^engagement-entrepreneurship-fixture]: This is an authoring fixture, not project evidence. Replace it with verified BASIS-China records, real citations, and measured data before judging.

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { PageCategory } from "@/config/pageData";
 import {
   CategoryCover,
@@ -6,7 +6,13 @@ import {
 } from "@/shared/components/CategoryCover";
 import { stickerStyleRaw } from "@/shared/styles/heal";
 import { PawCorner } from "@/features/home/scene/Peekers";
+import { ArticleBackToTop } from "./ArticleBackToTop";
+import { ArticleBreadcrumbs } from "./ArticleBreadcrumbs";
+import { ArticlePager } from "./ArticlePager";
+import { ArticleReadingProgress } from "./ArticleReadingProgress";
+import { ArticleRelatedLinks } from "./ArticleRelatedLinks";
 import { ArticleTableOfContents } from "./ArticleTableOfContents";
+import { useActiveHeading } from "./useActiveHeading";
 import { useMarkdownEnhancements } from "./useMarkdownEnhancements";
 import type { ProcessedMarkdown } from "./markdownService";
 
@@ -77,6 +83,7 @@ interface MarkdownArticleProps {
   processed: ProcessedMarkdown;
   /** Stable key (route/content path) so enhancements re-run on navigation. */
   contentKey: string;
+  pagePath: string;
 }
 
 /**
@@ -93,8 +100,11 @@ export function MarkdownArticle({
   category,
   processed,
   contentKey,
+  pagePath,
 }: MarkdownArticleProps) {
+  const articleRef = useRef<HTMLElement>(null);
   const [container, setContainer] = useState<HTMLElement | null>(null);
+  const activeHeading = useActiveHeading(processed.toc, contentKey);
   useMarkdownEnhancements(container, processed.hasMermaid, contentKey);
 
   const description = processed.meta.description ?? summary;
@@ -123,7 +133,12 @@ export function MarkdownArticle({
 
   return (
     <div className="min-h-screen bg-page heal-grid">
-      <article className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <ArticleReadingProgress articleRef={articleRef} />
+      <article
+        ref={articleRef}
+        className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8"
+      >
+        <ArticleBreadcrumbs path={pagePath} />
         <header className="mb-8">
           {cover ? (
             <CategoryCover
@@ -157,6 +172,16 @@ export function MarkdownArticle({
           ) : null}
         </header>
 
+        <div className="mb-8 lg:hidden">
+          <ArticleTableOfContents
+            items={processed.toc}
+            activeId={activeHeading}
+            instanceId="toc-list-mobile"
+            defaultOpen={false}
+            compact
+          />
+        </div>
+
         <div className="gap-10 lg:grid lg:grid-cols-[1fr_16rem]">
           <div
             className="heal-cutout min-w-0 bg-surface p-6 sm:p-8"
@@ -182,13 +207,20 @@ export function MarkdownArticle({
               <span className="h-1 w-16 rounded-full bg-app-teal" />
             </div>
           </div>
-          <aside className="mt-10 lg:mt-0">
+          <aside className="hidden lg:block">
             <div className="lg:sticky lg:top-24">
-              <ArticleTableOfContents items={processed.toc} />
+              <ArticleTableOfContents
+                items={processed.toc}
+                activeId={activeHeading}
+                instanceId="toc-list-desktop"
+              />
             </div>
           </aside>
         </div>
+        <ArticleRelatedLinks paths={processed.meta.relatedPages} />
+        <ArticlePager path={pagePath} />
       </article>
+      <ArticleBackToTop articleRef={articleRef} />
     </div>
   );
 }

@@ -1,62 +1,31 @@
-# CI/CD for the BASIS-China iGEM wiki (§25).
+# CI/CD for the BASIS-China iGEM wiki on gitlab.igem.org.
 #
-# Bun is the single package manager. The build runs page validation, type
-# checking, sitemap generation, and the vite-react-ssg static prerender, which
-# emits one HTML file per route — so deep-link refresh works on GitLab Pages
-# without an SPA redirect hack.
-image: oven/bun:1.3
+# iGEM runners use public Node images (see the 2026 example wiki). Bun is
+# installed in the job so the same lockfile and scripts as local development
+# run on iGEM infrastructure. The prerender emits one HTML file per route, so
+# deep-link refresh works on GitLab Pages without an SPA redirect hack.
+#
+# gitlab.igem.org caps job artifacts at 10 MiB. Do not cache node_modules:
+# that cache is huge and the Pages upload is the step that must stay small.
+image: node:22
 
-stages:
-  - install
-  - check
-  - build
-  - deploy
+# The ARM64 runner capped Node 22's V8 heap near 940 MiB, and Rollup now
+# crosses that ceiling while rendering the lazy VGPU chunks. Raise only the JS
+# heap while retaining headroom for native buffers, Bun, and the runner.
+variables:
+  NODE_OPTIONS: "--max-old-space-size=1536"
 
-cache:
-  key:
-    files:
-      - bun.lock
-  paths:
-    - node_modules/
-
-install:
-  stage: install
-  script:
-    - bun install --frozen-lockfile
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
-
-check:
-  stage: check
-  needs: ["install"]
-  script:
-    - bun run validate:pages
-    - bun run type-check
-    - bun run lint:check
-    - bun run format:check
-
-build:
+pages:
   stage: build
-  needs: ["install", "check"]
+  before_script:
+    - corepack disable || true
+    - npm install -g bun@1.3.6
+    - bun --version
+    - bun install --frozen-lockfile
   script:
     - bun run build
-  artifacts:
-    paths:
-      - dist/
-    expire_in: 1 hour
-
-# GitLab Pages must publish a `public/` directory. The prerendered output lives
-# in `dist/`; `dist/` already contains everything from the source `public/`
-# (Vite copies it during build), so we replace `public/` with the built output.
-# The build prerenders `404.html` through the wildcard route, so unknown URLs
-# hydrate against the same not-found markup that GitLab Pages serves.
-pages:
-  stage: deploy
-  needs: ["build"]
-  script:
     - test -f dist/404.html
+    - rm -rf dist/.vite
     - rm -rf public
     - mv dist public
   artifacts:

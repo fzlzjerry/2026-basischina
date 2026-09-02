@@ -1,4 +1,6 @@
-import heroLabPawUrl from "@/assets/brand/illustrations/hero-lab-paw.webp";
+import { igemStatic } from "@/config/igemStatic";
+
+const heroLabPawUrl = igemStatic.illustrations.heroLabPaw;
 
 /**
  * GPT Image redraw of the hero's lab-to-pet margin note. The transparent WebP
